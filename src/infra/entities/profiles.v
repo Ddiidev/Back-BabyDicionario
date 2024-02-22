@@ -1,37 +1,31 @@
 module entities
 
 import time { Time }
-import models { Sexo }
+import contracts.contract_shared { Sexo }
+import contracts.profile as cprofile
+import vdapter
 
 @[table: 'profiles']
 pub struct Profile {
 pub:
-	id int
-	uuid string
-	apelido string
-	primeiro_nome string
-	segundo_nome string
-	data_nascimento Time
-	idade f64 @[sql_type: 'NUMERIC']
-	peso f64 @[sql_type: 'NUMERIC']
-	sexo Sexo
-	altura f64 @[sql_type: 'NUMERIC']
-	cor string
-	pai_id int
-	mae_id int
+	id              int    @[primary; sql: serial]
+	uuid            string
+	user_id         int
+	apelido         string
+	primeiro_nome   string
+	segundo_nome    string
+	data_nascimento Time   @[default: 'CURRENT_TIME']
+	idade           f64    @[sql_type: 'NUMERIC']
+	peso            f64    @[sql_type: 'NUMERIC']
+	sexo            Sexo
+	altura          f64    @[sql_type: 'NUMERIC']
+	cor             string
+	pai_id          int
+	mae_id          int
+	created_at      Time   @[default: 'CURRENT_TIME']
+	updated_at      Time   @[default: 'CURRENT_TIME']
 }
 
-pub fn (p Profile) adapter() models.Profile {
-	return models.Profile{
-		uuid: p.uuid
-		apelido: p.apelido
-		primeiro_nome: p.primeiro_nome
-		segundo_nome: p.segundo_nome
-		idade: p.idade
-		peso: p.peso
-		sexo: p.sexo
-		altura: p.altura
-		cor: p.cor
-		data_nascimento: p.data_nascimento
-	}
+pub fn (p Profile) adapter() cprofile.Profile {
+	return vdapter.adapter[cprofile.Profile](&p)
 }

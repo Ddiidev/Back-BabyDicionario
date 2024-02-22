@@ -2,8 +2,8 @@ module profile
 
 import x.vweb
 import services.ws_context { Context }
-import infra.profiles as infra
-import models
+import infra.repository.repository_profiles
+import contracts.profile as cprofile
 
 pub struct WsProfile {
 	vweb.Middleware[Context]
@@ -11,12 +11,13 @@ pub struct WsProfile {
 
 @['/:uuid_profile']
 pub fn (ws &WsProfile) get_profile(mut ctx Context, uuid_profile string) vweb.Result {
-	profile_required := infra.get_profile(uuid_profile)
-	profile_pai := infra.get_profiles_by_id(profile_required.pai_id).first().adapter()
-	profile_mae := infra.get_profiles_by_id(profile_required.mae_id).first().adapter()
-	profile_irmaos := infra.get_profiles_irmaos(profile_required.id, profile_required.pai_id, profile_required.mae_id).map(it.adapter())
+	profile_required := repository_profiles.get_profile(uuid_profile)
+	profile_pai := repository_profiles.get_profiles_by_id(profile_required.pai_id).first().adapter()
+	profile_mae := repository_profiles.get_profiles_by_id(profile_required.mae_id).first().adapter()
+	profile_irmaos := repository_profiles.get_profiles_irmaos(profile_required.id, profile_required.pai_id,
+		profile_required.mae_id).map(it.adapter())
 
-	profile := models.Profile{
+	profile := cprofile.Profile{
 		uuid: profile_required.uuid
 		apelido: profile_required.apelido
 		primeiro_nome: profile_required.primeiro_nome

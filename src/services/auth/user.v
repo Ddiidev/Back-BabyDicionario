@@ -1,47 +1,81 @@
 module auth
 
-import x.vweb
+import contracts.contract_api { ContractApiNoContent, ContractApi }
+import contracts.token { TokenContract, TokenJwtContract }
+import infra.repository.repository_tokens
 import services.ws_context { Context }
-import json
-import jwt
+import contracts.confirmation
+import services.handle_jwt
+import infra.entities
+import constants
+import vdapter
+import x.vweb
+import time
 import rand
+import jwt
 
-pub struct WsAuth {}
-
-pub struct Credential {
-	user string
-	pass string
+pub struct WsAuth {
+	vweb.Middleware[Context]
 }
 
-@['/'; post]
-pub fn (a &WsAuth) user_auth(mut ctx Context) vweb.Result {
-	body := ctx.req.data
+pub fn authenticate(mut ctx Context) bool {
+	authorization := ctx.req.header.values(.authorization)[0] or { '' }
 
-	credential := json.decode(Credential, body) or { Credential{} }
+	tok_jwt := handle_jwt.get[confirmation.ConfirmationEmail](authorization) or { return false }
 
-	payload := jwt.Payload[Credential]{
-		sub: '1234567890'
-		ext: credential
+	if tok_jwt.valid($env('BABYDI_SECRETKEY')) || tok_jwt.expired() {
+		ctx.res.set_status(.unauthorized)
+		ctx.json(ContractApiNoContent{
+			message: 'Token expirou'
+			status: .error
+		})
+		return false
 	}
-	token := jwt.Token.new(payload, $env('BABYDI_SECRETKEY'))
 
-	return ctx.json({
-		'access_token':  token.str()
-		'refresh_token': rand.uuid_v4()
-	})
+	return true
 }
 
-@['/refresh'; post]
+@['/refresh_token']
 pub fn (a &WsAuth) user_refresh_token(mut ctx Context) vweb.Result {
-	// ctx.form['refresh_token']
-	// credential := json.decode(Credential, body) or {
-	// 	Credential{}
-	// }
+	contract := TokenContract{
+		refresh_token: ctx.req.header.custom_values('refresh_token')[0] or { '' }.after(' ')
+		access_token: ctx.req.header.values(.authorization)[0] or { '' }.after(' ')
+	}
 
-	// payload := jwt.Payload[Credential]{
-	// 	sub: "1234567890",
-	// 	ext: credential
-	// }
-	// token := jwt.Token.new(payload, $env("BABYDI_SECRETKEY"))
-	return ctx.text('not implemented')
+	tok_jwt := jwt.from_str[TokenJwtContract](contract.access_token) or {
+		ctx.res.set_status(.bad_request)
+		return ctx.json(ContractApiNoContent{
+			message: 'token inválido'
+			status: .error
+		})
+	}
+
+	origin_tok := entities.Token{
+		user_uuid: tok_jwt.payload.sub or { '' }
+		access_token: contract.access_token
+		refresh_token: contract.refresh_token
+	}
+
+	new_tok_jwt := handle_jwt.new_jwt(origin_tok.user_uuid, tok_jwt.payload.ext.email, time.utc().str())
+
+	target_tok := entities.Token{
+		user_uuid: tok_jwt.payload.sub or { '' }
+		access_token: new_tok_jwt.str()
+		refresh_token: rand.uuid_v4()
+		refresh_token_expiration: new_tok_jwt.payload.exp.time() or { time.utc() }.add_days(constants.day_expiration_refresh_token)
+	}
+
+	repository_tokens.new_refresh_token(origin_tok, target_tok) or {
+		ctx.res.set_status(.bad_request)
+		return ctx.json(ContractApiNoContent{
+			message: 'falhou a gerar um novo token'
+			status: .error
+		})
+	}
+
+	return ctx.json(ContractApi{
+		message: 'Token gerado com sucesso'
+		status: .info
+		content: vdapter.adapter_wip[entities.Token, TokenContract](target_tok)
+	})
 }
