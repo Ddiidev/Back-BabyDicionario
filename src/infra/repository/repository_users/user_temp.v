@@ -1,6 +1,6 @@
 module repository_users
 
-import repository_users.errors
+import infra.repository.repository_users.errors
 import infra.entities
 import infra.connection
 import vdapter
@@ -41,7 +41,7 @@ pub fn get_user_temp_confirmation(email string, code string) !entities.UserTemp 
 		this_user_temp := users_temp.filter(it.code_confirmation == code)
 
 		if this_user_temp.len == 0 {
-			return errors.InvalidCode{}	
+			return errors.InvalidCode{}
 		} else {
 			return this_user_temp.first()
 		}

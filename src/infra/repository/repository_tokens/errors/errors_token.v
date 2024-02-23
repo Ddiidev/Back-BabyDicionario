@@ -1,7 +1,13 @@
 module errors
 
-pub struct TokenNoExist {Error}
+pub struct TokenNoExist {
+	Error
+}
 
-pub struct TokenExist {Error}
+pub struct TokenExist {
+	Error
+}
 
-pub struct RefreshTokenExpired {Error}
+pub struct RefreshTokenExpired {
+	Error
+}

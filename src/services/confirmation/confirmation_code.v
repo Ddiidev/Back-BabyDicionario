@@ -3,11 +3,11 @@ module confirmation
 import contracts.contract_api { ContractApi, ContractApiNoContent }
 import infra.repository.repository_tokens.errors { TokenNoExist }
 import contracts.confirmation { ConfirmationEmail }
-import contracts.token { TokenContract, TokenJwtContract }
+import contracts.token { TokenContract }
 import infra.repository.repository_users.errors as users_error
 import infra.repository.repository_tokens
 import infra.repository.repository_users
-import ws_context { Context }
+import services.ws_context { Context }
 import services.handle_jwt
 import infra.entities
 import vdapter
@@ -31,7 +31,7 @@ pub fn (ws &WsConfirmation) confirmation_email(mut ctx Context) vweb.Result {
 
 	user_temp := repository_users.get_user_temp_confirmation(contract.email, contract.code) or {
 		ctx.res.set_status(.bad_request)
-		
+
 		if err in [users_error.InvalidCode, users_error.NoExistUserTemp] {
 			return ctx.json(ContractApiNoContent{
 				message: err.msg()

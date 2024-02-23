@@ -44,6 +44,5 @@ pub fn get_name_table[T]() !string {
 			return t.arg
 		}
 	}
-
 	return error('Falha ao obter o nome da tabela')
 }

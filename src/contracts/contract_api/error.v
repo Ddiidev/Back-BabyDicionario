@@ -2,14 +2,14 @@ module contract_api
 
 pub struct ContractApi[T] {
 pub:
-	message string              @[required]
+	message string             @[required]
 	status  ?StatusContractApi @[omitempty; required]
-	content ?T                  @[omitempty]
+	content ?T                 @[omitempty]
 }
 
 pub struct ContractApiNoContent {
 pub:
-	message string              @[required]
+	message string             @[required]
 	status  ?StatusContractApi @[omitempty; required]
 }
 

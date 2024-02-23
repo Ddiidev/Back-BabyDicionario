@@ -1,7 +1,7 @@
 module profile
 
 import time { Time }
-import contract_shared { Sexo }
+import contracts.contract_shared { Sexo }
 
 pub struct Profile {
 pub:

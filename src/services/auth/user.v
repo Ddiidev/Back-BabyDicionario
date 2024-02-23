@@ -1,6 +1,6 @@
 module auth
 
-import contracts.contract_api { ContractApiNoContent, ContractApi }
+import contracts.contract_api { ContractApi, ContractApiNoContent }
 import contracts.token { TokenContract, TokenJwtContract }
 import infra.repository.repository_tokens
 import services.ws_context { Context }
@@ -56,7 +56,8 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx Context) vweb.Result {
 		refresh_token: contract.refresh_token
 	}
 
-	new_tok_jwt := handle_jwt.new_jwt(origin_tok.user_uuid, tok_jwt.payload.ext.email, time.utc().str())
+	new_tok_jwt := handle_jwt.new_jwt(origin_tok.user_uuid, tok_jwt.payload.ext.email,
+		time.utc().str())
 
 	target_tok := entities.Token{
 		user_uuid: tok_jwt.payload.sub or { '' }
