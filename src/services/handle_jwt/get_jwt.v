@@ -1,7 +1,8 @@
 module handle_jwt
 
+import contracts.token { TokenJwtContract }
 import jwt
 
-pub fn get[T](access_token string) !jwt.Token[T] {
-	return jwt.from_str[T](access_token)
+pub fn get(access_token string) !jwt.Token[TokenJwtContract] {
+	return jwt.from_str[TokenJwtContract](access_token)
 }

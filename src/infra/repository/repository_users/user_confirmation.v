@@ -77,9 +77,7 @@ pub fn create_user_valid(user_temp entities.UserTemp) !entities.User {
 		senha: user_temp.senha
 		created_at: user_temp.created_at
 		updated_at: user_temp.updated_at
-	}.validated(true) or {
-		return err
-	}
+	}.validated(true) or { return err }
 
 	conn, close := connection.get()
 

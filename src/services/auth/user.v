@@ -4,7 +4,6 @@ import contracts.contract_api { ContractApi, ContractApiNoContent }
 import contracts.token { TokenContract, TokenJwtContract }
 import infra.repository.repository_tokens
 import services.ws_context { Context }
-import contracts.confirmation
 import services.handle_jwt
 import infra.entities
 import constants
@@ -20,7 +19,7 @@ pub struct WsAuth {
 pub fn authenticate(mut ctx Context) bool {
 	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
 
-	tok_jwt := handle_jwt.get[confirmation.ConfirmationEmailByCode](authorization) or {
+	tok_jwt := handle_jwt.get(authorization) or {
 		ctx.res.set_status(.unauthorized)
 		ctx.json(ContractApiNoContent{
 			message: 'Token expirou'
@@ -30,9 +29,6 @@ pub fn authenticate(mut ctx Context) bool {
 	}
 
 	if !tok_jwt.valid($env('BABYDI_SECRETKEY')) {
-
-		$dbg;
-
 		ctx.res.set_status(.unauthorized)
 		ctx.json(ContractApiNoContent{
 			message: 'Token expirou'
@@ -66,7 +62,6 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx Context) vweb.Result {
 	}
 
 	$dbg;
-
 	new_tok_jwt := handle_jwt.new_jwt(origin_tok.user_uuid, tok_jwt.payload.ext.email,
 		time.utc().add(time.hour * 5).str())
 

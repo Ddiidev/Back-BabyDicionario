@@ -46,7 +46,6 @@ pub fn (ws &WsConfirmation) confirmation_email(mut ctx Context) vweb.Result {
 	}
 
 	if user_temp.is_valid() {
-
 		user := repository_users.create_user_valid(user_temp) or {
 			ctx.res.set_status(.bad_request)
 			return ctx.json(ContractApiNoContent{
@@ -88,7 +87,7 @@ pub fn (ws &WsConfirmation) confirmation_email(mut ctx Context) vweb.Result {
 		}
 
 		defer {
-			email.send(user_temp.email, "[DiBebê] Grato por estar aqui", body_msg_congratulations_html(user.primeiro_nome)) or {
+			email.send(user_temp.email, '[DiBebê] Grato por estar aqui', body_msg_congratulations_html(user.primeiro_nome)) or {
 				println(err)
 			}
 		}
@@ -96,7 +95,7 @@ pub fn (ws &WsConfirmation) confirmation_email(mut ctx Context) vweb.Result {
 		return ctx.json(ContractApi{
 			message: 'Usuário verificado com sucesso!'
 			status: .info
-			content: TokenContract {
+			content: TokenContract{
 				access_token: tok.access_token
 				refresh_token: tok.refresh_token
 			}

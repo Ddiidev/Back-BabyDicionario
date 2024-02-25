@@ -1,10 +1,11 @@
 module entities
 
-import entities.errors.errors_user
-import time { Time }
+import infra.entities.errors.errors_user
 import utils.auth
+import constants
 import utils
 import rand
+import time
 
 @[table: 'users']
 pub struct User {
@@ -12,19 +13,33 @@ pub:
 	primeiro_nome   string
 	segundo_nome    ?string
 	responsavel     i8
-	data_nascimento Time
+	data_nascimento time.Time
 	email           string
 	senha           string
-	created_at      Time    @[default: 'CURRENT_TIME']
-	updated_at      Time    @[default: 'CURRENT_TIME']
+	created_at      time.Time @[default: 'CURRENT_TIME']
+	updated_at      time.Time @[default: 'CURRENT_TIME']
 pub mut:
-	id               ?int   @[default: 'null'; primary; sql: serial]
-	uuid             string @[uniq]
+	id   ?int   @[default: 'null'; primary; sql: serial]
+	uuid string @[uniq]
 }
 
 pub fn (u User) validated(pass_already_encrypted bool) !User {
+	created_at := if u.created_at == constants.time_empty {
+		time.utc()
+	} else {
+		u.created_at
+	}
+
+	updated_at := if u.updated_at == constants.time_empty {
+		time.utc()
+	} else {
+		u.updated_at
+	}
+
 	mut user_validated := User{
 		...u
+		created_at: created_at
+		updated_at: updated_at
 		primeiro_nome: u.primeiro_nome.trim_space()
 		segundo_nome: u.segundo_nome or { '' }.trim_space()
 		email: u.email.trim_space()
@@ -33,7 +48,7 @@ pub fn (u User) validated(pass_already_encrypted bool) !User {
 
 	user_validated.uuid = rand.uuid_v4()
 
-	if utils.validating_email(user_validated.email) {
+	if !utils.validating_email(user_validated.email) {
 		return errors_user.UserInvalid{
 			msg: 'Email inválido'
 		}

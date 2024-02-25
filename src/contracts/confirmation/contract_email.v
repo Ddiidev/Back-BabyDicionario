@@ -1,6 +1,6 @@
 module confirmation
 
-import contracts.contract_shared { Responsavel, JsTime }
+import contracts.contract_shared { JsTime, Responsavel }
 
 pub struct ContractEmail {
 pub:

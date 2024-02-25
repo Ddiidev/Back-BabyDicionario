@@ -25,10 +25,7 @@ pub fn get_profile_by_suuid(suuid string, name_shared_link string) !entities.Pro
 	}
 
 	profiles := sql db {
-		select from entities.Profile
-		where
-			short_uuid == suuid &&
-			name_shared_link == name_shared_link
+		select from entities.Profile where short_uuid == suuid && name_shared_link == name_shared_link
 	} or { [entities.Profile{}] }
 
 	return if profiles.len > 0 {

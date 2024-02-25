@@ -1,11 +1,11 @@
 module profile
 
-import contracts.contract_api { ContractApiNoContent, ContractApi }
+import contracts.contract_api { ContractApi, ContractApiNoContent }
 import infra.repository.repository_profiles
 import services.ws_context { Context }
 import contracts.profile as cprofile
+import constants
 import x.vweb
-import time
 
 pub struct WsProfile {
 	vweb.Middleware[Context]
@@ -61,9 +61,7 @@ pub fn (ws &WsProfile) get_profile(mut ctx Context, short_uuid_profile string, n
 		sexo: profile_required.sexo
 		altura: profile_required.altura
 		cor: profile_required.cor
-		data_nascimento: profile_required.data_nascimento or {
-			time.date_from_days_after_unix_epoch(0)
-		}
+		data_nascimento: profile_required.data_nascimento or { constants.time_empty }
 		pai: &profile_pai
 		mae: &profile_mae
 		irmaos: profile_irmaos

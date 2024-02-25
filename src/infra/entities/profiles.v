@@ -1,8 +1,9 @@
 module entities
 
-import time { Time }
-import contracts.contract_shared { Sexo }
 import contracts.profile as contract_profile
+import contracts.contract_shared { Sexo }
+import time { Time }
+import constants
 
 @[table: 'profiles']
 pub struct Profile {
@@ -38,7 +39,7 @@ pub fn (p Profile) adapter() contract_profile.Profile {
 		cor: p.cor
 		sexo: p.sexo
 		altura: p.altura
-		data_nascimento: p.data_nascimento or { time.date_from_days_after_unix_epoch(0) }
+		data_nascimento: p.data_nascimento or { constants.time_empty }
 	}
 }
 
