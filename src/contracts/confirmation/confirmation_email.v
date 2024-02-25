@@ -1,6 +1,6 @@
 module confirmation
 
-pub struct ConfirmationEmail {
+pub struct ConfirmationEmailByCode {
 pub:
 	email string
 	code  string

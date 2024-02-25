@@ -8,7 +8,6 @@ import contracts.confirmation
 import services.handle_jwt
 import infra.entities
 import constants
-import vdapter
 import x.vweb
 import time
 import rand
@@ -19,11 +18,21 @@ pub struct WsAuth {
 }
 
 pub fn authenticate(mut ctx Context) bool {
-	authorization := ctx.req.header.values(.authorization)[0] or { '' }
+	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
 
-	tok_jwt := handle_jwt.get[confirmation.ConfirmationEmail](authorization) or { return false }
+	tok_jwt := handle_jwt.get[confirmation.ConfirmationEmailByCode](authorization) or {
+		ctx.res.set_status(.unauthorized)
+		ctx.json(ContractApiNoContent{
+			message: 'Token expirou'
+			status: .error
+		})
+		return false
+	}
 
-	if tok_jwt.valid($env('BABYDI_SECRETKEY')) || tok_jwt.expired() {
+	if !tok_jwt.valid($env('BABYDI_SECRETKEY')) {
+
+		$dbg;
+
 		ctx.res.set_status(.unauthorized)
 		ctx.json(ContractApiNoContent{
 			message: 'Token expirou'
@@ -35,10 +44,10 @@ pub fn authenticate(mut ctx Context) bool {
 	return true
 }
 
-@['/refresh_token']
+@['/refresh-token']
 pub fn (a &WsAuth) user_refresh_token(mut ctx Context) vweb.Result {
 	contract := TokenContract{
-		refresh_token: ctx.req.header.custom_values('refresh_token')[0] or { '' }.after(' ')
+		refresh_token: ctx.req.header.custom_values('refresh-token')[0] or { '' }.after(' ')
 		access_token: ctx.req.header.values(.authorization)[0] or { '' }.after(' ')
 	}
 
@@ -56,8 +65,10 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx Context) vweb.Result {
 		refresh_token: contract.refresh_token
 	}
 
+	$dbg;
+
 	new_tok_jwt := handle_jwt.new_jwt(origin_tok.user_uuid, tok_jwt.payload.ext.email,
-		time.utc().str())
+		time.utc().add(time.hour * 5).str())
 
 	target_tok := entities.Token{
 		user_uuid: tok_jwt.payload.sub or { '' }
@@ -77,6 +88,9 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx Context) vweb.Result {
 	return ctx.json(ContractApi{
 		message: 'Token gerado com sucesso'
 		status: .info
-		content: vdapter.adapter_wip[entities.Token, TokenContract](target_tok)
+		content: TokenContract{
+			access_token: target_tok.access_token
+			refresh_token: target_tok.refresh_token
+		}
 	})
 }

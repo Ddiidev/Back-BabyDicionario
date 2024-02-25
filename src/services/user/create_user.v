@@ -1,12 +1,11 @@
 module user
 
 import contracts.contract_api { ContractApiNoContent }
-import services.ws_context { Context }
 import contracts.confirmation { ContractEmail }
 import infra.repository.repository_users
-import services.email
+import services.ws_context { Context }
 import infra.entities
-import vdapter
+import services.email
 import x.vweb
 import json
 import rand
@@ -25,7 +24,12 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx Context) vweb.Result {
 		})
 	}
 
-	code_confirmation := rand.i64_in_range(111111, 999999) or { rand.int63() }.str().limit(6)
+	user_temp_exist := repository_users.get_user_temp_existing(contract.email)
+	code_confirmation := if user_temp_exist != none {
+		user_temp_exist.code_confirmation
+	} else {
+		rand.i64_in_range(111111, 999999) or { rand.int63() }.str().limit(6)
+	}
 
 	body := body_msg_confirmation_html(contract.primeiro_nome, code_confirmation)
 
@@ -38,14 +42,30 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx Context) vweb.Result {
 		})
 	}
 
-	user_temp := vdapter.adapter[entities.UserTemp](contract)
+	if user_temp_exist == none {
+		contract_data_nascimento := contract.data_nascimento.time() or {
+			ctx.res.set_status(.bad_request)
+			return ctx.json(ContractApiNoContent{
+				message: 'Formato da data de nascimento está inválido'
+				status: .error
+			})
+		}
 
-	repository_users.new_user_confirmation(user_temp, code_confirmation) or {
-		ctx.res.set_status(.bad_request)
-		return ctx.json(ContractApiNoContent{
-			message: 'Falha ao cadastrar no banco o usuário'
-			status: .error
-		})
+		user_temp := entities.UserTemp{
+			primeiro_nome: contract.primeiro_nome
+			responsavel: contract.responsavel
+			data_nascimento: contract_data_nascimento
+			email: contract.email
+			senha: contract.senha
+		}
+
+		repository_users.new_user_confirmation(user_temp, code_confirmation) or {
+			ctx.res.set_status(.bad_request)
+			return ctx.json(ContractApiNoContent{
+				message: 'Falha ao cadastrar no banco o usuário'
+				status: .error
+			})
+		}
 	}
 
 	return ctx.json(ContractApiNoContent{

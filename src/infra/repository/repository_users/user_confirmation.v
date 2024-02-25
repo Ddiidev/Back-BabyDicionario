@@ -1,9 +1,9 @@
 module repository_users
 
 import infra.repository.repository_users.errors
-import infra.entities
+import utils.auth as auth_pass
 import infra.connection
-import vdapter
+import infra.entities
 import time
 
 pub fn new_user_confirmation(user entities.UserTemp, code_confirmation string) ! {
@@ -17,6 +17,7 @@ pub fn new_user_confirmation(user entities.UserTemp, code_confirmation string) !
 		...user
 		expiration_time: time.utc().add(time.hour * 5)
 		code_confirmation: code_confirmation
+		senha: auth_pass.gen_password(user.senha)
 	}
 
 	sql conn {
@@ -48,10 +49,37 @@ pub fn get_user_temp_confirmation(email string, code string) !entities.UserTemp 
 	}
 }
 
+pub fn get_user_temp_existing(email string) ?entities.UserTemp {
+	conn, close := connection.get()
+
+	defer {
+		close() or {}
+	}
+
+	users_temp := sql conn {
+		select from entities.UserTemp where email == email
+	} or { return none }
+
+	if users_temp.len == 0 {
+		return none
+	} else {
+		return users_temp.first()
+	}
+}
+
 pub fn create_user_valid(user_temp entities.UserTemp) !entities.User {
-	mut user := vdapter.adapter[entities.User](user_temp)
-	user.generate_uuid()
-	user.id = none
+	mut user := entities.User{
+		primeiro_nome: user_temp.primeiro_nome
+		segundo_nome: user_temp.segundo_nome
+		responsavel: i8(user_temp.responsavel)
+		data_nascimento: user_temp.data_nascimento
+		email: user_temp.email
+		senha: user_temp.senha
+		created_at: user_temp.created_at
+		updated_at: user_temp.updated_at
+	}.validated(true) or {
+		return err
+	}
 
 	conn, close := connection.get()
 

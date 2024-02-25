@@ -2,15 +2,15 @@ module confirmation
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
 import infra.repository.repository_tokens.errors { TokenNoExist }
-import contracts.confirmation { ConfirmationEmail }
-import contracts.token { TokenContract }
 import infra.repository.repository_users.errors as users_error
+import contracts.confirmation { ConfirmationEmailByCode }
 import infra.repository.repository_tokens
 import infra.repository.repository_users
+import contracts.token { TokenContract }
 import services.ws_context { Context }
 import services.handle_jwt
 import infra.entities
-import vdapter
+import services.email
 import x.vweb
 import rand
 import json
@@ -21,7 +21,7 @@ pub struct WsConfirmation {
 
 @['/'; post]
 pub fn (ws &WsConfirmation) confirmation_email(mut ctx Context) vweb.Result {
-	contract := json.decode(ConfirmationEmail, ctx.req.data) or {
+	contract := json.decode(ConfirmationEmailByCode, ctx.req.data) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'Falha no contrato do json'
@@ -46,6 +46,7 @@ pub fn (ws &WsConfirmation) confirmation_email(mut ctx Context) vweb.Result {
 	}
 
 	if user_temp.is_valid() {
+
 		user := repository_users.create_user_valid(user_temp) or {
 			ctx.res.set_status(.bad_request)
 			return ctx.json(ContractApiNoContent{
@@ -86,10 +87,19 @@ pub fn (ws &WsConfirmation) confirmation_email(mut ctx Context) vweb.Result {
 			}
 		}
 
+		defer {
+			email.send(user_temp.email, "[DiBebê] Grato por estar aqui", body_msg_congratulations_html(user.primeiro_nome)) or {
+				println(err)
+			}
+		}
+
 		return ctx.json(ContractApi{
-			message: 'token de acesso gerado'
+			message: 'Usuário verificado com sucesso!'
 			status: .info
-			content: vdapter.adapter_wip[entities.Token, TokenContract](tok)
+			content: TokenContract {
+				access_token: tok.access_token
+				refresh_token: tok.refresh_token
+			}
 		})
 	} else {
 		ctx.res.set_status(.bad_request)

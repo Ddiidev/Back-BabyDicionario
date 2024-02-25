@@ -9,7 +9,7 @@ pub:
 	primeiro_nome     string
 	segundo_nome      ?string
 	responsavel       Responsavel
-	idade             f64         @[sql_type: 'NUMERIC']
+	data_nascimento   Time
 	email             string
 	senha             string
 	expiration_time   Time        @[default: 'CURRENT_TIME']
