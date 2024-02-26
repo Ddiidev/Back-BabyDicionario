@@ -17,9 +17,17 @@ pub struct WsUser {
 @['/create-user/send-code-confirmation'; post]
 pub fn (ws &WsUser) send_confirmation_email(mut ctx Context) vweb.Result {
 	contract := json.decode(ContractEmail, ctx.req.data) or {
-		ctx.res.set_status(.bad_request)
+		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{
 			message: 'O JSON fornecido não está de acordo com o contrato esperado.'
+			status: .error
+		})
+	}
+
+	if repository_users.contain_user_with_email(contract.email) {
+		ctx.res.set_status(.conflict)
+		return ctx.json(ContractApiNoContent{
+			message: 'Este email já foi registrado no Dicionário do bebê.\n\nPrefira fazer o login ao invés de nova conta (E pode preencher o formulário de senha esquecida caso necessário).'
 			status: .error
 		})
 	}

@@ -18,6 +18,7 @@ pub struct WsWord {
 pub fn (ws &WsWord) get(mut ctx Context) vweb.Result {
 	access_token := ctx.req.header.values(.authorization)[0].after(' ')
 	user_uuid := auth.get_user_uuid(access_token) or {
+		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'Token inválido'
 			status: .error
@@ -27,6 +28,7 @@ pub fn (ws &WsWord) get(mut ctx Context) vweb.Result {
 	return ctx.json(repository_words.get_all_by_id(entities.User{
 		uuid: user_uuid
 	}) or {
+		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'Não foi encontrado nenhuma palavra'
 			status: .error
@@ -38,6 +40,7 @@ pub fn (ws &WsWord) get(mut ctx Context) vweb.Result {
 pub fn (ws &WsWord) add(mut ctx Context) vweb.Result {
 	access_token := ctx.req.header.values(.authorization)[0].after(' ')
 	user_uuid := auth.get_user_uuid(access_token) or {
+		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{
 			message: 'Token inválido'
 			status: .error
@@ -45,8 +48,9 @@ pub fn (ws &WsWord) add(mut ctx Context) vweb.Result {
 	}
 
 	words_contract := json.decode([]cwords.WordContract, ctx.req.data) or {
+		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
-			message: 'Falha no contrato do json'
+			message: 'O JSON fornecido não está de acordo com o contrato esperado.'
 			status: .error
 		})
 	}
@@ -61,6 +65,7 @@ pub fn (ws &WsWord) add(mut ctx Context) vweb.Result {
 
 	repository_words.new_words(entities.User{ uuid: user_uuid }, words) or {
 		if err is repository_words_errors.WordsFailInsert {
+			ctx.res.set_status(.unprocessable_entity)
 			return ctx.json(ContractApi{
 				// TODO: melhorar o texto
 				message: 'Não foi possível inserir as seguintes palavras'
@@ -68,6 +73,7 @@ pub fn (ws &WsWord) add(mut ctx Context) vweb.Result {
 				content: err.words
 			})
 		} else {
+			ctx.res.set_status(.unprocessable_entity)
 			return ctx.json(ContractApiNoContent{
 				// TODO: melhorar o texto
 				message: 'Não foi possível inserir esta palavra'

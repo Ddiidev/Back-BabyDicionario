@@ -22,9 +22,9 @@ pub struct WsConfirmation {
 @['/'; post]
 pub fn (ws &WsConfirmation) confirmation_email(mut ctx Context) vweb.Result {
 	contract := json.decode(ConfirmationEmailByCode, ctx.req.data) or {
-		ctx.res.set_status(.bad_request)
+		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{
-			message: 'Falha no contrato do json'
+			message: 'O JSON fornecido não está de acordo com o contrato esperado.'
 			status: .error
 		})
 	}
@@ -80,7 +80,7 @@ pub fn (ws &WsConfirmation) confirmation_email(mut ctx Context) vweb.Result {
 			}
 		}
 
-		if repository_users.contain_user_by_uuid(user.uuid) {
+		if repository_users.contain_user_with_uuid(user.uuid) {
 			repository_users.delete_user(user_temp) or {
 				// add log
 			}
