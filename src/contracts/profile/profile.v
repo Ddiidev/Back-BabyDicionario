@@ -3,6 +3,14 @@ module profile
 import time { Time }
 import contracts.contract_shared { Sexo }
 
+//TODO: open issue bug in struct recursive with json.encode 
+pub struct None{}
+pub type ProfileAlias = Profile | None
+
+pub fn ProfileAlias.new() ProfileAlias {
+	return ProfileAlias(None{})
+}
+
 pub struct Profile {
 pub:
 	uuid            string
@@ -15,7 +23,7 @@ pub:
 	sexo            Sexo
 	altura          f64
 	cor             string
-	pai             ?&Profile
-	mae             ?&Profile
-	irmaos          []Profile
+	pai             ProfileAlias
+	mae             ProfileAlias
+	irmaos          []ProfileAlias
 }

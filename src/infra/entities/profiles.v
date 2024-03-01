@@ -1,6 +1,6 @@
 module entities
 
-import contracts.profile as contract_profile
+import contracts.profile as cprofile
 import contracts.contract_shared { Sexo }
 import time { Time }
 import constants
@@ -28,8 +28,8 @@ pub:
 	updated_at       Time   @[default: 'CURRENT_TIME']
 }
 
-pub fn (p Profile) adapter() contract_profile.Profile {
-	return contract_profile.Profile{
+pub fn (p Profile) adapter() cprofile.ProfileAlias {
+	return cprofile.ProfileAlias(cprofile.Profile{
 		uuid: p.uuid
 		apelido: p.apelido
 		primeiro_nome: p.primeiro_nome
@@ -40,7 +40,7 @@ pub fn (p Profile) adapter() contract_profile.Profile {
 		sexo: p.sexo
 		altura: p.altura
 		data_nascimento: p.data_nascimento or { constants.time_empty }
-	}
+	})
 }
 
 pub fn (p Profile) validated() Profile {

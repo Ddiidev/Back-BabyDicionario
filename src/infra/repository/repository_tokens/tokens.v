@@ -11,9 +11,14 @@ pub fn create_token(tok entities.Token) ! {
 		close() or {}
 	}
 
+	dump(tok)
+
 	tokens_ := sql conn {
-		select from entities.Token where user_uuid == tok.user_uuid && access_token == tok.access_token
-		&& refresh_token == tok.refresh_token
+		select from entities.Token
+		where
+			user_uuid == tok.user_uuid &&
+			access_token == tok.access_token &&
+			refresh_token == tok.refresh_token
 	}!
 
 	if tokens_.len == 0 {
@@ -51,8 +56,10 @@ pub fn get_by_refresh_token(tok entities.Token) !entities.Token {
 	}
 
 	tokens_ := sql conn {
-		select from entities.Token where user_uuid == tok.user_uuid
-		&& refresh_token == tok.refresh_token
+		select from entities.Token
+		where
+			user_uuid == tok.user_uuid &&
+			refresh_token == tok.refresh_token
 	}!
 
 	if tokens_.len == 0 {
@@ -77,8 +84,31 @@ pub fn new_refresh_token(tok entities.Token, target_token entities.Token) ! {
 		create_token(target_token)!
 	} else {
 		sql conn {
-			update entities.Token set access_token = target_token.access_token, refresh_token = target_token.refresh_token,
-			refresh_token_expiration = target_token.refresh_token_expiration where user_uuid == tok.user_uuid
+			update entities.Token
+			set
+				access_token = target_token.access_token,
+				refresh_token = target_token.refresh_token,
+				refresh_token_expiration = target_token.refresh_token_expiration
+			where
+				user_uuid == tok.user_uuid
 		}!
 	}
+}
+
+pub fn update_token_by_uuid(tok entities.Token) ! {
+	conn, close := connection.get()
+
+	defer {
+		close() or {}
+	}
+
+	sql conn {
+		update entities.Token
+		set
+			access_token = tok.access_token,
+			refresh_token = tok.refresh_token,
+			refresh_token_expiration = tok.refresh_token_expiration
+		where
+			user_uuid == tok.user_uuid
+	}!
 }

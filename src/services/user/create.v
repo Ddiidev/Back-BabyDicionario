@@ -1,8 +1,8 @@
 module user
 
 import contracts.contract_api { ContractApiNoContent }
-import contracts.confirmation { ContractEmail }
 import infra.repository.repository_users
+import contracts.user { ContractEmail }
 import services.ws_context { Context }
 import infra.entities
 import services.email
@@ -10,11 +10,7 @@ import x.vweb
 import json
 import rand
 
-pub struct WsUser {
-	vweb.Middleware[Context]
-}
-
-@['/create-user/send-code-confirmation'; post]
+@['/create/send-code'; post]
 pub fn (ws &WsUser) send_confirmation_email(mut ctx Context) vweb.Result {
 	contract := json.decode(ContractEmail, ctx.req.data) or {
 		ctx.res.set_status(.unprocessable_entity)
@@ -39,9 +35,9 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx Context) vweb.Result {
 		rand.i64_in_range(111111, 999999) or { rand.int63() }.str().limit(6)
 	}
 
-	body := body_msg_confirmation_html(contract.primeiro_nome, code_confirmation)
+	body := body_msg_confirmation_html(contract.first_name, code_confirmation)
 
-	email.send(contract.email, '[DiBebê] Ative sua conta de usuário ${contract.primeiro_nome}',
+	email.send(contract.email, '[DiBebê] Ative sua conta de usuário ${contract.first_name}',
 		body) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
@@ -51,7 +47,7 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx Context) vweb.Result {
 	}
 
 	if user_temp_exist == none {
-		contract_data_nascimento := contract.data_nascimento.time() or {
+		contract_data_nascimento := contract.birth_date.time() or {
 			ctx.res.set_status(.bad_request)
 			return ctx.json(ContractApiNoContent{
 				message: 'Formato da data de nascimento está inválido'
@@ -60,11 +56,11 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx Context) vweb.Result {
 		}
 
 		user_temp := entities.UserTemp{
-			primeiro_nome: contract.primeiro_nome
-			responsavel: contract.responsavel
+			primeiro_nome: contract.first_name
+			responsavel: contract.responsible
 			data_nascimento: contract_data_nascimento
 			email: contract.email
-			senha: contract.senha
+			senha: contract.password
 		}
 
 		repository_users.new_user_confirmation(user_temp, code_confirmation) or {

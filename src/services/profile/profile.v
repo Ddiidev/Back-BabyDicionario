@@ -20,37 +20,35 @@ pub fn (ws &WsProfile) get_profile(mut ctx Context, short_uuid_profile string, n
 			status: .error
 		})
 	}
-	profile_pai := if profile_required.pai_id != none {
+	mut profile_pai := cprofile.ProfileAlias.new()
+	if profile_required.pai_id != none {
 		if pai_id := profile_required.pai_id {
-			repository_profiles.get_profiles_by_id(pai_id).first().adapter()
-		} else {
-			cprofile.Profile{}
+			profiles_ := repository_profiles.get_profiles_by_id(pai_id)
+			if profiles_.len > 0 {
+				profile_pai = profiles_.first().adapter()
+			}
 		}
-	} else {
-		cprofile.Profile{}
 	}
 
-	profile_mae := if profile_required.mae_id != none {
+	mut profile_mae := cprofile.ProfileAlias.new()
+	if profile_required.mae_id != none {
 		if mae_id := profile_required.mae_id {
-			repository_profiles.get_profiles_by_id(mae_id).first().adapter()
-		} else {
-			cprofile.Profile{}
+			profiles_ := repository_profiles.get_profiles_by_id(mae_id)
+			if profiles_.len > 0 {
+				profile_mae = profiles_.first().adapter()
+			}
 		}
-	} else {
-		cprofile.Profile{}
 	}
-	profile_irmaos := if profile_required.pai_id != none && profile_required.mae_id != none {
+
+	mut profile_irmaos := []cprofile.ProfileAlias{}
+	if profile_required.pai_id != none && profile_required.mae_id != none {
 		pai_id := profile_required.pai_id
 		mae_id := profile_required.mae_id
 		if pai_id != none && mae_id != none {
-			repository_profiles.get_profiles_irmaos(profile_required.id, pai_id, mae_id).map(it.adapter())
-		} else {
-			[]cprofile.Profile{}
+			profile_irmaos = repository_profiles.get_profiles_irmaos(profile_required.id, pai_id, mae_id).map(it.adapter())
 		}
-	} else {
-		[]cprofile.Profile{}
 	}
-
+	
 	profile := cprofile.Profile{
 		uuid: profile_required.uuid
 		apelido: profile_required.apelido

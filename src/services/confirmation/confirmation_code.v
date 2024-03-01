@@ -88,7 +88,7 @@ pub fn (ws &WsConfirmation) confirmation_email(mut ctx Context) vweb.Result {
 
 		defer {
 			email.send(user_temp.email, '[DiBebê] Grato por estar aqui', body_msg_congratulations_html(user.primeiro_nome)) or {
-				println(err)
+				println(err) //TODO add log
 			}
 		}
 

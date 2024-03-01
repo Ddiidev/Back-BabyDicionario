@@ -61,7 +61,6 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx Context) vweb.Result {
 		refresh_token: contract.refresh_token
 	}
 
-	$dbg;
 	new_tok_jwt := handle_jwt.new_jwt(origin_tok.user_uuid, tok_jwt.payload.ext.email,
 		time.utc().add(time.hour * 5).str())
 

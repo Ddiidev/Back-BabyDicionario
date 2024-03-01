@@ -1,6 +1,6 @@
 module entities
 
-import contracts.contract_shared { Responsavel }
+import contracts.contract_shared { Responsible }
 import time { Time }
 
 @[table: 'users_temp']
@@ -8,7 +8,7 @@ pub struct UserTemp {
 pub:
 	primeiro_nome     string
 	segundo_nome      ?string
-	responsavel       Responsavel
+	responsavel       Responsible
 	data_nascimento   Time
 	email             string
 	senha             string

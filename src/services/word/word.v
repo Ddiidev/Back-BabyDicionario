@@ -17,7 +17,7 @@ pub struct WsWord {
 @['/']
 pub fn (ws &WsWord) get(mut ctx Context) vweb.Result {
 	access_token := ctx.req.header.values(.authorization)[0].after(' ')
-	user_uuid := auth.get_user_uuid(access_token) or {
+	user_uuid := auth.get_uuid_from_user(access_token) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'Token inválido'
@@ -39,7 +39,7 @@ pub fn (ws &WsWord) get(mut ctx Context) vweb.Result {
 @['/'; post]
 pub fn (ws &WsWord) add(mut ctx Context) vweb.Result {
 	access_token := ctx.req.header.values(.authorization)[0].after(' ')
-	user_uuid := auth.get_user_uuid(access_token) or {
+	user_uuid := auth.get_uuid_from_user(access_token) or {
 		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{
 			message: 'Token inválido'
