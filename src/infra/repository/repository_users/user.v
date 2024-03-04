@@ -62,3 +62,20 @@ pub fn contain_user_with_email(email string) bool {
 
 	return c.first().vals.first().int() > 0
 }
+
+pub fn change_password(user_uuid string, email string, password string) ! {
+	conn, close := connection.get()
+
+	defer {
+		close() or {}
+	}
+
+	sql conn {
+		update entities.User
+		set
+			senha = password
+		where
+			email == email &&
+			uuid == user_uuid
+	}!
+}

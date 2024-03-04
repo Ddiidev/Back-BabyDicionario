@@ -15,12 +15,8 @@ import x.vweb
 import rand
 import json
 
-pub struct WsConfirmation {
-	vweb.Middleware[Context]
-}
-
 @['/'; post]
-pub fn (ws &WsConfirmation) confirmation_email(mut ctx Context) vweb.Result {
+pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx Context) vweb.Result {
 	contract := json.decode(ConfirmationEmailByCode, ctx.req.data) or {
 		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{

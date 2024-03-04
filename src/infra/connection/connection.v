@@ -1,8 +1,8 @@
 module connection
 
+import infra.entities
 import db.sqlite
 import orm
-import infra.entities
 
 const path_db = $env('BABYDI_PATH_DB')
 
@@ -14,11 +14,12 @@ fn init() {
 	}
 
 	sql conn {
-		create table entities.Profile
-		create table entities.User
+		create table entities.UserRecovery
 		create table entities.UserTemp
+		create table entities.Profile
 		create table entities.Token
 		create table entities.Word
+		create table entities.User
 	} or { panic('fail create table | ${err}') }
 }
 

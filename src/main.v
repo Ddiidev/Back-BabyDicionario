@@ -36,6 +36,8 @@ fn main() {
 	ws_word.use(conf_cors)
 	ws_word.route_use('/', handler: auth.authenticate)
 	ws_profile.route_use('/:...', handler: auth.authenticate)
+	// ws_user.route_use('/recover-password-require', handler: auth.authenticate_recover_password)
+	ws_confirmation.route_use('/recover-password', handler: auth.authenticate_recover_password)
 
 	ws.register_controller[confirmation.WsConfirmation, Context]('/confirmation', mut
 		ws_confirmation)!

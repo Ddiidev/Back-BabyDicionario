@@ -40,6 +40,30 @@ pub fn authenticate(mut ctx Context) bool {
 	return true
 }
 
+pub fn authenticate_recover_password(mut ctx Context) bool {
+	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
+
+	tok_jwt := handle_jwt.get(authorization) or {
+		ctx.res.set_status(.unauthorized)
+		ctx.json(ContractApiNoContent{
+			message: 'Token expirou'
+			status: .error
+		})
+		return false
+	}
+
+	if !tok_jwt.valid($env('BABYDI_SECRETKEY')) {
+		ctx.res.set_status(.unauthorized)
+		ctx.json(ContractApiNoContent{
+			message: 'Token expirou'
+			status: .error
+		})
+		return false
+	}
+
+	return true
+}
+
 @['/refresh-token']
 pub fn (a &WsAuth) user_refresh_token(mut ctx Context) vweb.Result {
 	contract := TokenContract{

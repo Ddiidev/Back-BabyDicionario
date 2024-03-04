@@ -8,4 +8,8 @@ pub const msg_err_token_invalid = 'Token inválido'
 
 pub const msg_err_user_not_found = 'Usuário não encontrado'
 
-pub const msg_err_user_found = 'Usuário encontrado'
+pub const msg_user_found = 'Usuário encontrado'
+
+pub const msg_err_send_email = 'Falha ao enviar o email de confirmação'
+
+pub const msg_send_email = 'Falha ao enviar o email de confirmação'
