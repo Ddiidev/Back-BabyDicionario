@@ -77,7 +77,7 @@ pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx Context) vweb.R
 		}
 
 		if repository_users.contain_user_with_uuid(user.uuid) {
-			repository_users.delete_user(user_temp) or {
+			repository_users.delete_usertemp(user_temp) or {
 				// add log
 			}
 		}

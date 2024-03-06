@@ -6,9 +6,9 @@ import contracts.user { ContractEmail }
 import services.ws_context { Context }
 import infra.entities
 import services.email
+import utils.auth
 import x.vweb
 import json
-import rand
 
 @['/create/send-code'; post]
 pub fn (ws &WsUser) send_confirmation_email(mut ctx Context) vweb.Result {
@@ -32,7 +32,7 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx Context) vweb.Result {
 	code_confirmation := if user_temp_exist != none {
 		user_temp_exist.code_confirmation
 	} else {
-		rand.i64_in_range(111111, 999999) or { rand.int63() }.str().limit(6)
+		auth.random_number()
 	}
 
 	body := body_msg_confirmation_html(contract.first_name, code_confirmation)

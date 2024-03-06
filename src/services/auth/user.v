@@ -71,6 +71,7 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx Context) vweb.Result {
 		access_token: ctx.req.header.values(.authorization)[0] or { '' }.after(' ')
 	}
 
+	// TODO: Separar em uma função exclusiva para isso
 	tok_jwt := jwt.from_str[TokenJwtContract](contract.access_token) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{

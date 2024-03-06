@@ -5,10 +5,10 @@ import contracts.contract_shared
 pub struct RecoveryPassword {
 pub:
 	email    string
-	password string
+	new_password string
 	current_date contract_shared.JsTime
 }
 
 pub fn (rp RecoveryPassword) valid() bool {
-	return rp.password.trim_space() != '' && rp.email.trim_space() != ''
+	return rp.new_password.trim_space() != '' && rp.email.trim_space() != ''
 }

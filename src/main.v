@@ -10,6 +10,7 @@ import services.word
 
 pub struct Wservice {
 	vweb.Controller
+	vweb.StaticHandler
 }
 
 pub fn (ws &Wservice) index(mut ctx Context) vweb.Result {
@@ -36,7 +37,6 @@ fn main() {
 	ws_word.use(conf_cors)
 	ws_word.route_use('/', handler: auth.authenticate)
 	ws_profile.route_use('/:...', handler: auth.authenticate)
-	// ws_user.route_use('/recover-password-require', handler: auth.authenticate_recover_password)
 	ws_confirmation.route_use('/recover-password', handler: auth.authenticate_recover_password)
 
 	ws.register_controller[confirmation.WsConfirmation, Context]('/confirmation', mut
@@ -45,6 +45,8 @@ fn main() {
 	ws.register_controller[profile.WsProfile, Context]('/profile', mut ws_profile)!
 	ws.register_controller[user.WsUser, Context]('/user', mut ws_user)!
 	ws.register_controller[word.WsWord, Context]('/words', mut ws_word)!
+
+	ws.mount_static_folder_at(@VMODROOT+'/src/assets', '/assets')!
 
 	vweb.run[Wservice, Context](mut ws, 3035)
 }

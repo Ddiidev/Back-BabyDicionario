@@ -18,6 +18,7 @@ pub:
 	senha           string
 	created_at      time.Time @[default: 'CURRENT_TIME']
 	updated_at      time.Time @[default: 'CURRENT_TIME']
+	blocked         bool      @[default: 'false']
 pub mut:
 	id   ?int   @[default: 'null'; primary; sql: serial]
 	uuid string @[uniq]

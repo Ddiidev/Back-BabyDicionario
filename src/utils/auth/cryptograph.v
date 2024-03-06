@@ -14,6 +14,5 @@ pub fn gen_password(pass string) string {
 
 // random_number Gera um uma string contendo 6 número pseudo-aleatório
 pub fn random_number() string {
-	res := rand.i64_in_range(111111, 999999) or { rand.int63() }.str().limit(6)
-	return res
+	return rand.i64_in_range(111111, 999999) or { rand.int63() }.str().limit(6)
 }
