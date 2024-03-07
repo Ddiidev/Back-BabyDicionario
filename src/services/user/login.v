@@ -37,6 +37,14 @@ pub fn (ws &WsUser) login(mut ctx Context) vweb.Result {
 		})
 	}
 
+	if user_required.blocked {
+		ctx.res.set_status(.unauthorized)
+		return ctx.json(ContractApiNoContent{
+			message: constants.msg_err_user_blocked
+			status: .error
+		})
+	}
+
 	tok_jwt := handle_jwt.new_jwt(
 		user_required.uuid,
 		user_required.email,

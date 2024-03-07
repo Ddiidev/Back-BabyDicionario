@@ -11,8 +11,6 @@ pub fn create_token(tok entities.Token) ! {
 		close() or {}
 	}
 
-	dump(tok)
-
 	tokens_ := sql conn {
 		select from entities.Token
 		where

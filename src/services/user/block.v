@@ -1,6 +1,7 @@
 module user
 
 import infra.repository.repository_recovery
+import infra.repository.repository_users
 import services.ws_context { Context }
 import services.handle_jwt
 import infra.entities
@@ -19,19 +20,22 @@ pub fn (ws &WsUser) block_user(mut ctx Context, access_token string) vweb.Result
 	}
 
 	if !handle_jwt.valid(jwt_tok) {
-		message = user_not_found
+		message = user.user_not_found
 	}
 
-
 	recovery := repository_recovery.get_recovery_password_by_token(access_token) or {
-		message = user_not_found
+		message = user.user_not_found
 		entities.UserRecovery{}
 	}
 
 	if !recovery.valid_expiration_token() {
-		message = user_not_found
+		message = user.user_not_found
 	} else if !recovery.valid_expiration_token_block() {
 		message = 'O período de bloquear o usuário expirou, caso ainda precise do bloqueio da senha por alteração de senha recentemente, favor entrar em contato por email.'
+	}
+
+	repository_users.blocked_user_from_recovery_password(jwt_tok.payload.ext.email, true) or {
+		message = user.user_not_found
 	}
 
 	return ctx.html($tmpl('./page_block/index.html'))

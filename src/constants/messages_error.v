@@ -17,3 +17,5 @@ pub const msg_send_email = 'Email enviado com sucesso'
 pub const msg_err_not_found_email = 'Email não encontrado'
 
 pub const msg_err_recovery_contain_recovery_password = 'Já existe uma solicitação de recuperação solicitada a pouco tempo, favor tentar novamente após 15min.'
+
+pub const msg_err_user_blocked = 'O usuário está atualmente bloqueado, para conseguir acessar a conta tente uma recuperação ou envie email para o suporte'

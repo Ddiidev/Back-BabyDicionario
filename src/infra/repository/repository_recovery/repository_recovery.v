@@ -28,6 +28,18 @@ pub fn new_recovery_password(recover entities.UserRecovery) ! {
 	}
 }
 
+pub fn delete(email string) ! {
+	conn, close := connection.get()
+
+	defer {
+		close() or {}
+	}
+
+	sql conn {
+		delete from entities.UserRecovery where email == email
+	}!
+}
+
 pub fn get_recovery_password(email string) !entities.UserRecovery {
 	conn, close := connection.get()
 
