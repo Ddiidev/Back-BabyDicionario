@@ -11,6 +11,7 @@ pub fn ProfileAlias.new() ProfileAlias {
 	return ProfileAlias(None{})
 }
 
+// BUG: returned with field '_type'
 pub struct Profile {
 pub:
 	uuid            string

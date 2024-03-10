@@ -62,10 +62,8 @@ pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx Context) 
 		body := body_password_redefined(ctx.ip(), auth.create_url_block(user_recovery.access_token),
 			contract.current_date)
 
-		defer {
-			email.send(user_recovery.email, subject, body) or {
-				//TODO: add log
-			}
+		email.send(user_recovery.email, subject, body) or {
+			// TODO: add log
 		}
 	}
 
