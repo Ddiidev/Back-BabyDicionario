@@ -3,7 +3,7 @@ module entities
 @[table: 'words']
 pub struct Word {
 pub:
-	profile_uuid string @[nonull]
+	profile_uuid string
 	palavra      string
 	traducao     string
 	pronuncia    string

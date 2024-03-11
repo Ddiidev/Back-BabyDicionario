@@ -46,7 +46,7 @@ fn main() {
 	ws.register_controller[user.WsUser, Context]('/user', mut ws_user)!
 	ws.register_controller[word.WsWord, Context]('/words', mut ws_word)!
 
-	ws.mount_static_folder_at(@VMODROOT+'/src/assets', '/assets')!
+	ws.mount_static_folder_at('src/assets', '/assets')!
 
 	vweb.run[Wservice, Context](mut ws, 3035)
 }
