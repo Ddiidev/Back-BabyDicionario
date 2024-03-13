@@ -3,9 +3,10 @@ module profile
 import time { Time }
 import contracts.contract_shared { Sexo }
 
-//TODO: open issue bug in struct recursive with json.encode 
-pub struct None{}
-pub type ProfileAlias = Profile | None
+// TODO: open issue bug in struct recursive with json.encode
+pub struct None {}
+
+pub type ProfileAlias = None | Profile
 
 pub fn ProfileAlias.new() ProfileAlias {
 	return ProfileAlias(None{})

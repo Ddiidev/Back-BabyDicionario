@@ -13,9 +13,7 @@ pub:
 }
 
 pub fn (cuser ContractUser) valid_all() bool {
-	return utils.validating_email(cuser.email)
-		&& cuser.first_name != ''
-		&& cuser.last_name != ''
+	return utils.validating_email(cuser.email) && cuser.first_name != '' && cuser.last_name != ''
 		&& utils.validate_time(cuser.date_birth)
 }
 

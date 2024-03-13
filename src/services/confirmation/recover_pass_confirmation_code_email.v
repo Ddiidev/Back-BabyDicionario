@@ -5,7 +5,7 @@ import infra.repository.repository_recovery
 import infra.repository.repository_users
 import services.ws_context { Context }
 import utils.auth as utils_auth
-import contracts.confirmation
+import contracts.confirmation as cconfirmation
 import services.email
 import services.auth
 import constants
@@ -16,7 +16,9 @@ const subject = '[DiBebê] ⚠️ Senha redefinida'
 
 @['/recover-password'; post]
 pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx Context) vweb.Result {
-	contract := json.decode(confirmation.RecoveryPassword, ctx.req.data) or { confirmation.RecoveryPassword{} }
+	contract := json.decode(cconfirmation.RecoveryPassword, ctx.req.data) or {
+		cconfirmation.RecoveryPassword{}
+	}
 
 	if !contract.valid() {
 		ctx.res.set_status(.bad_request)
@@ -62,7 +64,7 @@ pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx Context) 
 		body := body_password_redefined(ctx.ip(), auth.create_url_block(user_recovery.access_token),
 			contract.current_date)
 
-		email.send(user_recovery.email, subject, body) or {
+		email.send(user_recovery.email, confirmation.subject, body) or {
 			// TODO: add log
 		}
 	}

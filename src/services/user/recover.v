@@ -35,14 +35,15 @@ pub fn (ws &WsUser) recover_password_send_email(mut ctx Context) vweb.Result {
 		})
 	}
 
-	if !(repository_users.contain_user_with_email(contract.email) || repository_users.contain_user_temp_with_email(contract.email)) {
+	if !(repository_users.contain_user_with_email(contract.email)
+		|| repository_users.contain_user_temp_with_email(contract.email)) {
 		ctx.res.set_status(.not_found)
 		return ctx.json(ContractApiNoContent{
 			message: constants.msg_err_not_found_email
 			status: .error
 		})
 	}
-	
+
 	if repository_recovery.email_contains_pendenting_recovery_password(contract.email) {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
@@ -54,7 +55,7 @@ pub fn (ws &WsUser) recover_password_send_email(mut ctx Context) vweb.Result {
 	code := auth.random_number()
 	body := body_msg_confirmation_recover_user(code)
 
-	email.send(contract.email, subject, body) or {
+	email.send(contract.email, user.subject, body) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: constants.msg_err_send_email
@@ -68,8 +69,8 @@ pub fn (ws &WsUser) recover_password_send_email(mut ctx Context) vweb.Result {
 
 	repository_recovery.new_recovery_password(entities.UserRecovery{
 		email: contract.email
-		expiration_time: expiration_time,
-		expiration_time_block: expiration_time_block,
+		expiration_time: expiration_time
+		expiration_time_block: expiration_time_block
 		access_token: tok.str()
 		code_confirmation: code
 	}) or {

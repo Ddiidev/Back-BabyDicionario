@@ -1,6 +1,6 @@
 module user
 
-import contracts.contract_api { ContractApiNoContent, ContractApi }
+import contracts.contract_api { ContractApi, ContractApiNoContent }
 import infra.repository.repository_tokens
 import contracts.token as contract_token
 import infra.repository.repository_users
@@ -17,7 +17,6 @@ import time
 
 @['/login'; post]
 pub fn (ws &WsUser) login(mut ctx Context) vweb.Result {
-
 	contract := json.decode(ContractEmail, ctx.req.data) or {
 		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{
@@ -45,11 +44,7 @@ pub fn (ws &WsUser) login(mut ctx Context) vweb.Result {
 		})
 	}
 
-	tok_jwt := handle_jwt.new_jwt(
-		user_required.uuid,
-		user_required.email,
-		time.utc().add(time.hour * 5).str()
-	)
+	tok_jwt := handle_jwt.new_jwt(user_required.uuid, user_required.email, time.utc().add(time.hour * 5).str())
 
 	mut token := entities.Token{
 		user_uuid: user_required.uuid
@@ -69,7 +64,7 @@ pub fn (ws &WsUser) login(mut ctx Context) vweb.Result {
 	}
 
 	return ctx.json(ContractApi{
-		message: "Login concluído"
+		message: 'Login concluído'
 		status: .info
 		content: contract_token.TokenContract{
 			access_token: token.access_token

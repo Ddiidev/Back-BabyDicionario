@@ -1,12 +1,12 @@
 module main
 
-import x.vweb
 import services.ws_context { Context }
+import services.confirmation
+import services.profile
 import services.user
 import services.auth
-import services.profile
-import services.confirmation
 import services.word
+import x.vweb
 
 pub struct Wservice {
 	vweb.Controller

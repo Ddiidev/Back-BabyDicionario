@@ -10,6 +10,6 @@ pub fn validate_time(tm string) bool {
 			return false
 		}
 	}
-	
+
 	return true
 }

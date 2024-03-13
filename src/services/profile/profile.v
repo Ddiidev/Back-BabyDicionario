@@ -45,10 +45,11 @@ pub fn (ws &WsProfile) get_profile(mut ctx Context, short_uuid_profile string, n
 		pai_id := profile_required.pai_id
 		mae_id := profile_required.mae_id
 		if pai_id != none && mae_id != none {
-			profile_irmaos = repository_profiles.get_profiles_irmaos(profile_required.id, pai_id, mae_id).map(it.adapter())
+			profile_irmaos = repository_profiles.get_profiles_irmaos(profile_required.id,
+				pai_id, mae_id).map(it.adapter())
 		}
 	}
-	
+
 	profile := cprofile.Profile{
 		uuid: profile_required.uuid
 		apelido: profile_required.apelido

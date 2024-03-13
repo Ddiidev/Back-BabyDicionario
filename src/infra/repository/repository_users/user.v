@@ -71,26 +71,18 @@ pub fn change_password(email string, password string) ! {
 	}
 
 	sql conn {
-		update entities.User
-		set
-			senha = password
-		where
-			email == email
+		update entities.User set senha = password where email == email
 	}!
 }
 
 pub fn blocked_user_from_recovery_password(email string, block bool) ! {
-		conn, close := connection.get()
+	conn, close := connection.get()
 
 	defer {
 		close() or {}
 	}
 
 	sql conn {
-		update entities.User
-		set
-			blocked = block
-		where
-			email == email
+		update entities.User set blocked = block where email == email
 	}!
 }

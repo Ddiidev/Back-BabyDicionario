@@ -11,5 +11,6 @@ pub:
 }
 
 pub fn (rp RecoveryPassword) valid() bool {
-	return rp.new_password.trim_space() != '' && rp.email.trim_space() != '' && rp.code_confirmation.trim_space() != ''
+	return rp.new_password.trim_space() != '' && rp.email.trim_space() != ''
+		&& rp.code_confirmation.trim_space() != ''
 }
