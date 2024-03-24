@@ -68,7 +68,7 @@ pub fn get_user_temp_existing(email string) ?entities.UserTemp {
 }
 
 pub fn contain_user_temp_with_email(email string) bool {
-	mut conn := connection.get_sqlite()
+	mut conn := connection.get_db()
 
 	defer {
 		conn.close() or {}
@@ -76,11 +76,15 @@ pub fn contain_user_temp_with_email(email string) bool {
 
 	name_tb := connection.get_name_table[entities.UserTemp]() or { return false }
 
-	c := conn.exec_param('select count(*) from ${name_tb} where email == ?', email) or {
+	prepared := conn.prepare('select count(*) from ${name_tb} where ', [
+		['email', email]
+	])
+
+	c := conn.exec_param_many(prepared.query, prepared.params) or {
 		return false
 	}
 
-	return c.first().vals.first().int() > 0
+	return c.first().vals().first() or {''}.int() > 0
 }
 
 pub fn create_user_valid(user_temp entities.UserTemp) !entities.User {

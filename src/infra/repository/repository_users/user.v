@@ -32,7 +32,7 @@ pub fn get_user_by_email_pass(user entities.User) !entities.User {
 }
 
 pub fn contain_user_with_uuid(uuid string) bool {
-	mut conn := connection.get_sqlite()
+	mut conn := connection.get_db()
 
 	defer {
 		conn.close() or {}
@@ -40,27 +40,31 @@ pub fn contain_user_with_uuid(uuid string) bool {
 
 	name_tb := connection.get_name_table[entities.User]() or { return false }
 
-	c := conn.exec_param('select count(*) from ${name_tb} where uuid == ?', uuid) or {
+	prepared := conn.prepare('select count(*) from ${name_tb} where ', [['uuid', uuid]])
+
+	c := conn.exec_param_many(prepared.query, prepared.params) or {
 		return false
 	}
 
-	return c.first().vals.first().int() > 0
+	return c.first().vals().first() or { '' }.int() > 0
 }
 
 pub fn contain_user_with_email(email string) bool {
-	mut conn := connection.get_sqlite()
+	mut conn := connection.get_db()
 
 	defer {
 		conn.close() or {}
 	}
-
+	
 	name_tb := connection.get_name_table[entities.User]() or { return false }
 
-	c := conn.exec_param('select count(*) from ${name_tb} where email == ?', email) or {
+	prepared := conn.prepare('select count(*) from ${name_tb} where ', [['email', email]])
+
+	c := conn.exec_param_many(prepared.query, prepared.params) or {
 		return false
 	}
 
-	return c.first().vals.first().int() > 0
+	return c.first().vals().first() or {''}.int() > 0
 }
 
 pub fn change_password(email string, password string) ! {

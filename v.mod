@@ -3,5 +3,5 @@ Module {
 	description: 'backend do dicionário do bebê'
 	version: '1.0.0'
 	license: 'MIT'
-	dependencies: []
+	dependencies: ['ken0x0a.dotenv']
 }

@@ -1,7 +1,7 @@
 module entities
 
 import contracts.token { TokenJwtContract }
-import time { Time }
+import time
 import constants
 import jwt
 
@@ -12,7 +12,7 @@ pub:
 	access_token  string
 	refresh_token string
 pub mut:
-	refresh_token_expiration Time @[default: 'CURRENT_TIME']
+	refresh_token_expiration time.Time = time.utc()
 }
 
 pub fn (mut t Token) change_refresh_token_expiration_time() ! {

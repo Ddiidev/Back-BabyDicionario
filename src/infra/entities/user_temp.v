@@ -1,21 +1,21 @@
 module entities
 
 import contracts.contract_shared { Responsible }
-import time { Time }
+import time
 
 @[table: 'users_temp']
 pub struct UserTemp {
 pub:
 	primeiro_nome     string
 	segundo_nome      ?string
-	responsavel       Responsible
-	data_nascimento   Time
+	responsavel       Responsible @[sql: int; sql_type: 'smallint']
+	data_nascimento   time.Time
 	email             string
 	senha             string
-	expiration_time   Time        @[default: 'CURRENT_TIME']
+	expiration_time   time.Time = time.utc()
 	code_confirmation string
-	created_at        Time        @[default: 'CURRENT_TIME']
-	updated_at        Time        @[default: 'CURRENT_TIME']
+	created_at        time.Time = time.utc()
+	updated_at        time.Time = time.utc()
 }
 
 pub fn (u UserTemp) is_valid() bool {

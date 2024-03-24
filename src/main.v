@@ -13,10 +13,6 @@ pub struct Wservice {
 	vweb.StaticHandler
 }
 
-pub fn (ws &Wservice) index(mut ctx Context) vweb.Result {
-	return ctx.text('teste index')
-}
-
 fn main() {
 	mut ws := &Wservice{}
 	mut ws_user := &user.WsUser{}

@@ -1,19 +1,19 @@
 module entities
 
 import services.handle_jwt
-import time { Time }
+import time
 import utils
 
-@[table: 'user_recovery']
+@[table: 'users_recovery']
 pub struct UserRecovery {
 pub:
-	email                 string @[uniq]
-	expiration_time       Time   @[default: 'CURRENT_TIME']
-	expiration_time_block Time   @[default: 'CURRENT_TIME']
+	email                 string    @[uniq]
+	expiration_time       time.Time = time.utc()
+	expiration_time_block time.Time = time.utc()
 	access_token          string
 	code_confirmation     string
-	created_at            Time   @[default: 'CURRENT_TIME']
-	updated_at            Time   @[default: 'CURRENT_TIME']
+	created_at            time.Time = time.utc()
+	updated_at            time.Time = time.utc()
 }
 
 pub fn (ur UserRecovery) valid_expiration_token() bool {

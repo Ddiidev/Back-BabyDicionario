@@ -24,3 +24,4 @@ bin/
 *.js
 *.sqlite
 *.bat
+.env.local

@@ -2,30 +2,30 @@ module entities
 
 import contracts.profile as cprofile
 import contracts.contract_shared { Sexo }
-import time { Time }
+import time
 import constants
 
 @[table: 'profiles']
 pub struct Profile {
 pub:
-	id               int    @[primary; sql: serial]
+	id               int        @[primary; sql: serial]
 	uuid             string
 	short_uuid       string
 	name_shared_link string
-	user_id          int
+	family_id        int
 	apelido          string
 	primeiro_nome    string
 	segundo_nome     string
-	data_nascimento  ?Time  @[default: 'null']
-	idade            f64    @[sql_type: 'NUMERIC']
-	peso             f64    @[sql_type: 'NUMERIC']
+	data_nascimento  ?time.Time @[default: 'null']
+	idade            f64        @[sql_type: 'NUMERIC']
+	peso             f64        @[sql_type: 'NUMERIC']
 	sexo             Sexo
-	altura           f64    @[sql_type: 'NUMERIC']
+	altura           f64        @[sql_type: 'NUMERIC']
 	cor              string
 	pai_id           ?int
 	mae_id           ?int
-	created_at       Time   @[default: 'CURRENT_TIME']
-	updated_at       Time   @[default: 'CURRENT_TIME']
+	created_at       time.Time = time.utc()
+	updated_at       time.Time = time.utc()
 }
 
 pub fn (p Profile) adapter() cprofile.ProfileAlias {

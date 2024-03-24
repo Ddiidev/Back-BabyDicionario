@@ -43,6 +43,7 @@ pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx Context) vweb.R
 
 	if user_temp.is_valid() {
 		user := repository_users.create_user_valid(user_temp) or {
+			dump(err)
 			ctx.res.set_status(.bad_request)
 			return ctx.json(ContractApiNoContent{
 				message: 'Falha ao acessar o usuário'

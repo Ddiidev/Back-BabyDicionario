@@ -12,15 +12,15 @@ pub struct User {
 pub:
 	primeiro_nome   string
 	segundo_nome    ?string
-	responsavel     i8
+	responsavel     int       @[sql_type: 'smallint']
 	data_nascimento time.Time
 	email           string
 	senha           string
-	created_at      time.Time @[default: 'CURRENT_TIME']
-	updated_at      time.Time @[default: 'CURRENT_TIME']
+	created_at      time.Time = time.utc()
+	updated_at      time.Time = time.utc()
 	blocked         bool      @[default: 'false']
 pub mut:
-	id   ?int   @[default: 'null'; primary; sql: serial]
+	id   ?int   @[primary; sql: serial]
 	uuid string @[uniq]
 }
 
