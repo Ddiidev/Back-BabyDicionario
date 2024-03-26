@@ -49,7 +49,7 @@ pub fn get_profiles_by_id(id int) []entities.Profile {
 	return profiles
 }
 
-pub fn get_profiles_irmaos(profile_required_id int, pai_id int, mae_id int) []entities.Profile {
+pub fn get_profiles_irmaos(profile_required_id int, father_id int, mother_id int) []entities.Profile {
 	db, close := connection.get()
 
 	defer {
@@ -58,7 +58,7 @@ pub fn get_profiles_irmaos(profile_required_id int, pai_id int, mae_id int) []en
 
 	profiles := sql db {
 		select from entities.Profile where id != profile_required_id
-		&& (pai_id == pai_id || mae_id == mae_id)
+		&& (father_id == father_id || mother_id == mother_id)
 	} or { []entities.Profile{} }
 
 	return profiles

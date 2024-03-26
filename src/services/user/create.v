@@ -56,11 +56,11 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx Context) vweb.Result {
 		}
 
 		user_temp := entities.UserTemp{
-			primeiro_nome: contract.first_name
-			responsavel: contract.responsible
-			data_nascimento: contract_data_nascimento
+			first_name: contract.first_name
+			responsible: contract.responsible
+			birth_date: contract_data_nascimento
 			email: contract.email
-			senha: contract.password
+			password: contract.password
 		}
 
 		repository_users.new_user_confirmation(user_temp, code_confirmation) or {

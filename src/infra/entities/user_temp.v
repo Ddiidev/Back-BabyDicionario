@@ -6,12 +6,12 @@ import time
 @[table: 'users_temp']
 pub struct UserTemp {
 pub:
-	primeiro_nome     string
-	segundo_nome      ?string
-	responsavel       Responsible @[sql: int; sql_type: 'smallint']
-	data_nascimento   time.Time
+	first_name        string
+	last_name         ?string
+	responsible       Responsible @[sql: int; sql_type: 'smallint']
+	birth_date        time.Time
 	email             string
-	senha             string
+	password          string
 	expiration_time   time.Time = time.utc()
 	code_confirmation string
 	created_at        time.Time = time.utc()

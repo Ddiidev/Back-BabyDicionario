@@ -1,7 +1,7 @@
 module entities
 
 import contracts.profile as cprofile
-import contracts.contract_shared { Sexo }
+import contracts.contract_shared
 import time
 import constants
 
@@ -13,17 +13,17 @@ pub:
 	short_uuid       string
 	name_shared_link string
 	family_id        int
-	apelido          string
-	primeiro_nome    string
-	segundo_nome     string
-	data_nascimento  ?time.Time @[default: 'null']
-	idade            f64        @[sql_type: 'NUMERIC']
-	peso             f64        @[sql_type: 'NUMERIC']
-	sexo             Sexo
-	altura           f64        @[sql_type: 'NUMERIC']
-	cor              string
-	pai_id           ?int
-	mae_id           ?int
+	surname          string
+	first_name       string
+	last_name        string
+	birth_date       ?time.Time @[default: 'null']
+	age              f64        @[sql_type: 'NUMERIC']
+	weight           f64        @[sql_type: 'NUMERIC']
+	sex              contract_shared.Sex
+	height           f64        @[sql_type: 'NUMERIC']
+	color            string
+	father_id        ?int
+	mother_id        ?int
 	created_at       time.Time = time.utc()
 	updated_at       time.Time = time.utc()
 }
@@ -31,26 +31,26 @@ pub:
 pub fn (p Profile) adapter() cprofile.ProfileAlias {
 	return cprofile.ProfileAlias(cprofile.Profile{
 		uuid: p.uuid
-		apelido: p.apelido
-		primeiro_nome: p.primeiro_nome
-		segundo_nome: p.segundo_nome
-		idade: p.idade
-		peso: p.peso
-		cor: p.cor
-		sexo: p.sexo
-		altura: p.altura
-		data_nascimento: p.data_nascimento or { constants.time_empty }
+		surname: p.surname
+		first_name: p.first_name
+		last_name: p.last_name
+		age: p.age
+		weight: p.weight
+		color: p.color
+		sex: p.sex
+		height: p.height
+		birth_date: p.birth_date or { constants.time_empty }
 	})
 }
 
 pub fn (p Profile) validated() Profile {
 	return Profile{
 		...p
-		primeiro_nome: p.primeiro_nome.trim_space()
-		segundo_nome: p.segundo_nome.trim_space()
-		apelido: p.apelido.trim_space()
-		cor: p.cor.trim_space()
+		first_name: p.first_name.trim_space()
+		last_name: p.last_name.trim_space()
+		surname: p.surname.trim_space()
+		color: p.color.trim_space()
 		short_uuid: p.uuid.all_after_last('-')
-		name_shared_link: p.primeiro_nome
+		name_shared_link: p.first_name
 	}
 }

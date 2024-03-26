@@ -25,7 +25,7 @@ pub fn get_user_by_email_pass(user entities.User) !entities.User {
 	}
 
 	users_ := sql conn {
-		select from entities.User where senha == user.senha && email == user.email
+		select from entities.User where password == user.password && email == user.email
 	}!
 
 	return users_[0]!
@@ -75,7 +75,7 @@ pub fn change_password(email string, password string) ! {
 	}
 
 	sql conn {
-		update entities.User set senha = password where email == email
+		update entities.User set password = password where email == email
 	}!
 }
 

@@ -35,9 +35,9 @@ pub fn (ws &WsUser) dails_user(mut ctx Context) vweb.Result {
 		message: constants.msg_user_found
 		status: .info
 		content: cuser.ContractUser{
-			first_name: user.primeiro_nome
-			last_name: user.segundo_nome or { '' }
-			date_birth: user.data_nascimento.str()
+			first_name: user.first_name
+			last_name: user.last_name or { '' }
+			birth_date: user.birth_date.str()
 			email: user.email
 		}
 	})

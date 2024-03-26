@@ -37,9 +37,9 @@ pub fn (ws &WsWord) get(mut ctx Context) vweb.Result {
 
 	words := words_.map(cwords.WordContractResponse{
 		id: it.id or { 0 }
-		palavra: it.palavra
-		traducao: it.traducao
-		pronuncia: it.pronuncia
+		word: it.word
+		translation: it.translation
+		pronunciation: it.pronunciation
 		audio: it.audio
 	})
 
@@ -67,9 +67,9 @@ pub fn (ws &WsWord) add(mut ctx Context) vweb.Result {
 
 	words := words_contract.words.map(entities.Word{
 		profile_uuid: words_contract.profile_uuid
-		palavra: it.palavra
-		traducao: it.traducao
-		pronuncia: it.pronuncia
+		word: it.word
+		translation: it.translation
+		pronunciation: it.pronunciation
 		audio: it.audio
 	})
 

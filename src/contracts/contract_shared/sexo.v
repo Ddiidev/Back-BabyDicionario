@@ -1,6 +1,6 @@
 module contract_shared
 
-pub enum Sexo {
+pub enum Sex {
 	masculino = 0
 	feminino  = 1
 }

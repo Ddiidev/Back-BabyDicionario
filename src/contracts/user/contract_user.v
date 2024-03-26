@@ -8,13 +8,13 @@ pub:
 	first_name  string
 	last_name   string
 	responsible Responsible
-	date_birth  JsTime
+	birth_date  JsTime
 	email       string
 }
 
 pub fn (cuser ContractUser) valid_all() bool {
 	return utils.validating_email(cuser.email) && cuser.first_name != '' && cuser.last_name != ''
-		&& utils.validate_time(cuser.date_birth)
+		&& utils.validate_time(cuser.birth_date)
 }
 
 pub fn (cuser ContractUser) valid_email() bool {

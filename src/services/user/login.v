@@ -27,7 +27,7 @@ pub fn (ws &WsUser) login(mut ctx Context) vweb.Result {
 
 	user_required := repository_users.get_user_by_email_pass(entities.User{
 		email: contract.email
-		senha: auth.gen_password(contract.password)
+		password: auth.gen_password(contract.password)
 	}) or {
 		ctx.res.set_status(.not_found)
 		return ctx.json(ContractApiNoContent{

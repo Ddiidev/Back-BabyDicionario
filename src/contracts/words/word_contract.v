@@ -2,11 +2,11 @@ module words
 
 pub struct WordContractResponse {
 pub:
-	id        int
-	palavra   string
-	traducao  string
-	pronuncia string
-	audio     string
+	id            int
+	word          string
+	translation    string
+	pronunciation string
+	audio         string
 }
 
 pub struct WordContractRequest {
@@ -17,8 +17,8 @@ pub:
 
 pub struct WordsContractRequest {
 pub:
-	palavra   string
-	traducao  string
-	pronuncia string
-	audio     string
+	word          string
+	translation   string
+	pronunciation string
+	audio         string
 }

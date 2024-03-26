@@ -10,15 +10,15 @@ import time
 @[table: 'users']
 pub struct User {
 pub:
-	primeiro_nome   string
-	segundo_nome    ?string
-	responsavel     int       @[sql_type: 'smallint']
-	data_nascimento time.Time
-	email           string
-	senha           string
-	created_at      time.Time = time.utc()
-	updated_at      time.Time = time.utc()
-	blocked         bool      @[default: 'false']
+	first_name  string
+	last_name   ?string
+	responsible int       @[sql_type: 'smallint']
+	birth_date  time.Time
+	email       string
+	password    string
+	created_at  time.Time = time.utc()
+	updated_at  time.Time = time.utc()
+	blocked     bool      @[default: 'false']
 pub mut:
 	id   ?int   @[primary; sql: serial]
 	uuid string @[uniq]
@@ -41,10 +41,10 @@ pub fn (u User) validated(pass_already_encrypted bool) !User {
 		...u
 		created_at: created_at
 		updated_at: updated_at
-		primeiro_nome: u.primeiro_nome.trim_space()
-		segundo_nome: u.segundo_nome or { '' }.trim_space()
+		first_name: u.first_name.trim_space()
+		last_name: u.last_name or { '' }.trim_space()
 		email: u.email.trim_space()
-		senha: if pass_already_encrypted { u.senha } else { auth.gen_password(u.senha) }
+		password: if pass_already_encrypted { u.password } else { auth.gen_password(u.password) }
 	}
 
 	user_validated.uuid = rand.uuid_v4()

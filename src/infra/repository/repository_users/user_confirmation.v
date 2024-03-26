@@ -17,7 +17,7 @@ pub fn new_user_confirmation(user entities.UserTemp, code_confirmation string) !
 		...user
 		expiration_time: time.utc().add(time.hour * 5)
 		code_confirmation: code_confirmation
-		senha: auth_pass.gen_password(user.senha)
+		password: auth_pass.gen_password(user.password)
 	}
 
 	sql conn {
@@ -89,12 +89,12 @@ pub fn contain_user_temp_with_email(email string) bool {
 
 pub fn create_user_valid(user_temp entities.UserTemp) !entities.User {
 	mut user := entities.User{
-		primeiro_nome: user_temp.primeiro_nome
-		segundo_nome: user_temp.segundo_nome
-		responsavel: i8(user_temp.responsavel)
-		data_nascimento: user_temp.data_nascimento
+		first_name: user_temp.first_name
+		last_name: user_temp.last_name
+		responsible: i8(user_temp.responsible)
+		birth_date: user_temp.birth_date
 		email: user_temp.email
-		senha: user_temp.senha
+		password: user_temp.password
 		created_at: user_temp.created_at
 		updated_at: user_temp.updated_at
 	}.validated(true) or { return err }
@@ -106,7 +106,7 @@ pub fn create_user_valid(user_temp entities.UserTemp) !entities.User {
 	}
 
 	user_existing := sql conn {
-		select from entities.User where email == user.email && responsavel == user.responsavel
+		select from entities.User where email == user.email && responsible == user.responsible
 	}!
 
 	if user_existing.len > 0 {
