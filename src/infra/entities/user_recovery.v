@@ -1,6 +1,6 @@
 module entities
 
-import services.handle_jwt
+import infra.repository.jwt.service as jwt_service
 import time
 import utils
 
@@ -29,5 +29,5 @@ pub fn (ur UserRecovery) valid_code_confirmation(code string) bool {
 }
 
 pub fn (ur UserRecovery) valid() bool {
-	return handle_jwt.valid_token_str(ur.access_token) && utils.validating_email(ur.email)
+	return jwt_service.get().valid_token_str(ur.access_token) && utils.validating_email(ur.email)
 }
