@@ -1,9 +1,9 @@
 module user
 
 import infra.recovery.repository.service as recovery_service
+import infra.user.repository.service as user_service
 import infra.recovery.entities as recovery_entities
 import infra.jwt.repository.service as jwt_service
-import infra.repository.repository_users
 import api.ws_context
 import x.vweb
 
@@ -37,7 +37,8 @@ pub fn (ws &WsUser) block_user(mut ctx ws_context.Context, access_token string) 
 		message = 'O período de bloquear o usuário expirou, caso ainda precise do bloqueio da senha por alteração de senha recentemente, favor entrar em contato por email.'
 	}
 
-	repository_users.blocked_user_from_recovery_password(payload_jwt.ext.email, true) or {
+	repo_users := user_service.get()
+	repo_users.blocked_user_from_recovery_password(payload_jwt.ext.email, true) or {
 		message = user.user_not_found
 	}
 

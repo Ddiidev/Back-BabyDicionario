@@ -1,13 +1,14 @@
 module user
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
+import infra.token.repository.service as token_service
+import infra.user.repository.service as user_service
 import infra.jwt.repository.service as jwt_service
-import infra.repository.repository_tokens
+import infra.token.entities as token_entites
+import infra.user.entities as user_entites
 import contracts.token as contract_token
-import infra.repository.repository_users
 import contracts.user { ContractEmail }
 import api.ws_context
-import infra.entities
 import utils.auth
 import constants
 import x.vweb
@@ -25,7 +26,8 @@ pub fn (ws &WsUser) login(mut ctx ws_context.Context) vweb.Result {
 		})
 	}
 
-	user_required := repository_users.get_user_by_email_pass(entities.User{
+	repo_users := user_service.get()
+	user_required := repo_users.get_user_by_email_pass(user_entites.User{
 		email: contract.email
 		password: auth.gen_password(contract.password)
 	}) or {
@@ -47,7 +49,7 @@ pub fn (ws &WsUser) login(mut ctx ws_context.Context) vweb.Result {
 	handle_jwt := jwt_service.get()
 	tok_jwt := handle_jwt.new_jwt(user_required.uuid, user_required.email, time.utc().add(time.hour * 5).str())
 
-	mut token := entities.Token{
+	mut token := token_entites.Token{
 		user_uuid: user_required.uuid
 		access_token: tok_jwt.str()
 		refresh_token: rand.uuid_v4()
@@ -56,7 +58,8 @@ pub fn (ws &WsUser) login(mut ctx ws_context.Context) vweb.Result {
 		token.refresh_token_expiration = time.utc().add_days(constants.day_expiration_refresh_token)
 	}
 
-	repository_tokens.update_token_by_uuid(token) or {
+	repo_tokens := token_service.get()
+	repo_tokens.update_token_by_uuid(token) or {
 		ctx.res.set_status(.not_found)
 		return ctx.json(ContractApiNoContent{
 			message: constants.msg_err_email_or_pass

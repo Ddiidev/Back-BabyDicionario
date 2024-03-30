@@ -2,10 +2,10 @@ module user
 
 import contracts.contract_api { ContractApiNoContent }
 import infra.email.repository.service as email_service
-import infra.repository.repository_users
+import infra.user.repository.service as user_service
+import infra.user.entities as user_entites
 import contracts.user { ContractEmail }
 import api.ws_context
-import infra.entities
 import utils.auth
 import x.vweb
 import json
@@ -20,7 +20,8 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx ws_context.Context) vweb.Res
 		})
 	}
 
-	if repository_users.contain_user_with_email(contract.email) {
+	repo_users := user_service.get()
+	if repo_users.contain_user_with_email(contract.email) {
 		ctx.res.set_status(.conflict)
 		return ctx.json(ContractApiNoContent{
 			message: 'Este email já foi registrado no Dicionário do bebê.\n\nPrefira fazer o login ao invés de nova conta (E pode preencher o formulário de senha esquecida caso necessário).'
@@ -28,7 +29,8 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx ws_context.Context) vweb.Res
 		})
 	}
 
-	user_temp_exist := repository_users.get_user_temp_existing(contract.email)
+	repo_users_confirmation := user_service.get_user_confirmatino()
+	user_temp_exist := repo_users_confirmation.get_user_existing(contract.email)
 	code_confirmation := if user_temp_exist != none {
 		user_temp_exist.code_confirmation
 	} else {
@@ -57,7 +59,7 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx ws_context.Context) vweb.Res
 			})
 		}
 
-		user_temp := entities.UserTemp{
+		user_temp := user_entites.UserTemp{
 			first_name: contract.first_name
 			responsible: contract.responsible
 			birth_date: contract_data_nascimento
@@ -65,7 +67,7 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx ws_context.Context) vweb.Res
 			password: contract.password
 		}
 
-		repository_users.new_user_confirmation(user_temp, code_confirmation) or {
+		repo_users_confirmation.new_user_confirmation(user_temp, code_confirmation) or {
 			ctx.res.set_status(.bad_request)
 			return ctx.json(ContractApiNoContent{
 				message: 'Falha ao cadastrar no banco o usuário'

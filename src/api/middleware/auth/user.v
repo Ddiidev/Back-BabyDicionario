@@ -1,11 +1,11 @@
 module auth
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
+import infra.token.repository.service as token_service
 import infra.jwt.repository.service as jwt_service
-import infra.repository.repository_tokens
+import infra.token.entities as token_entities
 import contracts.token { TokenContract }
 import api.ws_context
-import infra.entities
 import constants
 import x.vweb
 import time
@@ -66,7 +66,7 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) vweb.Result {
 		})
 	}
 
-	origin_tok := entities.Token{
+	origin_tok := token_entities.Token{
 		user_uuid: payload.sub or { '' }
 		access_token: contract.access_token
 		refresh_token: contract.refresh_token
@@ -84,14 +84,15 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) vweb.Result {
 		})
 	}
 
-	target_tok := entities.Token{
+	target_tok := token_entities.Token{
 		user_uuid: payload.sub or { '' }
 		access_token: new_tok_jwt.str()
 		refresh_token: rand.uuid_v4()
 		refresh_token_expiration: new_tok_jwt.payload.exp.time() or { time.utc() }.add_days(constants.day_expiration_refresh_token)
 	}
 
-	repository_tokens.new_refresh_token(origin_tok, target_tok) or {
+	repos_tokens := token_service.get()
+	repos_tokens.new_refresh_token(origin_tok, target_tok) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'falhou a gerar um novo token'

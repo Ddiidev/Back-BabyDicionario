@@ -4,9 +4,9 @@ import contracts.contract_api { ContractApi, ContractApiNoContent }
 import infra.recovery.repository.service as recovery_service
 import contracts.token { TokenContractRecoverResponse }
 import infra.email.repository.service as email_service
+import infra.user.repository.service as user_service
 import infra.recovery.entities as recovery_entities
 import infra.jwt.repository.service as jwt_service
-import infra.repository.repository_users
 import contracts.user as cuser
 import api.ws_context
 import utils.auth
@@ -35,8 +35,10 @@ pub fn (ws &WsUser) recover_password_send_email(mut ctx ws_context.Context) vweb
 		})
 	}
 
-	if !(repository_users.contain_user_with_email(contract.email)
-		|| repository_users.contain_user_temp_with_email(contract.email)) {
+	repo_users := user_service.get()
+	repo_users_confirmation := user_service.get_user_confirmatino()
+	if !(repo_users.contain_user_with_email(contract.email)
+		|| repo_users_confirmation.contain_user_with_email(contract.email)) {
 		ctx.res.set_status(.not_found)
 		return ctx.json(ContractApiNoContent{
 			message: constants.msg_err_not_found_email

@@ -3,8 +3,8 @@ module confirmation
 import infra.recovery.repository.service as recovery_service
 import contracts.contract_api { ContractApiNoContent }
 import infra.email.repository.service as email_service
+import infra.user.repository.service as  user_service
 import contracts.confirmation as cconfirmation
-import infra.repository.repository_users
 import utils.auth as utils_auth
 import api.middleware.auth
 import api.ws_context
@@ -46,7 +46,8 @@ pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx ws_contex
 	}
 
 	if user_recovery.valid() {
-		repository_users.change_password(user_recovery.email, utils_auth.gen_password(contract.new_password)) or {
+		repo_users := user_service.get()
+		repo_users.change_password(user_recovery.email, utils_auth.gen_password(contract.new_password)) or {
 			ctx.res.set_status(.bad_request)
 			return ctx.json(ContractApiNoContent{
 				message: 'Falha na recuperação de senha, tente novamente'
@@ -54,7 +55,7 @@ pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx ws_contex
 			})
 		}
 
-		repository_users.blocked_user_from_recovery_password(user_recovery.email, false) or {
+		repo_users.blocked_user_from_recovery_password(user_recovery.email, false) or {
 			ctx.res.set_status(.bad_request)
 			return ctx.json(ContractApiNoContent{
 				message: 'Falha ao desbloquear a conta de usuário, por favor entre em contato com suporte via email'

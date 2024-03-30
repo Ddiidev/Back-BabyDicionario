@@ -1,6 +1,6 @@
 module entities
 
-import infra.entities.errors.errors_user
+import infra.user.repository.errors as errors_user
 import utils.auth
 import constants
 import utils

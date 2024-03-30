@@ -1,16 +1,17 @@
 module confirmation
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
-import infra.repository.repository_tokens.errors { TokenNoExist }
-import infra.repository.repository_users.errors as users_error
+import infra.user.repository.errors as users_error
 import contracts.confirmation { ConfirmationEmailByCode }
+import infra.token.repository.service as token_service
 import infra.email.repository.service as email_service
+import infra.token.repository.errors { TokenNoExist }
+import infra.user.repository.service as user_service
 import infra.jwt.repository.service as jwt_service
-import infra.repository.repository_tokens
-import infra.repository.repository_users
+import infra.token.entities as token_entities
+import infra.user.entities as user_entities
 import contracts.token { TokenContract }
 import api.ws_context
-import infra.entities
 import x.vweb
 import rand
 import json
@@ -25,7 +26,8 @@ pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx ws_context.Cont
 		})
 	}
 
-	user_temp := repository_users.get_user_temp_confirmation(contract.email, contract.code) or {
+	repo_users_confirmation := user_service.get_user_confirmatino()
+	user_temp := repo_users_confirmation.get_user(contract.email, contract.code) or {
 		ctx.res.set_status(.bad_request)
 
 		if err in [users_error.InvalidCode, users_error.NoExistUserTemp] {
@@ -42,7 +44,7 @@ pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx ws_context.Cont
 	}
 
 	if user_temp.is_valid() {
-		user := repository_users.create_user_valid(user_temp) or {
+		user := repo_users_confirmation.create_user_valid(user_temp) or {
 			dump(err)
 			ctx.res.set_status(.bad_request)
 			return ctx.json(ContractApiNoContent{
@@ -54,13 +56,14 @@ pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx ws_context.Cont
 		handle_jwt := jwt_service.get()
 		jwt_tok := handle_jwt.new_jwt(user.uuid, user.email, user_temp.expiration_time.str())
 
-		mut tok := entities.Token{
+		mut tok := token_entities.Token{
 			user_uuid: user.uuid
 			access_token: jwt_tok.str()
 			refresh_token: rand.uuid_v4()
 		}
 
-		repository_tokens.create_token(tok) or {
+		repo_tokens := token_service.get()
+		repo_tokens.create_token(tok) or {
 			if err is TokenNoExist {
 				ctx.res.set_status(.bad_request)
 				return ctx.json(ContractApiNoContent{
@@ -68,7 +71,7 @@ pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx ws_context.Cont
 					status: .error
 				})
 			} else {
-				tok = repository_tokens.get_by_uuid(tok) or {
+				tok = repo_tokens.get_by_uuid(tok) or {
 					ctx.res.set_status(.bad_request)
 					return ctx.json(ContractApiNoContent{
 						message: 'Falha ao obter o token de acesso\nEntre em contato conosco por email'
@@ -78,8 +81,9 @@ pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx ws_context.Cont
 			}
 		}
 
-		if repository_users.contain_user_with_uuid(user.uuid) {
-			repository_users.delete_usertemp(user_temp) or {
+		repo_users := user_service.get()
+		if repo_users.contain_user_with_uuid(user.uuid) {
+			repo_users_confirmation.delete(user_temp) or {
 				// add log
 			}
 		}
@@ -108,7 +112,7 @@ pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx ws_context.Cont
 	}
 
 	ctx.res.set_status(.bad_request)
-	return ctx.json(ContractApi[[]entities.UserTemp]{
+	return ctx.json(ContractApi[[]user_entities.UserTemp]{
 		message: 'Falha ao consultar o banco'
 		status: .error
 	})

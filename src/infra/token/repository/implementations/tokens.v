@@ -1,10 +1,12 @@
-module repository_tokens
+module implementations
 
-import infra.entities
+import infra.token.repository.errors
+import infra.token.entities
 import infra.connection
-import infra.repository.repository_tokens.errors
 
-pub fn create_token(tok entities.Token) ! {
+pub struct TokenRepository {}
+
+pub fn (t TokenRepository) create_token(tok entities.Token) ! {
 	conn, close := connection.get()
 
 	defer {
@@ -25,7 +27,7 @@ pub fn create_token(tok entities.Token) ! {
 	}
 }
 
-pub fn get_by_uuid(tok entities.Token) !entities.Token {
+pub fn (t TokenRepository) get_by_uuid(tok entities.Token) !entities.Token {
 	conn, close := connection.get()
 
 	defer {
@@ -43,7 +45,7 @@ pub fn get_by_uuid(tok entities.Token) !entities.Token {
 	}
 }
 
-pub fn get_by_refresh_token(tok entities.Token) !entities.Token {
+pub fn (t TokenRepository) get_by_refresh_token(tok entities.Token) !entities.Token {
 	conn, close := connection.get()
 
 	defer {
@@ -62,7 +64,7 @@ pub fn get_by_refresh_token(tok entities.Token) !entities.Token {
 	}
 }
 
-pub fn new_refresh_token(tok entities.Token, target_token entities.Token) ! {
+pub fn (t TokenRepository) new_refresh_token(tok entities.Token, target_token entities.Token) ! {
 	conn, close := connection.get()
 
 	defer {
@@ -74,7 +76,7 @@ pub fn new_refresh_token(tok entities.Token, target_token entities.Token) ! {
 	}!
 
 	if origin_toks.len == 0 {
-		create_token(target_token)!
+		t.create_token(target_token)!
 	} else {
 		sql conn {
 			update entities.Token set access_token = target_token.access_token, refresh_token = target_token.refresh_token,
@@ -83,7 +85,7 @@ pub fn new_refresh_token(tok entities.Token, target_token entities.Token) ! {
 	}
 }
 
-pub fn update_token_by_uuid(tok entities.Token) ! {
+pub fn (t TokenRepository) update_token_by_uuid(tok entities.Token) ! {
 	conn, close := connection.get()
 
 	defer {

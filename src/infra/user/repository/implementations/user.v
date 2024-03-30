@@ -1,9 +1,11 @@
-module repository_users
+module implementations
 
-import infra.entities
+import infra.user.entities
 import infra.connection
 
-pub fn get_user_by_uuid(user entities.User) !entities.User {
+pub struct UserRepository {}
+
+pub fn (u UserRepository) get_user_by_uuid(user entities.User) !entities.User {
 	conn, close := connection.get()
 
 	defer {
@@ -17,7 +19,7 @@ pub fn get_user_by_uuid(user entities.User) !entities.User {
 	return users_[0] or { entities.User{} }
 }
 
-pub fn get_user_by_email_pass(user entities.User) !entities.User {
+pub fn (u UserRepository) get_user_by_email_pass(user entities.User) !entities.User {
 	conn, close := connection.get()
 
 	defer {
@@ -31,7 +33,7 @@ pub fn get_user_by_email_pass(user entities.User) !entities.User {
 	return users_[0]!
 }
 
-pub fn contain_user_with_uuid(uuid string) bool {
+pub fn (u UserRepository) contain_user_with_uuid(uuid string) bool {
 	mut conn := connection.get_db()
 
 	defer {
@@ -49,7 +51,7 @@ pub fn contain_user_with_uuid(uuid string) bool {
 	return c.first().vals().first() or { '' }.int() > 0
 }
 
-pub fn contain_user_with_email(email string) bool {
+pub fn (u UserRepository) contain_user_with_email(email string) bool {
 	mut conn := connection.get_db()
 
 	defer {
@@ -67,7 +69,7 @@ pub fn contain_user_with_email(email string) bool {
 	return c.first().vals().first() or {''}.int() > 0
 }
 
-pub fn change_password(email string, password string) ! {
+pub fn (u UserRepository) change_password(email string, password string) ! {
 	conn, close := connection.get()
 
 	defer {
@@ -79,7 +81,7 @@ pub fn change_password(email string, password string) ! {
 	}!
 }
 
-pub fn blocked_user_from_recovery_password(email string, block bool) ! {
+pub fn (u UserRepository) blocked_user_from_recovery_password(email string, block bool) ! {
 	conn, close := connection.get()
 
 	defer {

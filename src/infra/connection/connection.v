@@ -1,10 +1,11 @@
 module connection
 
-import ken0x0a.dotenv
-import infra.entities
-import infra.words.entities as words_entities
 import infra.profiles.entities as profiles_entities
 import infra.recovery.entities as recovery_entities
+import infra.words.entities as words_entities
+import infra.token.entities as token_entities
+import infra.user.entities as user_entities
+import ken0x0a.dotenv
 import db.sqlite
 import db.pg
 import orm
@@ -20,12 +21,12 @@ fn init() {
 
 	sql conn {
 		create table recovery_entities.UserRecovery
-		create table entities.UserTemp
+		create table user_entities.UserTemp
 		create table profiles_entities.Profile
-		create table entities.Family
-		create table entities.Token
+		create table user_entities.Family
+		create table token_entities.Token
 		create table words_entities.Word
-		create table entities.User
+		create table user_entities.User
 	} or { panic('fail create table | ${err}') }
 }
 

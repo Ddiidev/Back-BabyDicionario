@@ -1,4 +1,4 @@
-module errors_user
+module errors
 
 pub struct UserInvalid {
 	Error

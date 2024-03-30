@@ -1,12 +1,14 @@
-module repository_users
+module implementations
 
-import infra.repository.repository_users.errors
+import infra.user.repository.errors
 import utils.auth as auth_pass
+import infra.user.entities
 import infra.connection
-import infra.entities
 import time
 
-pub fn new_user_confirmation(user entities.UserTemp, code_confirmation string) ! {
+pub struct UserConfirmationRepository {}
+
+pub fn (u UserConfirmationRepository) new_user_confirmation(user entities.UserTemp, code_confirmation string) ! {
 	conn, close := connection.get()
 
 	defer {
@@ -25,7 +27,7 @@ pub fn new_user_confirmation(user entities.UserTemp, code_confirmation string) !
 	}!
 }
 
-pub fn get_user_temp_confirmation(email string, code string) !entities.UserTemp {
+pub fn (u UserConfirmationRepository) get_user(email string, code string) !entities.UserTemp {
 	conn, close := connection.get()
 
 	defer {
@@ -49,7 +51,7 @@ pub fn get_user_temp_confirmation(email string, code string) !entities.UserTemp 
 	}
 }
 
-pub fn get_user_temp_existing(email string) ?entities.UserTemp {
+pub fn (u UserConfirmationRepository) get_user_existing(email string) ?entities.UserTemp {
 	conn, close := connection.get()
 
 	defer {
@@ -67,7 +69,7 @@ pub fn get_user_temp_existing(email string) ?entities.UserTemp {
 	}
 }
 
-pub fn contain_user_temp_with_email(email string) bool {
+pub fn (u UserConfirmationRepository) contain_user_with_email(email string) bool {
 	mut conn := connection.get_db()
 
 	defer {
@@ -87,7 +89,7 @@ pub fn contain_user_temp_with_email(email string) bool {
 	return c.first().vals().first() or {''}.int() > 0
 }
 
-pub fn create_user_valid(user_temp entities.UserTemp) !entities.User {
+pub fn (u UserConfirmationRepository) create_user_valid(user_temp entities.UserTemp) !entities.User {
 	mut user := entities.User{
 		first_name: user_temp.first_name
 		last_name: user_temp.last_name
@@ -120,7 +122,7 @@ pub fn create_user_valid(user_temp entities.UserTemp) !entities.User {
 	return user
 }
 
-pub fn delete_usertemp(user_temp entities.UserTemp) ! {
+pub fn (u UserConfirmationRepository) delete(user_temp entities.UserTemp) ! {
 	conn, close := connection.get()
 
 	defer {

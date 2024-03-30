@@ -1,10 +1,10 @@
 module user
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
-import infra.repository.repository_users
+import infra.user.repository.service as user_service
+import infra.user.entities as user_entities
 import contracts.user as cuser
 import api.middleware.auth
-import infra.entities
 import api.ws_context
 import constants
 import x.vweb
@@ -21,7 +21,8 @@ pub fn (ws &WsUser) dails_user(mut ctx ws_context.Context) vweb.Result {
 		})
 	}
 
-	user := repository_users.get_user_by_uuid(entities.User{
+	repo_users := user_service.get()
+	user := repo_users.get_user_by_uuid(user_entities.User{
 		uuid: user_uuid
 	}) or {
 		ctx.res.set_status(.not_found)
