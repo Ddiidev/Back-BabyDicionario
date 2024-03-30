@@ -1,8 +1,8 @@
 module connection
 
-import infra.profiles.entities as profiles_entities
+import infra.profile.entities as profiles_entities
 import infra.recovery.entities as recovery_entities
-import infra.words.entities as words_entities
+import infra.word.entities as words_entities
 import infra.token.entities as token_entities
 import infra.user.entities as user_entities
 import ken0x0a.dotenv

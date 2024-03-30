@@ -1,10 +1,10 @@
 module word
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
-import infra.words.repository.errors as words_errors
-import infra.words.repository.service as words_service
-import contracts.words as cwords
-import infra.words.entities
+import infra.word.repository.errors as word_errors
+import infra.word.repository.service as word_service
+import contracts.words as cword
+import infra.word.entities
 import api.middleware.auth
 import api.ws_context
 import x.vweb
@@ -25,9 +25,9 @@ pub fn (ws &WsWord) get(mut ctx ws_context.Context) vweb.Result {
 		})
 	}
 
-	rwords := words_service.get()
+	repo_word := word_service.get()
 
-	words_ := rwords.get_all_by_id(user_uuid) or {
+	words_ := repo_word.get_all_by_id(user_uuid) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'Não foi encontrado nenhuma palavra'
@@ -35,12 +35,12 @@ pub fn (ws &WsWord) get(mut ctx ws_context.Context) vweb.Result {
 		})
 	}
 
-	words := words_.map(cwords.WordContractResponse{
+	words := words_.map(cword.WordContractResponse{
 		id: it.id or { 0 }
 		word: it.word
 		translation: it.translation
-		pronunciation: it.pronunciation
-		audio: it.audio
+		pronunciation: it.pronunciation or { '' } 
+		audio: it.audio  or { '' } 
 	})
 
 	return ctx.json(words)
@@ -57,7 +57,7 @@ pub fn (ws &WsWord) add(mut ctx ws_context.Context) vweb.Result {
 	// 	})
 	// }
 
-	words_contract := json.decode(cwords.WordContractRequest, ctx.req.data) or {
+	words_contract := json.decode(cword.WordContractRequest, ctx.req.data) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'O JSON fornecido não está de acordo com o contrato esperado.'
@@ -83,10 +83,10 @@ pub fn (ws &WsWord) add(mut ctx ws_context.Context) vweb.Result {
 		})
 	}
 	
-	rwords := words_service.get()
+	repo_word := word_service.get()
 
-	rwords.new_words(words) or {
-		if err is words_errors.WordsFailInsert {
+	repo_word.new_words(words) or {
+		if err is word_errors.WordsFailInsert {
 			ctx.res.set_status(.unprocessable_entity)
 			return ctx.json(ContractApi{
 				// TODO: melhorar o texto

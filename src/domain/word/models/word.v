@@ -1,15 +1,13 @@
-module entities
+module models
 
-@[table: 'words']
 pub struct Word {
 pub:
+	id            ?int
 	profile_uuid  string
 	word          string
 	translation   string
 	pronunciation string
 	audio         string
-pub mut:
-	id ?int @[default: 'null'; primary; serial]
 }
 
 pub fn (w Word) valid() bool {

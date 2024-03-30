@@ -1,6 +1,6 @@
 module interfaces
 
-import infra.profiles.entities
+import infra.profile.entities
 
 pub interface IProfileRepository {
 	get_profile(uuid string) entities.Profile

@@ -1,6 +1,6 @@
 module errors
 
-import infra.words.entities
+import infra.word.entities
 
 pub struct WordsFailInsert {
 	Error

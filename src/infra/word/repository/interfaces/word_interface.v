@@ -1,6 +1,6 @@
 module interfaces
 
-import words.entities
+import word.entities
 
 pub interface IWord {
 	get_all_by_id(user_uuid string) ![]entities.Word

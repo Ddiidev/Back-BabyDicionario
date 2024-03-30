@@ -1,6 +1,6 @@
 module implementations
 
-import infra.profiles.entities
+import infra.profile.entities
 import infra.connection
 
 pub struct ProfileRepository {}
