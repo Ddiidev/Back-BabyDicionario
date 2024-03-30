@@ -1,9 +1,9 @@
 module profile
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
-import infra.repository.repository_profiles
-import api.ws_context
+import infra.profiles.repository.service as profile_service
 import contracts.profile as cprofile
+import api.ws_context
 import constants
 import x.vweb
 
@@ -13,7 +13,8 @@ pub struct WsProfile {
 
 @['/:short_uuid_profile/:name']
 pub fn (ws &WsProfile) get_profile(mut ctx ws_context.Context, short_uuid_profile string, name string) vweb.Result {
-	profile_required := repository_profiles.get_profile_by_suuid(short_uuid_profile, name) or {
+	repo_profiles := profile_service.get()
+	profile_required := repo_profiles.get_profile_by_suuid(short_uuid_profile, name) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'Perfil não encontrado'
@@ -23,7 +24,7 @@ pub fn (ws &WsProfile) get_profile(mut ctx ws_context.Context, short_uuid_profil
 	mut profile_father := cprofile.ProfileAlias.new()
 	if profile_required.father_id != none {
 		if father_id := profile_required.father_id {
-			profiles_ := repository_profiles.get_profiles_by_id(father_id)
+			profiles_ := repo_profiles.get_profiles_by_id(father_id)
 			if profiles_.len > 0 {
 				profile_father = profiles_.first().adapter()
 			}
@@ -33,7 +34,7 @@ pub fn (ws &WsProfile) get_profile(mut ctx ws_context.Context, short_uuid_profil
 	mut profile_mother := cprofile.ProfileAlias.new()
 	if profile_required.mother_id != none {
 		if mother_id := profile_required.mother_id {
-			profiles_ := repository_profiles.get_profiles_by_id(mother_id)
+			profiles_ := repo_profiles.get_profiles_by_id(mother_id)
 			if profiles_.len > 0 {
 				profile_mother = profiles_.first().adapter()
 			}
@@ -45,7 +46,7 @@ pub fn (ws &WsProfile) get_profile(mut ctx ws_context.Context, short_uuid_profil
 		father_id := profile_required.father_id
 		mother_id := profile_required.mother_id
 		if father_id != none && mother_id != none {
-			profile_brothers = repository_profiles.get_profiles_irmaos(profile_required.id,
+			profile_brothers = repo_profiles.get_profiles_irmaos(profile_required.id,
 				father_id, mother_id).map(it.adapter())
 		}
 	}

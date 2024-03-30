@@ -1,10 +1,10 @@
 module user
 
+import infra.recovery.repository.service as recovery_service
+import infra.recovery.entities as recovery_entities
 import infra.jwt.repository.service as jwt_service
-import infra.repository.repository_recovery
 import infra.repository.repository_users
 import api.ws_context
-import infra.entities
 import x.vweb
 
 const user_not_found = 'O usuário não foi encontrado, logo não será possível bloquea-lo. Por favor entrar em contato via email de suporte.'
@@ -25,9 +25,10 @@ pub fn (ws &WsUser) block_user(mut ctx ws_context.Context, access_token string) 
 		return ctx.html($tmpl('./page_block/index.html'))
 	 }
 
-	recovery := repository_recovery.get_recovery_password_by_token(access_token) or {
+	repo_recovery := recovery_service.get()
+	recovery := repo_recovery.get_recovery_password_by_token(access_token) or {
 		message = user.user_not_found
-		entities.UserRecovery{}
+		recovery_entities.UserRecovery{}
 	}
 
 	if !recovery.valid_expiration_token() {

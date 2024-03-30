@@ -1,13 +1,13 @@
 module user
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
+import infra.recovery.repository.service as recovery_service
 import contracts.token { TokenContractRecoverResponse }
 import infra.email.repository.service as email_service
+import infra.recovery.entities as recovery_entities
 import infra.jwt.repository.service as jwt_service
-import infra.repository.repository_recovery
 import infra.repository.repository_users
 import contracts.user as cuser
-import infra.entities
 import api.ws_context
 import utils.auth
 import constants
@@ -44,7 +44,8 @@ pub fn (ws &WsUser) recover_password_send_email(mut ctx ws_context.Context) vweb
 		})
 	}
 
-	if repository_recovery.email_contains_pendenting_recovery_password(contract.email) {
+	repo_recovery := recovery_service.get()
+	if repo_recovery.email_contains_pendenting_recovery_password(contract.email) {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: constants.msg_err_recovery_contain_recovery_password
@@ -70,7 +71,7 @@ pub fn (ws &WsUser) recover_password_send_email(mut ctx ws_context.Context) vweb
 	expiration_time_block := time.utc().add(time.hour * 24)
 	tok := handle_jwt.new_jwt(constants.uuid_empty, contract.email, expiration_time.str())
 
-	repository_recovery.new_recovery_password(entities.UserRecovery{
+	repo_recovery.new_recovery_password(recovery_entities.UserRecovery{
 		email: contract.email
 		expiration_time: expiration_time
 		expiration_time_block: expiration_time_block

@@ -1,10 +1,12 @@
-module repository_recovery
+module implementations
 
-import infra.repository.repository_users.errors
-import infra.entities
+import infra.recovery.repository.errors
+import infra.recovery.entities
 import infra.connection
 
-pub fn new_recovery_password(recover entities.UserRecovery) ! {
+pub struct RecoveryRepository {}
+
+pub fn (r RecoveryRepository) new_recovery_password(recover entities.UserRecovery) ! {
 	conn, close := connection.get()
 
 	defer {
@@ -28,7 +30,7 @@ pub fn new_recovery_password(recover entities.UserRecovery) ! {
 	}
 }
 
-pub fn delete(email string) ! {
+pub fn (r RecoveryRepository) delete(email string) ! {
 	conn, close := connection.get()
 
 	defer {
@@ -40,7 +42,7 @@ pub fn delete(email string) ! {
 	}!
 }
 
-pub fn get_recovery_password(email string) !entities.UserRecovery {
+pub fn (r RecoveryRepository) get_recovery_password(email string) !entities.UserRecovery {
 	conn, close := connection.get()
 
 	defer {
@@ -58,15 +60,15 @@ pub fn get_recovery_password(email string) !entities.UserRecovery {
 	}
 }
 
-pub fn email_contains_pendenting_recovery_password(email string) bool {
-	return if r := get_recovery_password(email) {
-		r.valid_expiration_token()
+pub fn (r RecoveryRepository) email_contains_pendenting_recovery_password(email string) bool {
+	return if r_ := r.get_recovery_password(email) {
+		r_.valid_expiration_token()
 	} else {
 		false
 	}
 }
 
-pub fn get_recovery_password_by_token(access_token string) !entities.UserRecovery {
+pub fn (r RecoveryRepository) get_recovery_password_by_token(access_token string) !entities.UserRecovery {
 	conn, close := connection.get()
 
 	defer {

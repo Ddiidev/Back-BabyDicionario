@@ -1,9 +1,9 @@
 module confirmation
 
+import infra.recovery.repository.service as recovery_service
 import contracts.contract_api { ContractApiNoContent }
 import infra.email.repository.service as email_service
 import contracts.confirmation as cconfirmation
-import infra.repository.repository_recovery
 import infra.repository.repository_users
 import utils.auth as utils_auth
 import api.middleware.auth
@@ -28,7 +28,8 @@ pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx ws_contex
 		})
 	}
 
-	user_recovery := repository_recovery.get_recovery_password(contract.email) or {
+	repo_recovery := recovery_service.get()
+	user_recovery := repo_recovery.get_recovery_password(contract.email) or {
 		ctx.res.set_status(.not_found)
 		return ctx.json(ContractApiNoContent{
 			message: err.msg()

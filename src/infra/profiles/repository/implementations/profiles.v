@@ -1,9 +1,11 @@
-module repository_profiles
+module implementations
 
-import infra.entities
+import infra.profiles.entities
 import infra.connection
 
-pub fn get_profile(uuid string) entities.Profile {
+pub struct ProfileRepository {}
+
+pub fn (p ProfileRepository) get_profile(uuid string) entities.Profile {
 	db, close := connection.get()
 
 	defer {
@@ -17,7 +19,7 @@ pub fn get_profile(uuid string) entities.Profile {
 	return profiles.first()
 }
 
-pub fn get_profile_by_suuid(suuid string, name_shared_link string) !entities.Profile {
+pub fn (p ProfileRepository) get_profile_by_suuid(suuid string, name_shared_link string) !entities.Profile {
 	db, close := connection.get()
 
 	defer {
@@ -35,7 +37,7 @@ pub fn get_profile_by_suuid(suuid string, name_shared_link string) !entities.Pro
 	}
 }
 
-pub fn get_profiles_by_id(id int) []entities.Profile {
+pub fn (p ProfileRepository) get_profiles_by_id(id int) []entities.Profile {
 	db, close := connection.get()
 
 	defer {
@@ -49,7 +51,7 @@ pub fn get_profiles_by_id(id int) []entities.Profile {
 	return profiles
 }
 
-pub fn get_profiles_irmaos(profile_required_id int, father_id int, mother_id int) []entities.Profile {
+pub fn (p ProfileRepository) get_profiles_irmaos(profile_required_id int, father_id int, mother_id int) []entities.Profile {
 	db, close := connection.get()
 
 	defer {

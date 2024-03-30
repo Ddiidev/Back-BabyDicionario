@@ -3,6 +3,8 @@ module connection
 import ken0x0a.dotenv
 import infra.entities
 import infra.words.entities as words_entities
+import infra.profiles.entities as profiles_entities
+import infra.recovery.entities as recovery_entities
 import db.sqlite
 import db.pg
 import orm
@@ -17,9 +19,9 @@ fn init() {
 	}
 
 	sql conn {
-		create table entities.UserRecovery
+		create table recovery_entities.UserRecovery
 		create table entities.UserTemp
-		create table entities.Profile
+		create table profiles_entities.Profile
 		create table entities.Family
 		create table entities.Token
 		create table words_entities.Word
