@@ -1,7 +1,7 @@
 module user
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
-import infra.repository.jwt.service as jwt_service
+import infra.jwt.repository.service as jwt_service
 import infra.repository.repository_tokens
 import contracts.token as contract_token
 import infra.repository.repository_users
@@ -44,6 +44,7 @@ pub fn (ws &WsUser) login(mut ctx ws_context.Context) vweb.Result {
 		})
 	}
 
+	handle_jwt := jwt_service.get()
 	tok_jwt := handle_jwt.new_jwt(user_required.uuid, user_required.email, time.utc().add(time.hour * 5).str())
 
 	mut token := entities.Token{

@@ -1,8 +1,8 @@
 module implementations
 
-import infra.repository.words.errors
-import infra.entities
+import words.repository.errors
 import infra.connection
+import words.entities
 
 pub struct WordRepository {}
 

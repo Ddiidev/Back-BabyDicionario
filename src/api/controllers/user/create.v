@@ -1,7 +1,7 @@
 module user
 
 import contracts.contract_api { ContractApiNoContent }
-import infra.repository.email.service as email_service
+import infra.email.repository.service as email_service
 import infra.repository.repository_users
 import contracts.user { ContractEmail }
 import api.ws_context
@@ -36,6 +36,8 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx ws_context.Context) vweb.Res
 	}
 
 	body := body_msg_confirmation_html(contract.first_name, code_confirmation)
+
+	email := email_service.get()
 
 	email.send(contract.email, '[DiBebê] Ative sua conta de usuário ${contract.first_name}',
 		body) or {

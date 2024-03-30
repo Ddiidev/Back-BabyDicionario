@@ -2,8 +2,8 @@ module user
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
 import contracts.token { TokenContractRecoverResponse }
-import infra.repository.email.service as email_service
-import infra.repository.jwt.service as jwt_service
+import infra.email.repository.service as email_service
+import infra.jwt.repository.service as jwt_service
 import infra.repository.repository_recovery
 import infra.repository.repository_users
 import contracts.user as cuser
@@ -54,6 +54,9 @@ pub fn (ws &WsUser) recover_password_send_email(mut ctx ws_context.Context) vweb
 
 	code := auth.random_number()
 	body := body_msg_confirmation_recover_user(code)
+
+	handle_jwt := jwt_service.get()
+	email := email_service.get()
 
 	email.send(contract.email, user.subject, body) or {
 		ctx.res.set_status(.bad_request)

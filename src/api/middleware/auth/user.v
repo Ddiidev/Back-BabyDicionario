@@ -1,16 +1,15 @@
 module auth
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
-import contracts.token { TokenContract, TokenJwtContract }
-import infra.repository.jwt.service as jwt_service
+import infra.jwt.repository.service as jwt_service
 import infra.repository.repository_tokens
+import contracts.token { TokenContract }
 import api.ws_context
 import infra.entities
 import constants
 import x.vweb
 import time
 import rand
-import jwt
 
 pub struct WsAuth {
 	vweb.Middleware[ws_context.Context]
@@ -20,16 +19,8 @@ pub fn authenticate(mut ctx ws_context.Context) bool {
 	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
 
 	handle_jwt := jwt_service.get()
-	tok_jwt := handle_jwt.get(authorization) or {
-		ctx.res.set_status(.unauthorized)
-		ctx.json(ContractApiNoContent{
-			message: 'Token expirou'
-			status: .error
-		})
-		return false
-	}
 
-	if !tok_jwt.valid($env('BABYDI_SECRETKEY')) {
+	if !handle_jwt.valid(authorization) {
 		ctx.res.set_status(.unauthorized)
 		ctx.json(ContractApiNoContent{
 			message: 'Token expirou'
@@ -44,16 +35,9 @@ pub fn authenticate(mut ctx ws_context.Context) bool {
 pub fn authenticate_recover_password(mut ctx ws_context.Context) bool {
 	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
 
-	tok_jwt := handle_jwt.get(authorization) or {
-		ctx.res.set_status(.unauthorized)
-		ctx.json(ContractApiNoContent{
-			message: 'Token expirou'
-			status: .error
-		})
-		return false
-	}
+	handle_jwt := jwt_service.get()
 
-	if !tok_jwt.valid($env('BABYDI_SECRETKEY')) {
+	if !handle_jwt.valid(authorization) {
 		ctx.res.set_status(.unauthorized)
 		ctx.json(ContractApiNoContent{
 			message: 'Token expirou'
@@ -73,7 +57,8 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) vweb.Result {
 	}
 
 	// TODO: Separar em uma função exclusiva para isso
-	tok_jwt := jwt.from_str[TokenJwtContract](contract.access_token) or {
+	handle_jwt := jwt_service.get()
+	payload := handle_jwt.payload(contract.access_token) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'token inválido'
@@ -82,16 +67,25 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) vweb.Result {
 	}
 
 	origin_tok := entities.Token{
-		user_uuid: tok_jwt.payload.sub or { '' }
+		user_uuid: payload.sub or { '' }
 		access_token: contract.access_token
 		refresh_token: contract.refresh_token
 	}
 
-	new_tok_jwt := handle_jwt.new_jwt(origin_tok.user_uuid, tok_jwt.payload.ext.email,
-		time.utc().add(time.hour * 5).str())
+	new_tok_jwt := handle_jwt.new_object_jwt(
+		origin_tok.user_uuid,
+		payload.ext.email,
+		time.utc().add(time.hour * 5).str()
+	) or {
+		ctx.res.set_status(.unauthorized)
+		return ctx.json(ContractApiNoContent{
+			message: 'Token expirou'
+			status: .error
+		})
+	}
 
 	target_tok := entities.Token{
-		user_uuid: tok_jwt.payload.sub or { '' }
+		user_uuid: payload.sub or { '' }
 		access_token: new_tok_jwt.str()
 		refresh_token: rand.uuid_v4()
 		refresh_token_expiration: new_tok_jwt.payload.exp.time() or { time.utc() }.add_days(constants.day_expiration_refresh_token)

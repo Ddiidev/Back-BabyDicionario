@@ -4,8 +4,8 @@ import contracts.contract_api { ContractApi, ContractApiNoContent }
 import infra.repository.repository_tokens.errors { TokenNoExist }
 import infra.repository.repository_users.errors as users_error
 import contracts.confirmation { ConfirmationEmailByCode }
-import infra.repository.email.service as email_service
-import infra.repository.jwt.service as jwt_service
+import infra.email.repository.service as email_service
+import infra.jwt.repository.service as jwt_service
 import infra.repository.repository_tokens
 import infra.repository.repository_users
 import contracts.token { TokenContract }
@@ -51,6 +51,7 @@ pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx ws_context.Cont
 			})
 		}
 
+		handle_jwt := jwt_service.get()
 		jwt_tok := handle_jwt.new_jwt(user.uuid, user.email, user_temp.expiration_time.str())
 
 		mut tok := entities.Token{
@@ -84,6 +85,7 @@ pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx ws_context.Cont
 		}
 
 		defer {
+			email := email_service.get()
 			email.send(user_temp.email, '[DiBebê] Grato por estar aqui', body_msg_congratulations_html(user.first_name)) or {
 				println(err) // TODO add log
 			}

@@ -1,10 +1,10 @@
 module confirmation
 
 import contracts.contract_api { ContractApiNoContent }
+import infra.email.repository.service as email_service
 import contracts.confirmation as cconfirmation
 import infra.repository.repository_recovery
 import infra.repository.repository_users
-import infra.repository.email.service
 import utils.auth as utils_auth
 import api.middleware.auth
 import api.ws_context
@@ -64,6 +64,7 @@ pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx ws_contex
 		body := body_password_redefined(ctx.ip(), auth.create_url_block(user_recovery.access_token),
 			contract.current_date)
 
+		email := email_service.get()
 		email.send(user_recovery.email, confirmation.subject, body) or {
 			// TODO: add log
 		}

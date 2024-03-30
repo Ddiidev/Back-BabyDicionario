@@ -1,10 +1,10 @@
 module auth
 
-import infra.repository.jwt.service
+import infra.jwt.repository.service
 
 pub fn get_uuid_from_user(access_token string) ?string {
 	handle_jwt := service.get()
-	jwt_tok := handle_jwt.get(access_token) or { return none }
+	payload := handle_jwt.payload(access_token) or { return none }
 
-	return jwt_tok.payload.sub
+	return payload.sub
 }

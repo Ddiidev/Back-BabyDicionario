@@ -2,13 +2,9 @@ module implementations
 
 import net.smtp
 
-pub struct EmailRepository {
-	to      string
-	body    string
-	subject string
-}
+pub struct EmailRepository {}
 
-pub fn (e EmailRepository) send() ! {
+pub fn (e EmailRepository) send(to string, body string, subject string) ! {
 	mailserver := $env('BABYDI_SMTP_SERVER')
 	mailport := $env('BABYDI_SMTP_SERVER_PORT').int()
 	username := $env('BABYDI_SMTP_USERNAME')
@@ -21,10 +17,10 @@ pub fn (e EmailRepository) send() ! {
 		password: password
 	}
 	send_cfg := smtp.Mail{
-		to: e.to
-		subject: e.subject
+		to: to
+		subject: subject
 		body_type: .html
-		body: e.body
+		body: body
 	}
 
 	mut client := smtp.new_client(client_cfg)!

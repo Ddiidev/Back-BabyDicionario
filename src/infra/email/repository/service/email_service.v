@@ -1,7 +1,7 @@
 module service
 
-import infra.repository.email.interfaces
-import infra.repository.email.implementations
+import infra.email.repository.interfaces
+import infra.email.repository.implementations
 
 pub fn get() interfaces.IEmail {
 	return implementations.EmailRepository{}

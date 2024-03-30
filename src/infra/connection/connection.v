@@ -2,6 +2,7 @@ module connection
 
 import ken0x0a.dotenv
 import infra.entities
+import infra.words.entities as words_entities
 import db.sqlite
 import db.pg
 import orm
@@ -21,7 +22,7 @@ fn init() {
 		create table entities.Profile
 		create table entities.Family
 		create table entities.Token
-		create table entities.Word
+		create table words_entities.Word
 		create table entities.User
 	} or { panic('fail create table | ${err}') }
 }

@@ -1,9 +1,8 @@
 module entities
 
-import contracts.token { TokenJwtContract }
-import time
+import infra.jwt.repository.service as jwt_service
 import constants
-import jwt
+import time
 
 @[table: 'token']
 pub struct Token {
@@ -16,9 +15,11 @@ pub mut:
 }
 
 pub fn (mut t Token) change_refresh_token_expiration_time() ! {
-	tok_jwt := jwt.from_str[TokenJwtContract](t.access_token)!
+	handle_jwt := jwt_service.get()
 
-	exp_jwt := tok_jwt.payload.exp.time() or { return error('payload_exp_invalid') }
+	exp_time := handle_jwt.expiration_time(t.access_token) or { 
+		return error('payload_exp_expired')
+	 }
 
-	t.refresh_token_expiration = exp_jwt.add_days(constants.day_expiration_refresh_token)
+	t.refresh_token_expiration = exp_time.add_days(constants.day_expiration_refresh_token)
 }

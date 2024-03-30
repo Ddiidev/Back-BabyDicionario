@@ -1,12 +1,12 @@
 module word
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
-import infra.repository.words.errors as words_errors
+import infra.words.repository.errors as words_errors
+import infra.words.repository.service as words_service
 import contracts.words as cwords
+import infra.words.entities
 import api.middleware.auth
-import infra.repository
 import api.ws_context
-import infra.entities
 import x.vweb
 import json
 
@@ -25,7 +25,7 @@ pub fn (ws &WsWord) get(mut ctx ws_context.Context) vweb.Result {
 		})
 	}
 
-	rwords := repository.RepositoryService.get_word_repository()
+	rwords := words_service.get()
 
 	words_ := rwords.get_all_by_id(user_uuid) or {
 		ctx.res.set_status(.bad_request)
@@ -83,7 +83,7 @@ pub fn (ws &WsWord) add(mut ctx ws_context.Context) vweb.Result {
 		})
 	}
 	
-	rwords := repository.RepositoryService.get_word_repository()
+	rwords := words_service.get()
 
 	rwords.new_words(words) or {
 		if err is words_errors.WordsFailInsert {
