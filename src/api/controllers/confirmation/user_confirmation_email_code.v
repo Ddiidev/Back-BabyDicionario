@@ -1,12 +1,11 @@
 module confirmation
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
-import infra.user.repository.errors as users_error
-import contracts.confirmation { ConfirmationEmailByCode }
 import infra.token.repository.service as token_service
 import infra.email.repository.service as email_service
 import infra.token.repository.errors { TokenNoExist }
 import infra.user.repository.service as user_service
+import infra.user.repository.errors as users_error
 import infra.jwt.repository.service as jwt_service
 import infra.token.entities as token_entities
 import infra.user.entities as user_entities
@@ -14,11 +13,14 @@ import contracts.token { TokenContract }
 import api.ws_context
 import x.vweb
 import rand
-import json
+
+
+import domain.email.contracts as email_contract
+import domain.email.application_service
 
 @['/'; post]
 pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx ws_context.Context) vweb.Result {
-	contract := json.decode(ConfirmationEmailByCode, ctx.req.data) or {
+	contract := email_contract.ConfirmationEmailByCode.adapter(ctx.req.data)  or {
 		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{
 			message: 'O JSON fornecido não está de acordo com o contrato esperado.'
@@ -26,7 +28,9 @@ pub fn (ws &WsConfirmation) confirmation_email_code_user(mut ctx ws_context.Cont
 		})
 	}
 
-	repo_users_confirmation := user_service.get_user_confirmatino()
+	application_service.confirmation_code(contract) or {}
+
+	repo_users_confirmation := user_service.get_user_confirmation()
 	user_temp := repo_users_confirmation.get_user(contract.email, contract.code) or {
 		ctx.res.set_status(.bad_request)
 

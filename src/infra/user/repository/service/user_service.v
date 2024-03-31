@@ -7,6 +7,6 @@ pub fn get() interfaces.IUserRepository {
 	return implementations.UserRepository{}
 }
 
-pub fn get_user_confirmatino() interfaces.IUserConfirmationRepository {
+pub fn get_user_confirmation() interfaces.IUserConfirmationRepository {
 	return implementations.UserConfirmationRepository{}
 }

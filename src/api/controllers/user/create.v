@@ -29,7 +29,7 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx ws_context.Context) vweb.Res
 		})
 	}
 
-	repo_users_confirmation := user_service.get_user_confirmatino()
+	repo_users_confirmation := user_service.get_user_confirmation()
 	user_temp_exist := repo_users_confirmation.get_user_existing(contract.email)
 	code_confirmation := if user_temp_exist != none {
 		user_temp_exist.code_confirmation

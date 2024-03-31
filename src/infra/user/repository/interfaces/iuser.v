@@ -8,5 +8,6 @@ pub interface IUserRepository {
 	get_user_by_uuid(user entities.User) !entities.User
 	change_password(email string, password string) !
 	contain_user_with_email(email string) bool
+	create(user entities.User) !entities.User
 	contain_user_with_uuid(uuid string) bool
 }

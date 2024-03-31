@@ -36,7 +36,7 @@ pub fn (ws &WsUser) recover_password_send_email(mut ctx ws_context.Context) vweb
 	}
 
 	repo_users := user_service.get()
-	repo_users_confirmation := user_service.get_user_confirmatino()
+	repo_users_confirmation := user_service.get_user_confirmation()
 	if !(repo_users.contain_user_with_email(contract.email)
 		|| repo_users_confirmation.contain_user_with_email(contract.email)) {
 		ctx.res.set_status(.not_found)

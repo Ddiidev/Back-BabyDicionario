@@ -1,6 +1,6 @@
-module confirmation
+module ext_services
 
-fn body_msg_congratulations_html(nome_usuario string) string {
+pub fn body_msg_congratulations_html(nome_usuario string) string {
 	email_dicionario_baby := $env('BABYDI_SMTP_EMAIL_FROM_SUPORT')
 	return $tmpl('msg_congratulations.html')
 }

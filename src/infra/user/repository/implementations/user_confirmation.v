@@ -89,39 +89,6 @@ pub fn (u UserConfirmationRepository) contain_user_with_email(email string) bool
 	return c.first().vals().first() or {''}.int() > 0
 }
 
-pub fn (u UserConfirmationRepository) create_user_valid(user_temp entities.UserTemp) !entities.User {
-	mut user := entities.User{
-		first_name: user_temp.first_name
-		last_name: user_temp.last_name
-		responsible: i8(user_temp.responsible)
-		birth_date: user_temp.birth_date
-		email: user_temp.email
-		password: user_temp.password
-		created_at: user_temp.created_at
-		updated_at: user_temp.updated_at
-	}.validated(true) or { return err }
-
-	conn, close := connection.get()
-
-	defer {
-		close() or {}
-	}
-
-	user_existing := sql conn {
-		select from entities.User where email == user.email && responsible == user.responsible
-	}!
-
-	if user_existing.len > 0 {
-		return user_existing.first()
-	} else {
-		sql conn {
-			insert user into entities.User
-		}!
-	}
-
-	return user
-}
-
 pub fn (u UserConfirmationRepository) delete(user_temp entities.UserTemp) ! {
 	conn, close := connection.get()
 

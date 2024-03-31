@@ -92,3 +92,26 @@ pub fn (u UserRepository) blocked_user_from_recovery_password(email string, bloc
 		update entities.User set blocked = block where email == email
 	}!
 }
+
+
+pub fn (u UserRepository) create(user entities.User) !entities.User {
+	conn, close := connection.get()
+
+	defer {
+		close() or {}
+	}
+
+	user_existing := sql conn {
+		select from entities.User where email == user.email && responsible == user.responsible
+	}!
+
+	if user_existing.len > 0 {
+		return user_existing.first()
+	} else {
+		sql conn {
+			insert user into entities.User
+		}!
+	}
+
+	return user
+}
