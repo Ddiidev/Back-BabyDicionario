@@ -2,7 +2,7 @@ module interfaces
 
 import time
 
-pub interface IJwt {
+pub interface IJwtRepository {
 	valid(token_str string) bool
 	new_jwt(user_uuid string, email string, expiration_time string) string
 	payload(token_str string) !IPayload

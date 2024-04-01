@@ -21,8 +21,8 @@ pub fn (u UserTemp) is_valid() bool {
 	return time.utc().add_seconds(2) < u.expiration_time
 }
 
-pub fn (u UserTemp) adapter() models.User {
-	mut user := models.User{
+pub fn (u UserTemp) adapter() User {
+	mut user := User{
 		first_name: u.first_name
 		last_name: u.last_name
 		responsible: i8(u.responsible)

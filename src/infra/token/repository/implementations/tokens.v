@@ -6,7 +6,7 @@ import infra.connection
 
 pub struct TokenRepository {}
 
-pub fn (t TokenRepository) create_token(tok entities.Token) ! {
+pub fn (t TokenRepository) create(tok entities.Token) ! {
 	conn, close := connection.get()
 
 	defer {
@@ -76,7 +76,7 @@ pub fn (t TokenRepository) new_refresh_token(tok entities.Token, target_token en
 	}!
 
 	if origin_toks.len == 0 {
-		t.create_token(target_token)!
+		t.create(target_token)!
 	} else {
 		sql conn {
 			update entities.Token set access_token = target_token.access_token, refresh_token = target_token.refresh_token,

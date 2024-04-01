@@ -1,5 +1,5 @@
 module interfaces
 
 pub interface IEmailService {
-	confirmation_email(to string, user_name string) !
+	congratulations(to string, user_name string) !
 }
