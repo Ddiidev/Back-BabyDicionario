@@ -23,7 +23,7 @@ pub fn (t TokenRepository) create(tok entities.Token) ! {
 			insert tok into entities.Token
 		}!
 	} else {
-		return errors.TokenExist{}
+		return errors.TokenAlreadyExist{}
 	}
 }
 

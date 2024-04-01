@@ -1,8 +1,10 @@
 module services
 
 import domain.token.interfaces
+import infra.jwt.repository.service as jwt_service
 
 pub fn get() interfaces.ITokenService  {
-	x := map[int]interfaces.ITokenService{} 
-	return x[0]
+	return TokenService{
+		repo_jwt: jwt_service.get()
+	}
 }

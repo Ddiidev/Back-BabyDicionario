@@ -4,7 +4,7 @@ pub struct TokenNoExist {
 	Error
 }
 
-pub struct TokenExist {
+pub struct TokenAlreadyExist {
 	Error
 }
 

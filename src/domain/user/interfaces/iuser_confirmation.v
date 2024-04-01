@@ -1,5 +1,6 @@
 module interfaces
 
+// import infra.user.repository.errors as user_errors
 import domain.user.models
 
 pub interface IUserConfirmationService {

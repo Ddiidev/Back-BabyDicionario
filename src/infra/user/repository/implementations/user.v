@@ -5,7 +5,7 @@ import infra.connection
 
 pub struct UserRepository {}
 
-pub fn (u UserRepository) get_user_by_uuid(user entities.User) !entities.User {
+pub fn (u UserRepository) get_user_by_uuid(uuid string) !entities.User {
 	conn, close := connection.get()
 
 	defer {
@@ -13,7 +13,7 @@ pub fn (u UserRepository) get_user_by_uuid(user entities.User) !entities.User {
 	}
 
 	users_ := sql conn {
-		select from entities.User where uuid == user.uuid
+		select from entities.User where uuid == uuid
 	}!
 
 	return users_[0] or { entities.User{} }

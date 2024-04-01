@@ -89,7 +89,7 @@ pub fn (u UserConfirmationRepository) contain_user_with_email(email string) bool
 	return c.first().vals().first() or {''}.int() > 0
 }
 
-pub fn (u UserConfirmationRepository) delete(user_temp entities.UserTemp) ! {
+pub fn (u UserConfirmationRepository) delete(email string) ! {
 	conn, close := connection.get()
 
 	defer {
@@ -97,6 +97,6 @@ pub fn (u UserConfirmationRepository) delete(user_temp entities.UserTemp) ! {
 	}
 
 	sql conn {
-		delete from entities.UserTemp where email == user_temp.email
+		delete from entities.UserTemp where email == email
 	}!
 }

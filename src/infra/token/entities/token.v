@@ -4,7 +4,7 @@ import infra.jwt.repository.service as jwt_service
 import constants
 import time
 
-@[table: 'token']
+@[table: 'tokens']
 pub struct Token {
 pub:
 	user_uuid     string @[default: 'null'; primary; serial]

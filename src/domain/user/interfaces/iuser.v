@@ -7,5 +7,5 @@ pub interface IUserService {
 	create(user models.User) !models.User
 	
 	// Remove o usuário temporário caso o usuário tenha confirmado sua conta.
-	delete_usertemp_if_confirmed_user_exists(user_uuid string) bool
+	delete_usertemp_if_confirmed_user_exists(user_uuid string) !
 }
