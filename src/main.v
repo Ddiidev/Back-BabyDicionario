@@ -6,6 +6,8 @@ import api.controllers.user
 import api.controllers.word
 import api.middleware.auth
 import api.ws_context
+
+import domain.word.services as word_service
 import x.vweb
 
 pub struct Wservice {
@@ -20,7 +22,9 @@ fn main() {
 	mut ws_user_auth := &auth.WsAuth{}
 	mut ws_profile := &profile.WsProfile{}
 	mut ws_confirmation := &confirmation.WsConfirmation{}
-	mut ws_word := &word.WsWord{}
+	mut ws_word := &word.WsWord{
+		hword_service: word_service.get()
+	}
 
 	// temporário
 	conf_cors := vweb.cors[ws_context.Context](vweb.CorsOptions{
