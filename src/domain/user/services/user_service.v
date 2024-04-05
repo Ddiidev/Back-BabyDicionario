@@ -16,7 +16,7 @@ pub fn (u UserService) create(m models.User) !models.User {
 pub fn (u UserService) delete_usertemp_if_confirmed_user_exists(user_uuid string) ! {
 	repo_user := user_service.get()
 	repo_user_confirmation := user_service.get_user_confirmation()
-	
+
 	if user_model := repo_user.get_user_by_uuid(user_uuid) {
 		repo_user_confirmation.delete(user_model.email)!
 	} else {

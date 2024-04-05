@@ -51,7 +51,7 @@ pub fn (p ProfileRepository) get_profiles_by_id(id int) []entities.Profile {
 	return profiles
 }
 
-pub fn (p ProfileRepository) get_profiles_irmaos(profile_required_id int, father_id int, mother_id int) []entities.Profile {
+pub fn (p ProfileRepository) get_profiles_brothers(profile_required_id int, father_id int, mother_id int) []entities.Profile {
 	db, close := connection.get()
 
 	defer {

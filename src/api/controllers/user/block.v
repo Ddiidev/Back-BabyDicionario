@@ -20,10 +20,10 @@ pub fn (ws &WsUser) block_user(mut ctx ws_context.Context, access_token string) 
 		return ctx.html($tmpl('./page_block/index.html'))
 	}
 
-	payload_jwt := handle_jwt.payload(access_token) or { 
+	payload_jwt := handle_jwt.payload(access_token) or {
 		message = user.user_not_found
 		return ctx.html($tmpl('./page_block/index.html'))
-	 }
+	}
 
 	repo_recovery := recovery_service.get()
 	recovery := repo_recovery.get_recovery_password_by_token(access_token) or {

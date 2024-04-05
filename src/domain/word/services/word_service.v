@@ -7,18 +7,15 @@ import domain.word.errors
 
 pub struct WordService {}
 
-pub fn (w WordService) get_all_by_uuid(profile_uuid string) ([]models.Word) {
+pub fn (w WordService) get_all_by_uuid(profile_uuid string) []models.Word {
 	word_repo := word_service_repo.get()
 
-	words_entitie := word_repo.get_all_by_id(profile_uuid) or { 
-		return []
-	}
+	words_entitie := word_repo.get_all_by_id(profile_uuid) or { return [] }
 
 	words_model := words_entitie.map(infra_word_adapters.adapter_word_entitie_to_model(it))
 
 	return words_model
 }
-
 
 pub fn (w WordService) new_words(profile_uuid string, words []models.Word) ! {
 	if !words.all(it.is_valid()) {
@@ -29,7 +26,8 @@ pub fn (w WordService) new_words(profile_uuid string, words []models.Word) ! {
 		}
 	}
 
-	words_entities := words.map( infra_word_adapters.adapter_word_model_to_entitie(profile_uuid, it))
+	words_entities := words.map(infra_word_adapters.adapter_word_model_to_entitie(profile_uuid,
+		it))
 
 	repo_word := word_service_repo.get()
 

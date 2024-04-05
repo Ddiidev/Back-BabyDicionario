@@ -47,6 +47,6 @@ pub fn User.new(puser ParamUser) User {
 		responsible: puser.responsible
 		uuid: if puser.uuid == constants.uuid_empty { rand.uuid_v4() } else { puser.uuid }
 	}
-	
+
 	return user
 }

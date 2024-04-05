@@ -79,14 +79,12 @@ pub fn (u UserConfirmationRepository) contain_user_with_email(email string) bool
 	name_tb := connection.get_name_table[entities.UserTemp]() or { return false }
 
 	prepared := conn.prepare('select count(*) from ${name_tb} where ', [
-		['email', email]
+		['email', email],
 	])
 
-	c := conn.exec_param_many(prepared.query, prepared.params) or {
-		return false
-	}
+	c := conn.exec_param_many(prepared.query, prepared.params) or { return false }
 
-	return c.first().vals().first() or {''}.int() > 0
+	return c.first().vals().first() or { '' }.int() > 0
 }
 
 pub fn (u UserConfirmationRepository) delete(email string) ! {

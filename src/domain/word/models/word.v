@@ -2,7 +2,7 @@ module models
 
 @[noinit]
 pub struct Word {
-	id            ?int
+	id ?int
 pub:
 	profile_uuid  string @[json: '-']
 	word          string
@@ -24,12 +24,13 @@ pub fn Word.new(w WordParam) Word {
 	return Word{
 		profile_uuid: w.profile_uuid
 		word: w.word
-		translation:  w.translation
+		translation: w.translation
 		pronunciation: w.pronunciation
 		audio: w.audio
 	}
 }
 
 pub fn (w Word) is_valid() bool {
-	return w.word.trim_space() != '' && w.translation.trim_space() != '' && w.pronunciation.trim_space() != ''
+	return w.word.trim_space() != '' && w.translation.trim_space() != ''
+		&& w.pronunciation.trim_space() != ''
 }

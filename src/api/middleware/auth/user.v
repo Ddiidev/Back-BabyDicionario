@@ -72,11 +72,8 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) vweb.Result {
 		refresh_token: contract.refresh_token
 	}
 
-	new_tok_jwt := handle_jwt.new_object_jwt(
-		origin_tok.user_uuid,
-		payload.ext.email,
-		time.utc().add(time.hour * 5).str()
-	) or {
+	new_tok_jwt := handle_jwt.new_object_jwt(origin_tok.user_uuid, payload.ext.email,
+		time.utc().add(time.hour * 5).str()) or {
 		ctx.res.set_status(.unauthorized)
 		return ctx.json(ContractApiNoContent{
 			message: 'Token expirou'

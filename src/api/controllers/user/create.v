@@ -39,7 +39,6 @@ pub fn (ws &WsUser) send_confirmation_email(mut ctx ws_context.Context) vweb.Res
 
 	body := body_msg_confirmation_html(contract.first_name, code_confirmation)
 
-
 	email := email_service.get()
 
 	email.send(contract.email, '[DiBebê] Ative sua conta de usuário ${contract.first_name}',

@@ -20,7 +20,7 @@ pub fn (row AbstractRow) vals() []?string {
 
 pub struct QueryParameter {
 pub:
-	query string
+	query  string
 	params []string
 }
 
@@ -45,11 +45,11 @@ pub fn (abdb AbstractDB) prepare(query string, params [][]string) QueryParameter
 	}
 
 	for param in params {
-		if param.len  != 2 {
+		if param.len != 2 {
 			return QueryParameter{query, values}
 		}
 
-		parameters << "${param[0]} = ${value_param()}"
+		parameters << '${param[0]} = ${value_param()}'
 		values << param[1]
 	}
 

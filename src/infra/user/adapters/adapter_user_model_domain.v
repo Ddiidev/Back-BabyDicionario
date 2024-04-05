@@ -18,7 +18,7 @@ pub fn adapter_user_entitie_to_model(user entities.User) models.User {
 	)
 }
 
-pub fn adapter_user_model_to_entitie(user models.User) (entities.User) {
+pub fn adapter_user_model_to_entitie(user models.User) entities.User {
 	return entities.User{
 		blocked: false
 		uuid: user.uuid

@@ -1,6 +1,6 @@
 module errors
 
-pub struct ExpirationTime{
+pub struct ExpirationTime {
 	Error
 }
 

@@ -42,11 +42,11 @@ pub fn (u UserRepository) contain_user_with_uuid(uuid string) bool {
 
 	name_tb := connection.get_name_table[entities.User]() or { return false }
 
-	prepared := conn.prepare('select count(*) from ${name_tb} where ', [['uuid', uuid]])
+	prepared := conn.prepare('select count(*) from ${name_tb} where ', [
+		['uuid', uuid],
+	])
 
-	c := conn.exec_param_many(prepared.query, prepared.params) or {
-		return false
-	}
+	c := conn.exec_param_many(prepared.query, prepared.params) or { return false }
 
 	return c.first().vals().first() or { '' }.int() > 0
 }
@@ -57,16 +57,16 @@ pub fn (u UserRepository) contain_user_with_email(email string) bool {
 	defer {
 		conn.close() or {}
 	}
-	
+
 	name_tb := connection.get_name_table[entities.User]() or { return false }
 
-	prepared := conn.prepare('select count(*) from ${name_tb} where ', [['email', email]])
+	prepared := conn.prepare('select count(*) from ${name_tb} where ', [
+		['email', email],
+	])
 
-	c := conn.exec_param_many(prepared.query, prepared.params) or {
-		return false
-	}
+	c := conn.exec_param_many(prepared.query, prepared.params) or { return false }
 
-	return c.first().vals().first() or {''}.int() > 0
+	return c.first().vals().first() or { '' }.int() > 0
 }
 
 pub fn (u UserRepository) change_password(email string, password string) ! {
@@ -92,7 +92,6 @@ pub fn (u UserRepository) blocked_user_from_recovery_password(email string, bloc
 		update entities.User set blocked = block where email == email
 	}!
 }
-
 
 pub fn (u UserRepository) create(user entities.User) !entities.User {
 	conn, close := connection.get()

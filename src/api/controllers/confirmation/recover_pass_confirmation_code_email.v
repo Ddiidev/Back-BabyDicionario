@@ -3,7 +3,7 @@ module confirmation
 import infra.recovery.repository.service as recovery_service
 import contracts.contract_api { ContractApiNoContent }
 import infra.email.repository.service as email_service
-import infra.user.repository.service as  user_service
+import infra.user.repository.service as user_service
 import contracts.confirmation as cconfirmation
 import utils.auth as utils_auth
 import api.middleware.auth

@@ -1,6 +1,6 @@
-module profile
+module models
 
-import time { Time }
+import time
 import contracts.contract_shared
 
 // TODO: open issue bug in struct recursive with json.encode
@@ -19,7 +19,7 @@ pub:
 	surname    string
 	first_name string
 	last_name  string
-	birth_date Time
+	birth_date time.Time
 	age        f64
 	weight     f64
 	sex        contract_shared.Sex

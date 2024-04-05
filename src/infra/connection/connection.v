@@ -31,27 +31,25 @@ fn init() {
 }
 
 pub fn get() (orm.Connection, fn () !bool) {
-	$if dev? {
+	$if dev ? {
 		conn := sqlite.connect(connection.path_db) or {
 			panic('fail connection db | path: "${connection.path_db}"')
 		}
-	
+
 		return conn, conn.close
 	} $else {
 		local_env := dotenv.parse('.env.local')
 
-		conf := pg.Config {
-			host:     local_env['BABYDI_HOST_DB']
-			port:     local_env['BABYDI_PORT_DB'].int()
-			user:     local_env['BABYDI_USER_DB']
+		conf := pg.Config{
+			host: local_env['BABYDI_HOST_DB']
+			port: local_env['BABYDI_PORT_DB'].int()
+			user: local_env['BABYDI_USER_DB']
 			password: local_env['BABYDI_PASS_DB']
-			dbname:   local_env['BABYDI_DBNAME_DB']
+			dbname: local_env['BABYDI_DBNAME_DB']
 		}
 
-		conn := pg.connect(conf) or {
-			panic(err)
-		}
-		
+		conn := pg.connect(conf) or { panic(err) }
+
 		return conn, fn [conn] () !bool {
 			conn.close()
 			return true
@@ -60,30 +58,27 @@ pub fn get() (orm.Connection, fn () !bool) {
 }
 
 pub fn get_db() AbstractDB {
-	$if dev? {
+	$if dev ? {
 		conn := sqlite.connect(connection.path_db) or {
 			panic('fail connection db | path: "${connection.path_db}"')
 		}
-		
+
 		return conn
 	} $else {
 		local_env := dotenv.parse('.env.local')
 
-		conf := pg.Config {
-			host:     local_env['BABYDI_HOST_DB']
-			port:     local_env['BABYDI_PORT_DB'].int()
-			user:     local_env['BABYDI_USER_DB']
+		conf := pg.Config{
+			host: local_env['BABYDI_HOST_DB']
+			port: local_env['BABYDI_PORT_DB'].int()
+			user: local_env['BABYDI_USER_DB']
 			password: local_env['BABYDI_PASS_DB']
-			dbname:   local_env['BABYDI_DBNAME_DB']
+			dbname: local_env['BABYDI_DBNAME_DB']
 		}
 
-		conn := pg.connect(conf) or {
-			panic(err)
-		}
-		
+		conn := pg.connect(conf) or { panic(err) }
+
 		return conn
 	}
-
 }
 
 pub fn get_name_table[T]() !string {

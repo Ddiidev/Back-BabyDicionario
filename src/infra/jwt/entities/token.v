@@ -3,7 +3,7 @@ module entities
 import infra.jwt.repository.interfaces
 
 pub struct Token {
-	payload interfaces.IPayload
+	payload   interfaces.IPayload
 	token_str string
 }
 
