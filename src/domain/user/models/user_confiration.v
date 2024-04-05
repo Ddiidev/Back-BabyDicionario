@@ -19,7 +19,7 @@ pub:
 }
 
 pub fn (u UserTemp) is_expired() bool {
-	return time.utc().add_seconds(2) < u.expiration_time
+	return u.expiration_time < time.utc().add_seconds(1)
 }
 
 pub fn (u UserTemp) adapter() User {

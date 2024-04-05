@@ -1,5 +1,5 @@
 module interfaces
 
 pub interface IEmail {
-	send(to string, body string, subject string) !
+	send(to string, subject string, body string) !
 }

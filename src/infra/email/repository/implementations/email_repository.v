@@ -4,7 +4,7 @@ import net.smtp
 
 pub struct EmailRepository {}
 
-pub fn (e EmailRepository) send(to string, body string, subject string) ! {
+pub fn (e EmailRepository) send(to string, subject string, body string) ! {
 	mailserver := $env('BABYDI_SMTP_SERVER')
 	mailport := $env('BABYDI_SMTP_SERVER_PORT').int()
 	username := $env('BABYDI_SMTP_USERNAME')
@@ -18,6 +18,7 @@ pub fn (e EmailRepository) send(to string, body string, subject string) ! {
 	}
 	send_cfg := smtp.Mail{
 		to: to
+		from: $env('BABYDI_SMTP_EMAIL_FROM')
 		subject: subject
 		body_type: .html
 		body: body
