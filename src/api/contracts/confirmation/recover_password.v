@@ -1,13 +1,13 @@
 module confirmation
 
-import contracts.contract_shared
+import domain.types
 
 pub struct RecoveryPassword {
 pub:
 	email             string
 	new_password      string
 	code_confirmation string
-	current_date      contract_shared.JsTime
+	current_date      types.JsTime
 }
 
 pub fn (rp RecoveryPassword) valid() bool {

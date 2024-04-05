@@ -1,4 +1,4 @@
-module contract_shared
+module types
 
 import time { Time }
 

@@ -1,12 +1,12 @@
 module user
 
-import contracts.contract_shared { JsTime, Responsible }
+import domain.types
 
 pub struct ContractEmail {
 pub:
 	first_name  string
-	responsible Responsible
-	birth_date  JsTime
+	responsible types.Responsible
+	birth_date  types.JsTime
 	email       string
 	password    string
 }

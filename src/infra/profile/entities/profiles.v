@@ -1,6 +1,6 @@
 module entities
 
-import contracts.contract_shared
+import domain.types
 import time
 
 pub struct None {}
@@ -21,7 +21,7 @@ pub:
 	birth_date       ?time.Time          @[default: 'null']
 	age              f64                 @[sql_type: 'NUMERIC']
 	weight           f64                 @[sql_type: 'NUMERIC']
-	sex              contract_shared.Sex
+	sex              types.Sex
 	height           f64                 @[sql_type: 'NUMERIC']
 	color            string
 	father_id        ?int

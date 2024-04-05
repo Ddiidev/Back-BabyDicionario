@@ -1,7 +1,7 @@
 module models
 
 import time
-import contracts.contract_shared
+import domain.types
 
 // TODO: open issue bug in struct recursive with json.encode
 pub struct None {}

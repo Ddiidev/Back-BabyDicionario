@@ -1,4 +1,4 @@
-module contract_shared
+module types
 
 pub enum Responsible as i8 {
 	pai = 0

@@ -1,6 +1,6 @@
 module entities
 
-import contracts.contract_shared { Responsible }
+import domain.types { Responsible }
 import time
 
 @[table: 'users_temp']

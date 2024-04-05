@@ -1,6 +1,6 @@
 module models
 
-import contracts.contract_shared { Responsible }
+import domain.types { Responsible }
 import constants
 import time
 

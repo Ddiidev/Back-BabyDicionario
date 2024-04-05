@@ -1,4 +1,4 @@
-module contract_shared
+module types
 
 pub enum Sex {
 	masculino = 0

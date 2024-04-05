@@ -1,6 +1,6 @@
 module entities
 
-import contracts.contract_shared
+import domain.types
 import infra.jwt.repository.interfaces
 
 pub struct Payload {
@@ -8,7 +8,7 @@ pub:
 	iss ?string
 	sub ?string
 	aud ?string
-	exp contract_shared.JsTime
-	iat contract_shared.JsTime
+	exp types.JsTime
+	iat types.JsTime
 	ext interfaces.ITokenJwtContract
 }

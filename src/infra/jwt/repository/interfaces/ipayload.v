@@ -1,12 +1,12 @@
 module interfaces
 
-import contracts.contract_shared
+import domain.types
 
 pub interface IPayload {
 	iss ?string
 	sub ?string
 	aud ?string
-	exp contract_shared.JsTime
-	iat contract_shared.JsTime
+	exp types.JsTime
+	iat types.JsTime
 	ext ITokenJwtContract
 }
