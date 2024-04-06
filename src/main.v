@@ -6,6 +6,7 @@ import api.controllers.user
 import api.controllers.word
 import api.middleware.auth
 import api.ws_context
+import domain.user.services as user_service
 import domain.word.services as word_service
 import domain.profile.services as profile_service
 import x.vweb
@@ -17,12 +18,18 @@ pub struct Wservice {
 
 fn main() {
 	mut ws := &Wservice{}
-	mut ws_user := &user.WsUser{}
 	mut ws_user_auth := &auth.WsAuth{}
+	
+	mut ws_user := &user.WsUser{
+		huser_service: user_service.get_user()
+		huser_confirmation_service: user_service.get_user_confirmation()
+	}
 	mut ws_profile := &profile.WsProfile{
 		hprofile_service: profile_service.get()
 	}
-	mut ws_confirmation := &confirmation.WsConfirmation{}
+	mut ws_confirmation := &confirmation.WsConfirmation{
+		hrecovery_service: user_service.get_user_recovery()
+	}
 	mut ws_word := &word.WsWord{
 		hword_service: word_service.get()
 	}

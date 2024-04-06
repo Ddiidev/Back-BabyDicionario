@@ -1,75 +1,35 @@
 module confirmation
 
-import infra.recovery.repository.service as recovery_service
 import contracts.contract_api { ContractApiNoContent }
-import infra.email.repository.service as email_service
-import infra.user.repository.service as user_service
-import contracts.confirmation as cconfirmation
-import utils.auth as utils_auth
-import api.middleware.auth
+import domain.user.contracts as user_contract
+import domain.user.errors
 import api.ws_context
-import constants
 import x.vweb
-import json
-
-const subject = '[DiBebê] ⚠️ Senha redefinida'
 
 @['/recover-password'; post]
 pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx ws_context.Context) vweb.Result {
-	contract := json.decode(cconfirmation.RecoveryPassword, ctx.req.data) or {
-		cconfirmation.RecoveryPassword{}
-	}
-
-	if !contract.valid() {
-		ctx.res.set_status(.bad_request)
+	contract := user_contract.RecoveryPassword.adapter(ctx.req.data) or {
+		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{
-			message: constants.msg_err_json_contract
+			message: 'O JSON fornecido não está de acordo com o contrato esperado.'
 			status: .error
 		})
 	}
 
-	repo_recovery := recovery_service.get()
-	user_recovery := repo_recovery.get_recovery_password(contract.email) or {
-		ctx.res.set_status(.not_found)
+	ws.hrecovery_service.recover_password(contract) or {
+		match err {
+			errors.UserErrorCodeInvaild {
+				ctx.res.set_status(.unprocessable_entity)
+			}
+			else {
+				ctx.res.set_status(.bad_request)
+			}
+		}
+
 		return ctx.json(ContractApiNoContent{
 			message: err.msg()
 			status: .error
 		})
-	}
-
-	if !user_recovery.valid_code_confirmation(contract.code_confirmation) {
-		ctx.res.set_status(.unprocessable_entity)
-		return ctx.json(ContractApiNoContent{
-			message: 'Código inválido'
-			status: .error
-		})
-	}
-
-	if user_recovery.valid() {
-		repo_users := user_service.get()
-		repo_users.change_password(user_recovery.email, utils_auth.gen_password(contract.new_password)) or {
-			ctx.res.set_status(.bad_request)
-			return ctx.json(ContractApiNoContent{
-				message: 'Falha na recuperação de senha, tente novamente'
-				status: .error
-			})
-		}
-
-		repo_users.blocked_user_from_recovery_password(user_recovery.email, false) or {
-			ctx.res.set_status(.bad_request)
-			return ctx.json(ContractApiNoContent{
-				message: 'Falha ao desbloquear a conta de usuário, por favor entre em contato com suporte via email'
-				status: .error
-			})
-		}
-
-		body := body_password_redefined(ctx.ip(), auth.create_url_block(user_recovery.access_token),
-			contract.current_date)
-
-		email := email_service.get()
-		email.send(user_recovery.email, confirmation.subject, body) or {
-			// TODO: add log
-		}
 	}
 
 	return ctx.json(ContractApiNoContent{

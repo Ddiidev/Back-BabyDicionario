@@ -22,7 +22,7 @@ pub:
 	birth_date time.Time
 	age        f64
 	weight     f64
-	sex        contract_shared.Sex
+	sex        types.Sex
 	height     f64
 	color      string
 	father     ProfileAlias
