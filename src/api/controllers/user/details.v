@@ -2,7 +2,7 @@ module user
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
 import infra.user.repository.service as user_service
-import contracts.user as cuser
+import domain.user.contracts as cuser //TODO: temporário
 import api.middleware.auth
 import api.ws_context
 import constants

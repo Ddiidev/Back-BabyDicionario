@@ -16,7 +16,7 @@ pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx ws_contex
 		})
 	}
 
-	ws.hrecovery_service.recover_password(contract) or {
+	ws.hrecovery_service.redefined_password(contract) or {
 		match err {
 			errors.UserErrorCodeInvaild {
 				ctx.res.set_status(.unprocessable_entity)

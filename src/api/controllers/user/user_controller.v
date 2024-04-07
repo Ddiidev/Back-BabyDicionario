@@ -6,6 +6,7 @@ import x.vweb
 
 pub struct WsUser {
 	vweb.Middleware[ws_context.Context]
-	huser_service interfaces.IUserService
+	huser_service              interfaces.IUserService
 	huser_confirmation_service interfaces.IUserConfirmationService
+	huser_recovery_service     interfaces.IUserRecoveryService
 }

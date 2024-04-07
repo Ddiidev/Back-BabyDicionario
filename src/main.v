@@ -22,6 +22,7 @@ fn main() {
 	
 	mut ws_user := &user.WsUser{
 		huser_service: user_service.get_user()
+		huser_recovery_service: user_service.get_user_recovery()
 		huser_confirmation_service: user_service.get_user_confirmation()
 	}
 	mut ws_profile := &profile.WsProfile{

@@ -1,4 +1,4 @@
-module ext_recovery
+module ext_services
 
 import domain.types
 

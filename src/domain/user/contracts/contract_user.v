@@ -1,7 +1,8 @@
-module user
+module contracts
 
 import domain.types
 import utils
+import json
 
 pub struct ContractUser {
 pub:
@@ -10,6 +11,10 @@ pub:
 	responsible types.Responsible
 	birth_date  types.JsTime
 	email       string
+}
+
+pub fn ContractUser.adapter(json_str string) !ContractUser {
+	return json.decode(ContractUser, json_str)!
 }
 
 pub fn (cuser ContractUser) valid_all() bool {

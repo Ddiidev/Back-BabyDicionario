@@ -1,7 +1,9 @@
 module interfaces
 
 import domain.user.contracts
+import domain.types
 
 pub interface IUserRecoveryService {
-	recover_password(contract contracts.RecoveryPassword) !
+	redefined_password(contract contracts.RecoveryPassword) !
+	begin_recover_password(contract contracts.ContractUser) !(!types.AccessToken)
 }
