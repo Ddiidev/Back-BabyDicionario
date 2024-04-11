@@ -10,7 +10,7 @@ pub type ProfileAlias = None | Profile
 @[table: 'profiles']
 pub struct Profile {
 pub:
-	id               int                 @[primary; sql: serial]
+	id               int        @[primary; sql: serial]
 	uuid             string
 	short_uuid       string
 	name_shared_link string
@@ -18,11 +18,11 @@ pub:
 	surname          string
 	first_name       string
 	last_name        string
-	birth_date       ?time.Time          @[default: 'null']
-	age              f64                 @[sql_type: 'NUMERIC']
-	weight           f64                 @[sql_type: 'NUMERIC']
+	birth_date       ?time.Time @[default: 'null']
+	age              f64        @[sql_type: 'NUMERIC']
+	weight           f64        @[sql_type: 'NUMERIC']
 	sex              types.Sex
-	height           f64                 @[sql_type: 'NUMERIC']
+	height           f64        @[sql_type: 'NUMERIC']
 	color            string
 	father_id        ?int
 	mother_id        ?int

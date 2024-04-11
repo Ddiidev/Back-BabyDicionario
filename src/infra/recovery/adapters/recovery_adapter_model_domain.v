@@ -3,7 +3,7 @@ module adapters
 import infra.recovery.entities
 import domain.token.models
 
-pub fn adapter_model_to_entities(model models.TokenUserRecovery) entities.UserRecovery {
+pub fn model_to_entities(model models.TokenUserRecovery) entities.UserRecovery {
 	return entities.UserRecovery{
 		email: model.email
 		expiration_time: model.expiration_time

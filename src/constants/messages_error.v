@@ -1,7 +1,5 @@
 module constants
 
-pub const msg_err_email_or_pass = 'Email ou senha estão incorretos.'
-
 pub const msg_err_json_contract = 'O JSON fornecido não está de acordo com o contrato esperado.'
 
 pub const msg_err_token_invalid = 'Token inválido'
@@ -18,7 +16,6 @@ pub const msg_err_not_found_email = 'Email não encontrado'
 
 pub const msg_err_recovery_contain_recovery_password = 'Já existe uma solicitação de recuperação solicitada a pouco tempo, favor tentar novamente após 15min.'
 
-pub const msg_err_user_blocked = 'O usuário está atualmente bloqueado, para conseguir acessar a conta tente uma recuperação ou envie email para o suporte'
-
 pub const msg_err_user_fail_unblocked = 'Falha ao desbloquear a conta de usuário, por favor entre em contato com suporte via email'
 
+pub const msg_err_email_in_use = 'Este email já foi registrado no Dicionário do bebê.\n\nPrefira fazer o login ao invés de nova conta (E pode preencher o formulário de senha esquecida caso necessário).'

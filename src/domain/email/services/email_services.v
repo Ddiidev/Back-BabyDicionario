@@ -15,12 +15,19 @@ const begin_subject = '[DiBebê] Recuperação de senha'
 
 pub fn (e EmailService) begin_recovery_password(to string, code string) ! {
 	email := email_service.get()
-	email.send(to, begin_subject, ext_services.body_msg_confirmation_recover_user(code))!
+	email.send(to, services.begin_subject, ext_services.body_msg_confirmation_recover_user(code))!
 }
 
 const subject = '[DiBebê] ⚠️ Senha redefinida'
 
 pub fn (e EmailService) recovery_password_refined(to string, ip string, url_block_user string, date types.JsTime) ! {
 	email := email_service.get()
-	email.send(to, subject, ext_services.body_password_redefined(ip, url_block_user, date))!
+	email.send(to, services.subject, ext_services.body_password_redefined(ip, url_block_user,
+		date))!
+}
+
+pub fn (e EmailService) email_from_code_confirmation(to string, user_name string, code_confirmation string) ! {
+	email := email_service.get()
+	subject_ := '[DiBebê] Ative sua conta de usuário ${user_name}'
+	email.send(to, subject_, ext_services.body_msg_confirmation_html(user_name, code_confirmation))!
 }

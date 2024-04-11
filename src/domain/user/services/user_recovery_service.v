@@ -13,7 +13,7 @@ import constants
 
 pub struct UserRecoveryService {}
 
-pub fn (u UserRecoveryService) begin_recover_password(contract contracts.ContractUser) (!types.AccessToken) {
+pub fn (u UserRecoveryService) begin_recover_password(contract contracts.ContractUser) !types.AccessToken {
 	if !contract.valid_email() {
 		return error(constants.msg_err_json_contract)
 	}
@@ -22,7 +22,6 @@ pub fn (u UserRecoveryService) begin_recover_password(contract contracts.Contrac
 	repo_users_confirmation := user_service.get_user_confirmation()
 	if !(repo_users.contain_user_with_email(contract.email)
 		|| repo_users_confirmation.contain_user_with_email(contract.email)) {
-
 		return error(constants.msg_err_not_found_email)
 	}
 
@@ -32,7 +31,6 @@ pub fn (u UserRecoveryService) begin_recover_password(contract contracts.Contrac
 	}
 
 	code := utils_auth.random_number()
-	
 
 	hemail_service := domain_email_service.get()
 	hemail_service.begin_recovery_password(contract.email, code) or {
@@ -44,7 +42,6 @@ pub fn (u UserRecoveryService) begin_recover_password(contract contracts.Contrac
 
 	return access_tok
 }
-
 
 pub fn (u UserRecoveryService) redefined_password(contract contracts.RecoveryPassword) ! {
 	if !contract.valid() {
@@ -74,9 +71,6 @@ fn change_password(email string, access_token string, contract contracts.Recover
 	}
 
 	hemail_service := domain_email_service.get()
-	hemail_service.recovery_password_refined(
-		email,
-		contract.ip,
-		auth.create_url_block(access_token), contract.current_date
-	)!
+	hemail_service.recovery_password_refined(email, contract.ip, auth.create_url_block(access_token),
+		contract.current_date)!
 }

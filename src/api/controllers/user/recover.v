@@ -19,13 +19,13 @@ pub fn (ws &WsUser) recover_password_send_email(mut ctx ws_context.Context) vweb
 		})
 	}
 
-	access_tok := ws.huser_recovery_service.begin_recover_password(contract) or { 
+	access_tok := ws.huser_recovery_service.begin_recover_password(contract) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: err.msg()
 			status: .error
-		})	
-	 }
+		})
+	}
 
 	return ctx.json(ContractApi{
 		message: constants.msg_send_email

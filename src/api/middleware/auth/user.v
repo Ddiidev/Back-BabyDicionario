@@ -2,9 +2,9 @@ module auth
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
 import infra.token.repository.service as token_service
+import domain.user.contracts as domain_user_contracts
 import infra.jwt.repository.service as jwt_service
 import infra.token.entities as token_entities
-import contracts.token { TokenContract }
 import api.ws_context
 import constants
 import x.vweb
@@ -51,9 +51,14 @@ pub fn authenticate_recover_password(mut ctx ws_context.Context) bool {
 
 @['/refresh-token']
 pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) vweb.Result {
-	contract := TokenContract{
+	contract := domain_user_contracts.TokenContract.new(
 		refresh_token: ctx.req.header.custom_values('refresh-token')[0] or { '' }.after(' ')
 		access_token: ctx.req.header.values(.authorization)[0] or { '' }.after(' ')
+	) or {
+		return ctx.json(ContractApiNoContent{
+			message: constants.msg_err_json_contract
+			status: .error
+		})
 	}
 
 	// TODO: Separar em uma função exclusiva para isso
@@ -100,9 +105,9 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) vweb.Result {
 	return ctx.json(ContractApi{
 		message: 'Token gerado com sucesso'
 		status: .info
-		content: TokenContract{
+		content: domain_user_contracts.TokenContract.new(
 			access_token: target_tok.access_token
 			refresh_token: target_tok.refresh_token
-		}
+		)
 	})
 }

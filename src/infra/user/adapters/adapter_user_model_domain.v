@@ -3,7 +3,7 @@ module adapters
 import domain.user.models
 import infra.user.entities
 
-pub fn adapter_user_entitie_to_model(user entities.User) models.User {
+pub fn entitie_to_model(user entities.User) models.User {
 	return models.User.new(
 		blocked: user.blocked
 		uuid: user.uuid
@@ -18,7 +18,7 @@ pub fn adapter_user_entitie_to_model(user entities.User) models.User {
 	)
 }
 
-pub fn adapter_user_model_to_entitie(user models.User) entities.User {
+pub fn model_to_entitie(user models.User) entities.User {
 	return entities.User{
 		blocked: false
 		uuid: user.uuid

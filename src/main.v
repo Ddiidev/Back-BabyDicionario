@@ -19,7 +19,7 @@ pub struct Wservice {
 fn main() {
 	mut ws := &Wservice{}
 	mut ws_user_auth := &auth.WsAuth{}
-	
+
 	mut ws_user := &user.WsUser{
 		huser_service: user_service.get_user()
 		huser_recovery_service: user_service.get_user_recovery()

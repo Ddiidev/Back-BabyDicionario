@@ -5,7 +5,7 @@ import infra.connection
 
 pub struct UserRepository {}
 
-pub fn (u UserRepository) get_user_by_uuid(uuid string) !entities.User {
+pub fn (u UserRepository) get_by_uuid(uuid string) !entities.User {
 	conn, close := connection.get()
 
 	defer {
@@ -19,7 +19,7 @@ pub fn (u UserRepository) get_user_by_uuid(uuid string) !entities.User {
 	return users_[0] or { entities.User{} }
 }
 
-pub fn (u UserRepository) get_user_by_email_pass(user entities.User) !entities.User {
+pub fn (u UserRepository) get_by_email_and_pass(email string, password string) !entities.User {
 	conn, close := connection.get()
 
 	defer {
@@ -27,7 +27,7 @@ pub fn (u UserRepository) get_user_by_email_pass(user entities.User) !entities.U
 	}
 
 	users_ := sql conn {
-		select from entities.User where password == user.password && email == user.email
+		select from entities.User where password == password && email == email
 	}!
 
 	return users_[0]!
@@ -49,6 +49,20 @@ pub fn (u UserRepository) contain_user_with_uuid(uuid string) bool {
 	c := conn.exec_param_many(prepared.query, prepared.params) or { return false }
 
 	return c.first().vals().first() or { '' }.int() > 0
+}
+
+pub fn (u UserRepository) get_by_email(email string) !entities.User {
+	conn, close := connection.get()
+
+	defer {
+		close() or {}
+	}
+
+	users := sql conn {
+		select from entities.User where email == email limit 1
+	}!
+
+	return users[0]!
 }
 
 pub fn (u UserRepository) contain_user_with_email(email string) bool {

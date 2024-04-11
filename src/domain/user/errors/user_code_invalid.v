@@ -5,5 +5,5 @@ pub struct UserErrorCodeInvaild {
 }
 
 pub fn (u UserErrorCodeInvaild) msg() string {
-	return "Código inválido"
+	return 'Código inválido'
 }

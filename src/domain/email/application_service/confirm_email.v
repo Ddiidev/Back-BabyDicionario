@@ -18,10 +18,8 @@ pub fn confirm_email_by_code(contract contracts.ConfirmationEmailByCode) !token_
 		htoken := email_domains.get()
 		token_model := htoken.create(user.uuid, user.email, user_temp.expiration_time)!
 
-		dump(token_model)
-
 		hemail := email_domain.get()
-		huser.delete_usertemp_if_confirmed_user_exists(user.uuid)!
+		huser.delete_temporary_user_if_confirmed_user_exists(user.uuid)!
 		hemail.congratulations(user.email, user.first_name)!
 
 		return token_model

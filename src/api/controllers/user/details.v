@@ -1,8 +1,8 @@
 module user
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
-import infra.user.repository.service as user_service
-import domain.user.contracts as cuser //TODO: temporário
+import domain.user.services as domain_user_services
+import domain.user.contracts as cuser
 import api.middleware.auth
 import api.ws_context
 import constants
@@ -12,6 +12,8 @@ import x.vweb
 pub fn (ws &WsUser) dails_user(mut ctx ws_context.Context) vweb.Result {
 	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
 
+	huser_service := domain_user_services.get_user()
+
 	user_uuid := auth.get_uuid_from_user(authorization) or {
 		ctx.res.set_status(.not_found)
 		return ctx.json(ContractApiNoContent{
@@ -20,11 +22,10 @@ pub fn (ws &WsUser) dails_user(mut ctx ws_context.Context) vweb.Result {
 		})
 	}
 
-	repo_users := user_service.get()
-	user := repo_users.get_user_by_uuid(user_uuid) or {
-		ctx.res.set_status(.not_found)
+	user := huser_service.details(user_uuid) or {
+		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
-			message: constants.msg_err_user_not_found
+			message: err.msg()
 			status: .error
 		})
 	}

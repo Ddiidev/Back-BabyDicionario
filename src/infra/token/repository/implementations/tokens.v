@@ -85,7 +85,7 @@ pub fn (t TokenRepository) new_refresh_token(tok entities.Token, target_token en
 	}
 }
 
-pub fn (t TokenRepository) update_token_by_uuid(tok entities.Token) ! {
+pub fn (t TokenRepository) update_by_uuid(tok entities.Token) ! {
 	conn, close := connection.get()
 
 	defer {

@@ -17,7 +17,7 @@ pub fn (p ProfileService) get_family_from_profile(short_uuid_profile string, nam
 		if father_id := profile_required.father_id {
 			profiles_ := repo_profile.get_profiles_by_id(father_id)
 			if profiles_.len > 0 {
-				profile_father = infra_profile_adapters.adapter_word_entitie_to_model(profiles_.first())!
+				profile_father = infra_profile_adapters.entitie_to_model(profiles_.first())!
 			}
 		}
 	}
@@ -27,7 +27,7 @@ pub fn (p ProfileService) get_family_from_profile(short_uuid_profile string, nam
 		if mother_id := profile_required.mother_id {
 			profiles_ := repo_profile.get_profiles_by_id(mother_id)
 			if profiles_.len > 0 {
-				profile_mother = infra_profile_adapters.adapter_word_entitie_to_model(profiles_.first())!
+				profile_mother = infra_profile_adapters.entitie_to_model(profiles_.first())!
 			}
 		}
 	}
@@ -38,7 +38,7 @@ pub fn (p ProfileService) get_family_from_profile(short_uuid_profile string, nam
 		mother_id := profile_required.mother_id
 		if father_id != none && mother_id != none {
 			profile_brothers = repo_profile.get_profiles_brothers(profile_required.id,
-				father_id, mother_id).map(models.ProfileAlias(infra_profile_adapters.adapter_word_entitie_to_model(it)!))
+				father_id, mother_id).map(models.ProfileAlias(infra_profile_adapters.entitie_to_model(it)!))
 		}
 	}
 

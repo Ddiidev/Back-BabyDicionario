@@ -4,7 +4,7 @@ import domain.profile.models
 import infra.profile.entities
 import constants
 
-pub fn adapter_word_entitie_to_model(p entities.Profile) !models.Profile {
+pub fn entitie_to_model(p entities.Profile) !models.Profile {
 	return models.Profile.new(
 		uuid: p.uuid
 		surname: p.surname
@@ -18,7 +18,7 @@ pub fn adapter_word_entitie_to_model(p entities.Profile) !models.Profile {
 	)!
 }
 
-// pub fn adapter_word_model_to_entitie(profile_uuid string, word models.Word) (entities.Word) {
+// pub fn model_to_entitie(profile_uuid string, word models.Word) (entities.Word) {
 // 	return entities.Word{
 // 		profile_uuid: profile_uuid
 // 		word: word.word
