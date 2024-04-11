@@ -6,7 +6,7 @@ import infra.connection
 
 pub struct RecoveryRepository {}
 
-pub fn (r RecoveryRepository) new_recovery_password(recover entities.UserRecovery) ! {
+pub fn (r RecoveryRepository) create(recover entities.UserRecovery) ! {
 	conn, close := connection.get()
 
 	defer {
@@ -42,7 +42,7 @@ pub fn (r RecoveryRepository) delete(email string) ! {
 	}!
 }
 
-pub fn (r RecoveryRepository) get_recovery_password(email string) !entities.UserRecovery {
+pub fn (r RecoveryRepository) get_by_email(email string) !entities.UserRecovery {
 	conn, close := connection.get()
 
 	defer {
@@ -61,14 +61,14 @@ pub fn (r RecoveryRepository) get_recovery_password(email string) !entities.User
 }
 
 pub fn (r RecoveryRepository) email_contains_pendenting_recovery_password(email string) bool {
-	return if r_ := r.get_recovery_password(email) {
+	return if r_ := r.get_by_email(email) {
 		r_.valid_expiration_token()
 	} else {
 		false
 	}
 }
 
-pub fn (r RecoveryRepository) get_recovery_password_by_token(access_token string) !entities.UserRecovery {
+pub fn (r RecoveryRepository) get_by_token(access_token string) !entities.UserRecovery {
 	conn, close := connection.get()
 
 	defer {

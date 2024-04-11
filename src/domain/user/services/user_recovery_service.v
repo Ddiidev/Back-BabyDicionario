@@ -49,7 +49,7 @@ pub fn (u UserRecoveryService) redefined_password(contract contracts.RecoveryPas
 	}
 
 	repo_recovery := recovery_service.get()
-	user_recovery := repo_recovery.get_recovery_password(contract.email)!
+	user_recovery := repo_recovery.get_by_email(contract.email)!
 
 	if !user_recovery.valid_code_confirmation(contract.code_confirmation) {
 		return errors.UserErrorCodeInvaild{}
