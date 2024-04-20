@@ -2,6 +2,7 @@ module errors
 
 pub struct UserInvalid {
 	Error
+pub:
 	msg string
 }
 

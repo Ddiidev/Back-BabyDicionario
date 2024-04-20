@@ -5,6 +5,7 @@ import infra.recovery.entities as recovery_entities
 import infra.word.entities as words_entities
 import infra.token.entities as token_entities
 import infra.user.entities as user_entities
+import infra.family.entities as family_entities
 import ken0x0a.dotenv
 import db.sqlite
 import db.pg
@@ -23,7 +24,7 @@ fn init() {
 		create table recovery_entities.UserRecovery
 		create table user_entities.UserTemp
 		create table profiles_entities.Profile
-		create table user_entities.Family
+		create table family_entities.Family
 		create table token_entities.Token
 		create table words_entities.Word
 		create table user_entities.User

@@ -24,26 +24,9 @@ pub:
 	sex              types.Sex
 	height           f64        @[sql_type: 'NUMERIC']
 	color            string
-	father_id        ?int
-	mother_id        ?int
 	created_at       time.Time = time.utc()
 	updated_at       time.Time = time.utc()
 }
-
-// pub fn (p Profile) adapter() ProfileAlias {
-// 	return ProfileAlias(Profile{
-// 		uuid: p.uuid
-// 		surname: p.surname
-// 		first_name: p.first_name
-// 		last_name: p.last_name
-// 		age: p.age
-// 		weight: p.weight
-// 		color: p.color
-// 		sex: p.sex
-// 		height: p.height
-// 		birth_date: p.birth_date or { constants.time_empty }
-// 	})
-// }
 
 pub fn (p Profile) validated() Profile {
 	return Profile{

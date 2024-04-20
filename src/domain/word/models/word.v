@@ -13,6 +13,7 @@ pub:
 
 @[params]
 pub struct WordParam {
+pub:
 	profile_uuid  string
 	word          string @[required]
 	translation   string @[required]

@@ -16,6 +16,7 @@ pub mut:
 
 @[params]
 pub struct ParamToken {
+pub:
 	uuid                     string    @[required]
 	access_token             string    @[required]
 	refresh_token            string    @[required]

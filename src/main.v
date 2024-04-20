@@ -20,20 +20,20 @@ fn main() {
 	mut ws := &Wservice{}
 	mut ws_user_auth := &auth.WsAuth{}
 
-	mut ws_user := &user.WsUser{
+	mut ws_user := user.WsUser.new(
 		huser_service: user_service.get_user()
 		huser_recovery_service: user_service.get_user_recovery()
 		huser_confirmation_service: user_service.get_user_confirmation()
-	}
-	mut ws_profile := &profile.WsProfile{
+	)
+	mut ws_profile := profile.WsProfile.new(
 		hprofile_service: profile_service.get()
-	}
-	mut ws_confirmation := &confirmation.WsConfirmation{
+	)
+	mut ws_confirmation := confirmation.WsConfirmation.new(
 		hrecovery_service: user_service.get_user_recovery()
-	}
-	mut ws_word := &word.WsWord{
+	)
+	mut ws_word := word.WsWord.new(
 		hword_service: word_service.get()
-	}
+	)
 
 	// temporário
 	conf_cors := vweb.cors[ws_context.Context](vweb.CorsOptions{

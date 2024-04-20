@@ -51,7 +51,7 @@ pub fn (p ProfileRepository) get_profiles_by_id(id int) []entities.Profile {
 	return profiles
 }
 
-pub fn (p ProfileRepository) get_profiles_brothers(profile_required_id int, father_id int, mother_id int) []entities.Profile {
+pub fn (p ProfileRepository) get_profiles_brothers(profile_required_id int, family_id int) []entities.Profile {
 	db, close := connection.get()
 
 	defer {
@@ -60,7 +60,7 @@ pub fn (p ProfileRepository) get_profiles_brothers(profile_required_id int, fath
 
 	profiles := sql db {
 		select from entities.Profile where id != profile_required_id
-		&& (father_id == father_id || mother_id == mother_id)
+		&& family_id == family_id
 	} or { []entities.Profile{} }
 
 	return profiles

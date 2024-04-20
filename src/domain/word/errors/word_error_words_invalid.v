@@ -4,8 +4,8 @@ import domain.word.models
 
 pub struct WordsErrorInvalid {
 	Error
-	message string
 pub:
+	message string
 	words_fail []models.Word
 }
 

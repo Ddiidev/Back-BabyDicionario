@@ -1,14 +1,8 @@
 module profile
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
-import domain.profile.interfaces
 import api.ws_context
 import x.vweb
-
-pub struct WsProfile {
-	vweb.Middleware[ws_context.Context]
-	hprofile_service interfaces.IProfileService
-}
 
 // vfmt off
 @['/:short_uuid_profile/:name']

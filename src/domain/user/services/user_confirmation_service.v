@@ -38,7 +38,7 @@ pub fn (u UserConfirmationService) create(contract contracts.ContractEmail) ! {
 		return error('Falha ao enviar o email de confirmação, verificar se o email está correto')
 	}
 
-	if user_temp_exist != none {
+	if user_temp_exist == none {
 		contract_data_nascimento := contract.birth_date.time() or {
 			return error('Formato da data de nascimento está inválido')
 		}

@@ -24,8 +24,8 @@ mut:
 
 @[params]
 pub struct ProfileParam {
-	uuid string
 pub:
+	uuid string
 	surname    string
 	first_name string
 	last_name  string
