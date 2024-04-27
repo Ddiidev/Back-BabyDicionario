@@ -33,8 +33,6 @@ pub fn confirm_email_by_code(contract contracts.ConfirmationEmailByCode) !token_
 		)!
 		profile_model = hprofile.create(profile_model)!
 
-		$dbg;
-
 		family_id := hfamily.create(profile_models.Family.new(
 			user.uuid,
 			profile_model.uuid,

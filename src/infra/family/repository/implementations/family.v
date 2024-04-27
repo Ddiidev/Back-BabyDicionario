@@ -49,8 +49,6 @@ pub fn (f FamilyRepository) create(family entities.Family) !int {
 		close() or {}
 	}
 
-	$dbg;
-
 	sql conn {
 		insert family into entities.Family
 	}!
@@ -70,25 +68,32 @@ fn (f FamilyRepository) get(family entities.Family) !entities.Family {
 	}
 
 	mut families := []entities.Family{}
+	
 	match family.get_reponsible() {
 		.pai {
+			profile_uuid_father := family.profile_uuid_father or {
+				return errors.FamilyNotFound{}
+			}
 			families = sql conn {
-				select from entities.Family where profile_uuid_father == family.profile_uuid_father limit 1
+				select from entities.Family where profile_uuid_father == profile_uuid_father limit 1
 			} or {
 				println(err)
 				return err
 			}
 		}
 		.mae {
+			profile_uuid_mother := family.profile_uuid_mother or {
+				return errors.FamilyNotFound{}
+			}
+
 			families = sql conn {
-				select from entities.Family where profile_uuid_mother == family.profile_uuid_mother limit 1
+				select from entities.Family where profile_uuid_mother == profile_uuid_mother limit 1
 			} or {
 				println(err)
 				return err
 			}
 		}
 	}
-	$dbg;
 
 	if families.len == 1 {
 		return families[0]
