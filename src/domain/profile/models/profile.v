@@ -1,21 +1,26 @@
 module models
 
 import time
+import math
+import rand
 import domain.types
 
 @[noinit]
 pub struct Profile {
 pub:
-	uuid       string
-	surname    string
-	first_name string
-	last_name  string
-	birth_date time.Time
-	age        f64
-	weight     f64
-	sex        types.Sex
-	height     f64
-	color      string
+	uuid             string
+	short_uuid       string
+	name_shared_link string
+	family_id        int
+	surname          string
+	first_name       string
+	last_name        string
+	birth_date       time.Time
+	age              f64
+	weight           f64
+	sex              types.Sex
+	height           f64
+	color            string
 mut:
 	father   ProfileAlias
 	mother   ProfileAlias
@@ -25,19 +30,22 @@ mut:
 @[params]
 pub struct ProfileParam {
 pub:
-	uuid string
-	surname    string
-	first_name string
-	last_name  string
-	birth_date time.Time
-	age        f64
-	weight     f64
-	sex        types.Sex
-	height     f64
-	color      string
-	father     ProfileAlias
-	mother     ProfileAlias
-	brothers   []ProfileAlias
+	uuid             string
+	short_uuid       string
+	name_shared_link string
+	family_id        int
+	surname          string
+	first_name       string
+	last_name        string
+	birth_date       time.Time
+	age              f64
+	weight           f64
+	sex              types.Sex
+	height           f64
+	color            string
+	father           ProfileAlias
+	mother           ProfileAlias
+	brothers         []ProfileAlias
 }
 
 pub fn Profile.empty() Profile {
@@ -57,8 +65,53 @@ pub fn Profile.new(param ProfileParam) !Profile {
 	} else {
 		Profile{
 			uuid: param.uuid
+			short_uuid: param.short_uuid
+			name_shared_link: param.name_shared_link
+			family_id: param.family_id
 			surname: param.surname
 			age: param.age
+			birth_date: param.birth_date
+			brothers: param.brothers
+			color: param.color
+			father: param.father
+			first_name: param.first_name
+			height: param.height
+			last_name: param.last_name
+			mother: param.mother
+			sex: param.sex
+			weight: param.weight
+		}
+	}
+}
+
+pub fn Profile.new_for_new_users(param ProfileParam) !Profile {
+	
+	return if param.first_name.trim_space() == '' {
+		error('Um dos campos "primeiro nome", "segundo nome" ou "apelido" estão em brancos.')
+	} else if param.birth_date > time.utc() {
+		error('A data de nascimento não pode ser maior que a data atual (ta no futuro?)')
+	} else {
+		mut age := param.age
+		mut uuid := param.uuid
+		mut short_uuid := param.short_uuid
+
+		if param.age <= 0 {
+			age = calcule_age(param.birth_date)
+		}
+		if param.uuid == '' {
+			uuid = rand.uuid_v4()
+		}
+		if param.short_uuid == '' {
+			short_uuid = rand.hex(12)
+		}
+
+		Profile{
+			uuid: uuid
+			short_uuid: short_uuid
+			name_shared_link: 'Temp_${param.first_name}'
+			family_id: param.family_id
+			surname: param.surname
+			age: age
 			birth_date: param.birth_date
 			brothers: param.brothers
 			color: param.color
@@ -79,4 +132,17 @@ pub fn (mut p Profile) update_father(profile ProfileAlias) {
 
 pub fn (mut p Profile) update_mother(profile ProfileAlias) {
 	p.mother = profile
+}
+
+fn calcule_age(birth_date time.Time) f64 {
+	mut curr_date := time.now()
+	mut age := f64(curr_date.year - birth_date.year)
+	mut months := f64(curr_date.month - birth_date.month)
+
+	if months < 0 || (months == 0 && curr_date.day < birth_date.day) {
+		age--
+		months = 12 - math.abs(months)
+	}
+	
+	return age + math.round_sig(months * 0.01, 2)
 }

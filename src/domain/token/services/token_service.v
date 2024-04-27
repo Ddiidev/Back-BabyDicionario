@@ -18,7 +18,8 @@ pub fn (t TokenService) valid(access_token string) bool {
 	repo_jwt := jwt_services.get()
 	return repo_jwt.valid(access_token)
 }
-pub fn (t TokenService) payload(access_token string) (!models.TokenPayload) {
+
+pub fn (t TokenService) payload(access_token string) !models.TokenPayload {
 	repo_jwt := jwt_services.get()
 	payload := repo_jwt.payload(access_token)!
 
@@ -41,7 +42,7 @@ pub fn (t TokenService) create(user_uuid string, email string, expiration_time t
 
 	token_entitie := token_adapters.model_to_entities(token_model)
 
-	htoken.create(token_entitie)!
+	htoken.create(token_entitie) or { return error(constants.msg_err_generate_token) }
 
 	return token_model
 }
@@ -62,9 +63,7 @@ pub fn (t TokenService) create_token_for_recovery(email string, code string) !ty
 	})
 
 	repo_recovery := recovery_services.get()
-	repo_recovery.create(entitie_adapted) or {
-		return error(constants.msg_err_send_email)
-	}
+	repo_recovery.create(entitie_adapted) or { return error(constants.msg_err_send_email) }
 
 	huser_service := user_services.get()
 

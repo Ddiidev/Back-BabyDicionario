@@ -3,5 +3,5 @@ module interfaces
 import domain.profile.models
 
 pub interface IFamilyService {
-	create(family models.Family) !
+	create(family models.Family) !int
 }

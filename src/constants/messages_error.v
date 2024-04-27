@@ -10,6 +10,8 @@ pub const msg_user_found = 'Usuário encontrado'
 
 pub const msg_err_send_email = 'Falha ao enviar o email de confirmação'
 
+pub const msg_err_generate_token = 'Falha ao gerar token de acesso'
+
 pub const msg_send_email = 'Email enviado com sucesso'
 
 pub const msg_err_not_found_email = 'Email não encontrado'

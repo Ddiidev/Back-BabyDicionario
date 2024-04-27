@@ -5,26 +5,48 @@ import domain.types
 @[noinit]
 pub struct Family {
 pub:
-	id                ?int
-	user_uuid_father  ?string
-	profile_id_father ?int
-	user_uuid_mother  ?string
-	profile_id_mother ?int
+	id                  ?int
+	user_uuid_father    ?string
+	profile_uuid_father ?string
+	user_uuid_mother    ?string
+	profile_uuid_mother ?string
 }
 
-pub fn Family.new(uuid string, user_id int, responsible types.Responsible) Family {
+pub fn Family.new(user_uuid ?string, profile_uuid ?string, responsible types.Responsible) Family {
 	match responsible {
 		.pai {
 			return Family{
-				user_uuid_father: uuid
-				profile_id_father: user_id
+				user_uuid_father: user_uuid
+				profile_uuid_father: profile_uuid
 			}
 		}
 		.mae {
 			return Family{
-				user_uuid_mother: uuid
-				profile_id_mother: user_id
+				user_uuid_mother: user_uuid
+				profile_uuid_mother: profile_uuid
 			}
+		}
+	}
+}
+
+pub fn (f Family) get_reponsible() types.Responsible {
+	return match true {
+		f.profile_uuid_father or { '' } != '' && f.user_uuid_father or { '' } != '' {
+			.pai
+		}
+		else {
+			.mae
+		}
+	}
+}
+
+pub fn (f Family) get_uuid_user_and_profile() (?string, ?string) {
+	match true {
+		f.profile_uuid_father or { '' } != '' && f.user_uuid_father or { '' } != '' {
+			return f.user_uuid_father, f.profile_uuid_father
+		}
+		else {
+			return f.user_uuid_mother, f.profile_uuid_mother
 		}
 	}
 }

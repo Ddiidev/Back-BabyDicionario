@@ -5,6 +5,31 @@ import infra.connection
 
 pub struct ProfileRepository {}
 
+pub fn (p ProfileRepository) update_family_id(uuid string, family_id int) ! {
+	db, close := connection.get()
+
+	defer {
+		close() or {}
+	}
+
+	sql db {
+		update entities.Profile set family_id = family_id 
+		where uuid == uuid
+	}!
+}
+
+pub fn (p ProfileRepository) create(profile entities.Profile) ! {
+	db, close := connection.get()
+
+	defer {
+		close() or {}
+	}
+
+	sql db {
+		insert profile into entities.Profile
+	}!
+}
+
 pub fn (p ProfileRepository) get_profile(uuid string) entities.Profile {
 	db, close := connection.get()
 
