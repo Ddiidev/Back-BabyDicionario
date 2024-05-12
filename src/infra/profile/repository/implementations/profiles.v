@@ -53,7 +53,9 @@ pub fn (p ProfileRepository) get_profile_by_suuid(suuid string, name_shared_link
 
 	profiles := sql db {
 		select from entities.Profile where short_uuid == suuid && name_shared_link == name_shared_link
-	} or { []entities.Profile{} }
+	} or {
+		[]entities.Profile{}
+	}
 
 	return if profiles.len > 0 {
 		profiles.first()

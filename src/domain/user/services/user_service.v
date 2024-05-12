@@ -22,6 +22,7 @@ pub fn (u UserService) login(email string, password string) !contracts.TokenCont
 		return errors.UserErrorEmailOrPasswodInvaild{}
 	}
 
+
 	if user_required.blocked {
 		return errors.UserErrorUserBlockedInvaild{}
 	}

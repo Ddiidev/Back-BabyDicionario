@@ -6,4 +6,5 @@ pub interface IProfileService {
 	get_family_from_profile(short_uuid_profile string, name string) !models.Profile
 	create(profile models.Profile) (!models.Profile)
 	update_family_id(uuid string, family_id int) !
+	get_family(user_uuid string) !models.Profile
 }

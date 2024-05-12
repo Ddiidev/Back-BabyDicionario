@@ -21,7 +21,12 @@ pub fn (t TokenRepository) create(tok entities.Token) ! {
 	if tokens_.len == 0 {
 		sql conn {
 			insert tok into entities.Token
-		}!
+		} or { 
+			sql conn {
+			 	update entities.Token set access_token = tok.access_token, refresh_token = tok.refresh_token
+				where user_uuid == tok.user_uuid
+			}!
+		}
 	} else {
 		return errors.TokenAlreadyExist{}
 	}

@@ -16,6 +16,7 @@ pub:
 	first_name       string
 	last_name        string
 	birth_date       time.Time
+	responsible      types.Responsible
 	age              f64
 	weight           f64
 	sex              types.Sex
@@ -38,6 +39,7 @@ pub:
 	first_name       string
 	last_name        string
 	birth_date       time.Time
+	responsible      types.Responsible
 	age              f64
 	weight           f64
 	sex              types.Sex
@@ -71,6 +73,7 @@ pub fn Profile.new(param ProfileParam) !Profile {
 			surname: param.surname
 			age: param.age
 			birth_date: param.birth_date
+			responsible: param.responsible
 			brothers: param.brothers
 			color: param.color
 			father: param.father
@@ -82,6 +85,28 @@ pub fn Profile.new(param ProfileParam) !Profile {
 			weight: param.weight
 		}
 	}
+}
+
+pub fn Profile.new_return(param ProfileParam) !Profile {
+	return Profile{
+			uuid: param.uuid
+			short_uuid: param.short_uuid
+			name_shared_link: param.name_shared_link
+			family_id: param.family_id
+			surname: param.surname
+			age: param.age
+			birth_date: param.birth_date
+			responsible: param.responsible
+			brothers: param.brothers
+			color: param.color
+			father: param.father
+			first_name: param.first_name
+			height: param.height
+			last_name: param.last_name
+			mother: param.mother
+			sex: param.sex
+			weight: param.weight
+		}
 }
 
 pub fn Profile.new_for_new_users(param ProfileParam) !Profile {
@@ -113,6 +138,7 @@ pub fn Profile.new_for_new_users(param ProfileParam) !Profile {
 			surname: param.surname
 			age: age
 			birth_date: param.birth_date
+			responsible: param.responsible
 			brothers: param.brothers
 			color: param.color
 			father: param.father

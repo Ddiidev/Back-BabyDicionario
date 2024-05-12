@@ -27,8 +27,9 @@ pub fn (p ProfileService) get_family_from_profile(short_uuid_profile string, nam
 	repo_family := infra_family_service.get()
 
 	profile_required := repo_profile.get_profile_by_suuid(short_uuid_profile, name)!
-
+	
 	family := repo_family.get_by_id(profile_required.family_id)!
+	
 
 	mut profile_father := models.ProfileAlias.new()
 	if father_uuid := family.profile_uuid_father {
@@ -50,7 +51,53 @@ pub fn (p ProfileService) get_family_from_profile(short_uuid_profile string, nam
 		}
 	}
 
-	return models.Profile.new(
+	return models.Profile.new_return(
+		uuid: profile_required.uuid
+		surname: profile_required.surname
+		age: profile_required.age
+		birth_date: profile_required.birth_date or { constants.time_empty }
+		brothers: profile_brothers
+		color: profile_required.color
+		father: profile_father
+		first_name: profile_required.first_name
+		height: profile_required.height
+		last_name: profile_required.last_name
+		mother: profile_mother
+		sex: profile_required.sex
+		weight: profile_required.weight
+	)
+}
+
+pub fn (p ProfileService) get_family(user_uuid string) !models.Profile {
+	repo_profile := infra_profile_service.get()
+	repo_family := infra_family_service.get()
+
+	family := repo_family.get_by_user(user_uuid)!
+
+	_, uuid_profile := family.get_uuid_user_and_profile()
+	profile_required := repo_profile.get_profile(uuid_profile or { '' })
+
+	mut profile_father := models.ProfileAlias.new()
+	if father_uuid := family.profile_uuid_father {
+		profile_father = infra_profile_adapters.entitie_to_model(repo_profile.get_profile(father_uuid))!
+	}
+
+	mut profile_mother := models.ProfileAlias.new()
+	if mother_uuid := family.profile_uuid_mother {
+		profile_mother = infra_profile_adapters.entitie_to_model(repo_profile.get_profile(mother_uuid))!
+	}
+
+	mut profile_brothers := []models.ProfileAlias{}
+	if family.profile_uuid_father != none && family.profile_uuid_mother != none {
+		father_uuid := family.profile_uuid_father
+		mother_uuid := family.profile_uuid_mother
+		if father_uuid != none && mother_uuid != none {
+			profile_brothers = repo_profile.get_profiles_brothers(profile_required.id,
+				family.id or { -1 }).map(models.ProfileAlias(infra_profile_adapters.entitie_to_model(it)!))
+		}
+	}
+
+	return models.Profile.new_return(
 		uuid: profile_required.uuid
 		surname: profile_required.surname
 		age: profile_required.age

@@ -14,6 +14,7 @@ pub fn entitie_to_model(p entities.Profile) !models.Profile {
 		first_name: p.first_name
 		last_name: p.last_name
 		birth_date: p.birth_date or { constants.time_empty }
+		responsible: p.responsible
 		age: p.age
 		weight: p.weight
 		sex: p.sex
@@ -31,6 +32,7 @@ pub fn model_to_entitie(p models.Profile) (!entities.Profile) {
 		first_name: p.first_name
 		last_name: p.last_name
 		birth_date: p.birth_date
+		responsible: p.responsible
 		age: p.age
 		weight: p.weight
 		sex: p.sex
