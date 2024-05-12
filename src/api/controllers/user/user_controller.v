@@ -2,11 +2,11 @@ module user
 
 import domain.user.interfaces
 import api.ws_context
-import x.vweb
+import veb
 
 @[noinit]
 pub struct WsUser {
-	vweb.Middleware[ws_context.Context]
+	veb.Middleware[ws_context.Context]
 	huser_service              interfaces.IUserService
 	huser_confirmation_service interfaces.IUserConfirmationService
 	huser_recovery_service     interfaces.IUserRecoveryService

@@ -4,10 +4,10 @@ import contracts.contract_api { ContractApiNoContent }
 import domain.user.contracts as user_contract
 import domain.user.errors
 import api.ws_context
-import x.vweb
+import veb
 
 @['/recover-password'; post]
-pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx ws_context.Context) vweb.Result {
+pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx ws_context.Context) veb.Result {
 	contract := user_contract.RecoveryPassword.adapter(ctx.req.data) or {
 		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{

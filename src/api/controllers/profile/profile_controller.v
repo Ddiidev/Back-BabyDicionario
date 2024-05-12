@@ -2,11 +2,11 @@ module profile
 
 import domain.profile.interfaces
 import api.ws_context
-import x.vweb
+import veb
 
 @[noinit]
 pub struct WsProfile {
-	vweb.Middleware[ws_context.Context]
+	veb.Middleware[ws_context.Context]
 	hprofile_service interfaces.IProfileService
 }
 

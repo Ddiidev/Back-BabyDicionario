@@ -1,7 +1,7 @@
 module ws_context
 
-import x.vweb
+import veb
 
 pub struct Context {
-	vweb.Context
+	veb.Context
 }

@@ -2,11 +2,11 @@ module user
 
 import contracts.contract_api { ContractApiNoContent }
 import api.ws_context
-import x.vweb
+import veb
 import domain.user.contracts
 
 @['/create/send-code-confirmation'; post]
-pub fn (ws &WsUser) crate_user_and_send_confirmation_email(mut ctx ws_context.Context) vweb.Result {
+pub fn (ws &WsUser) crate_user_and_send_confirmation_email(mut ctx ws_context.Context) veb.Result {
 	contract := contracts.ContractEmail.adapter(ctx.req.data) or {
 		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{

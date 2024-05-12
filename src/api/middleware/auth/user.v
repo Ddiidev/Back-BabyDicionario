@@ -7,12 +7,12 @@ import infra.jwt.repository.service as jwt_service
 import infra.token.entities as token_entities
 import api.ws_context
 import constants
-import x.vweb
+import veb
 import time
 import rand
 
 pub struct WsAuth {
-	vweb.Middleware[ws_context.Context]
+	veb.Middleware[ws_context.Context]
 }
 
 pub fn authenticate(mut ctx ws_context.Context) bool {
@@ -50,7 +50,7 @@ pub fn authenticate_recover_password(mut ctx ws_context.Context) bool {
 }
 
 @['/refresh-token']
-pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) vweb.Result {
+pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) veb.Result {
 	contract := domain_user_contracts.TokenContract.new(
 		refresh_token: ctx.req.header.custom_values('refresh-token')[0] or { '' }.after(' ')
 		access_token: ctx.req.header.values(.authorization)[0] or { '' }.after(' ')

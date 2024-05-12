@@ -2,11 +2,11 @@ module confirmation
 
 import domain.user.interfaces
 import api.ws_context
-import x.vweb
+import veb
 
 @[noinit]
 pub struct WsConfirmation {
-	vweb.Middleware[ws_context.Context]
+	veb.Middleware[ws_context.Context]
 	hrecovery_service interfaces.IUserRecoveryService
 }
 

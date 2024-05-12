@@ -5,11 +5,11 @@ import infra.word.repository.errors as infra_word_errors
 import domain.word.errors as domain_word_errors
 import domain.word.models
 import api.ws_context
-import x.vweb
+import veb
 import json
 
 @['/']
-pub fn (ws &WsWord) get(mut ctx ws_context.Context) vweb.Result {
+pub fn (ws &WsWord) get(mut ctx ws_context.Context) veb.Result {
 	profile_uuid := ctx.req.header.get_custom('profile_uuid') or { '' }
 
 	words := ws.hword_service.get_all_by_uuid(profile_uuid)
@@ -18,7 +18,7 @@ pub fn (ws &WsWord) get(mut ctx ws_context.Context) vweb.Result {
 }
 
 @['/'; post]
-pub fn (ws &WsWord) add(mut ctx ws_context.Context) vweb.Result {
+pub fn (ws &WsWord) add(mut ctx ws_context.Context) veb.Result {
 	profile_uuid := ctx.req.header.get_custom('profile_uuid') or { '' }
 
 	words_contract := json.decode([]models.Word, ctx.req.data) or {

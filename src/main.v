@@ -9,11 +9,11 @@ import api.ws_context
 import domain.user.services as user_service
 import domain.word.services as word_service
 import domain.profile.services as profile_service
-import x.vweb
+import veb
 
 pub struct Wservice {
-	vweb.Controller
-	vweb.StaticHandler
+	veb.Controller
+	veb.StaticHandler
 }
 
 fn main() {
@@ -36,7 +36,7 @@ fn main() {
 	)
 
 	// temporário
-	conf_cors := vweb.cors[ws_context.Context](vweb.CorsOptions{
+	conf_cors := veb.cors[ws_context.Context](veb.CorsOptions{
 		origins: ['*']
 		allowed_methods: [.get, .head, .options, .patch, .put, .post, .delete]
 	})
@@ -58,5 +58,5 @@ fn main() {
 
 	ws.mount_static_folder_at('src/assets', '/assets')!
 
-	vweb.run[Wservice, ws_context.Context](mut ws, 3035)
+	veb.run[Wservice, ws_context.Context](mut ws, 3035)
 }

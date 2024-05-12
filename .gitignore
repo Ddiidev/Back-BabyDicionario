@@ -19,7 +19,7 @@ bin/
 # ENV
 .env
 
-# vweb and database
+# veb and database
 *.db
 *.js
 *.sqlite

@@ -39,4 +39,4 @@ Outro motivo pelo qual escolhi V, era pra fazer algumas várias coisas por conta
 | :---------- | :--------- |
 | **Banco de dados:** | `🐘 Postgresql` |
 | **Linguagem:** | `🦦 V` |
-| **Servidor WEB:** | `🦦 Vweb` |
+| **Servidor WEB:** | `🦦 veb` |

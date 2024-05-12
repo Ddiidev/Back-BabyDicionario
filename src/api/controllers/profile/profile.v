@@ -4,10 +4,10 @@ import contracts.contract_api { ContractApi, ContractApiNoContent }
 import api.middleware.auth
 import api.ws_context
 import constants
-import x.vweb
+import veb
 
 @['/:short_uuid_profile/:name']
-pub fn (ws &WsProfile) get_profile(mut ctx ws_context.Context, short_uuid_profile string, name string) vweb.Result {
+pub fn (ws &WsProfile) get_profile(mut ctx ws_context.Context, short_uuid_profile string, name string) veb.Result {
 	profile := ws.hprofile_service.get_family_from_profile(short_uuid_profile, name) or {
 		return ctx.json(ContractApiNoContent{
 			message: 'Perfil não encontrado'
@@ -23,7 +23,7 @@ pub fn (ws &WsProfile) get_profile(mut ctx ws_context.Context, short_uuid_profil
 }
 
 @['/details']
-pub fn (ws &WsProfile) datails(mut ctx ws_context.Context) vweb.Result {
+pub fn (ws &WsProfile) datails(mut ctx ws_context.Context) veb.Result {
 	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
 
 	user_uuid := auth.get_uuid_from_user(authorization) or {

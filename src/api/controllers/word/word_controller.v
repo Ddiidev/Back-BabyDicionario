@@ -1,12 +1,12 @@
 module word
 
-import x.vweb
+import veb
 import api.ws_context
 import domain.word.interfaces
 
 @[noinit]
 pub struct WsWord {
-	vweb.Middleware[ws_context.Context]
+	veb.Middleware[ws_context.Context]
 	hword_service interfaces.IWordService
 }
 

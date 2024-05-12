@@ -6,10 +6,10 @@ import domain.user.contracts as cuser
 import api.middleware.auth
 import api.ws_context
 import constants
-import x.vweb
+import veb
 
 @['/details']
-pub fn (ws &WsUser) dails_user(mut ctx ws_context.Context) vweb.Result {
+pub fn (ws &WsUser) dails_user(mut ctx ws_context.Context) veb.Result {
 	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
 
 	huser_service := domain_user_services.get_user()

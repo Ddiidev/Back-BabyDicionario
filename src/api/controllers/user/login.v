@@ -4,11 +4,11 @@ import contracts.contract_api { ContractApi, ContractApiNoContent }
 import domain.user.contracts
 import api.ws_context
 import constants
-import x.vweb
+import veb
 import domain.user.errors
 
 @['/login'; post]
-pub fn (ws &WsUser) login(mut ctx ws_context.Context) vweb.Result {
+pub fn (ws &WsUser) login(mut ctx ws_context.Context) veb.Result {
 	contract := contracts.ContractEmail.adapter(ctx.req.data) or {
 		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{

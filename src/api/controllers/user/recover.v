@@ -5,12 +5,12 @@ import contracts.token { TokenContractRecoverResponse }
 import domain.user.contracts as cuser
 import api.ws_context
 import constants
-import x.vweb
+import veb
 
 const subject = '[DiBebê] Recuperação de senha'
 
 @['/recover-password'; post]
-pub fn (ws &WsUser) recover_password_send_email(mut ctx ws_context.Context) vweb.Result {
+pub fn (ws &WsUser) recover_password_send_email(mut ctx ws_context.Context) veb.Result {
 	contract := cuser.ContractUser.adapter(ctx.req.data) or {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
