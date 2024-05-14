@@ -1,6 +1,7 @@
 module profile
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
+import domain.profile.contracts
 import api.middleware.auth
 import api.ws_context
 import constants
@@ -47,6 +48,32 @@ pub fn (ws &WsProfile) datails(mut ctx ws_context.Context) veb.Result {
 			message: ''
 			status: .info
 			content: profile
+		}
+	)
+}
+
+@['/'; put]
+pub fn (ws &WsProfile) update(mut ctx ws_context.Context) veb.Result {
+	profile := contracts.ContractProfile.adapter(ctx.req.data) or {
+		ctx.res.set_status(.unprocessable_entity)
+		return ctx.json(ContractApiNoContent{
+			message: constants.msg_err_json_contract
+			status: .error
+		})
+	}
+
+	ws.hprofile_service.update(profile) or {
+		ctx.res.set_status(.not_found)
+		return ctx.json(ContractApiNoContent{
+			message: constants.msg_err_user_not_found
+			status: .error
+		})
+	}
+
+	return ctx.json(
+		ContractApiNoContent{
+			message: 'Perfil atualizado com sucesso'
+			status: .info
 		}
 	)
 }

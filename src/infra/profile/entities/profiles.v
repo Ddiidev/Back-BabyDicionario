@@ -1,6 +1,5 @@
 module entities
 
-import domain.types
 import time
 
 pub struct None {}
@@ -18,11 +17,11 @@ pub:
 	surname          string
 	first_name       string
 	last_name        string
-	responsible      types.Responsible
+	responsible      ?i8
 	birth_date       ?time.Time        @[default: 'null']
 	age              f64               @[sql_type: 'NUMERIC']
 	weight           f64               @[sql_type: 'NUMERIC']
-	sex              types.Sex
+	sex              i8
 	height           f64               @[sql_type: 'NUMERIC']
 	color            string
 	created_at       time.Time = time.utc()

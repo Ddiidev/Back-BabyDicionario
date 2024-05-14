@@ -2,10 +2,11 @@ module adapters
 
 import domain.profile.models
 import infra.profile.entities
+import domain.types
 import constants
 
 pub fn entitie_to_model(p entities.Profile) !models.Profile {
-	return models.Profile.new_for_new_users(
+	return models.Profile.new(
 		uuid: p.uuid
 		short_uuid: p.short_uuid
 		name_shared_link: p.name_shared_link
@@ -14,15 +15,22 @@ pub fn entitie_to_model(p entities.Profile) !models.Profile {
 		first_name: p.first_name
 		last_name: p.last_name
 		birth_date: p.birth_date or { constants.time_empty }
-		responsible: p.responsible
+		responsible: types.Responsible.from_i8(p.responsible)
 		age: p.age
 		weight: p.weight
-		sex: p.sex
+		sex: unsafe { types.Sex(p.sex) }
 		color: p.color
 	)!
 }
 
 pub fn model_to_entitie(p models.Profile) (!entities.Profile) {
+
+	responsible := if resp_temp := p.responsible {
+		resp_temp.to_i8()
+	} else {
+		none
+	}
+
 	return entities.Profile{
 		uuid: p.uuid
 		short_uuid: p.short_uuid
@@ -32,10 +40,11 @@ pub fn model_to_entitie(p models.Profile) (!entities.Profile) {
 		first_name: p.first_name
 		last_name: p.last_name
 		birth_date: p.birth_date
-		responsible: p.responsible
+		responsible: responsible
 		age: p.age
 		weight: p.weight
-		sex: p.sex
+		height: p.height
+		sex: i8(p.sex)
 		color: p.color
 	}
 }

@@ -10,4 +10,6 @@ pub interface IProfileRepository {
 
 	create(profile entities.Profile) !
 	update_family_id(uuid string, family_id int) !
+
+	update(profile entities.Profile) !
 }

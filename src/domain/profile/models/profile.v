@@ -16,7 +16,7 @@ pub:
 	first_name       string
 	last_name        string
 	birth_date       time.Time
-	responsible      types.Responsible
+	responsible      ?types.Responsible
 	age              f64
 	weight           f64
 	sex              types.Sex
@@ -39,7 +39,7 @@ pub:
 	first_name       string
 	last_name        string
 	birth_date       time.Time
-	responsible      types.Responsible
+	responsible      ?types.Responsible
 	age              f64
 	weight           f64
 	sex              types.Sex
@@ -55,8 +55,7 @@ pub fn Profile.empty() Profile {
 }
 
 pub fn Profile.new(param ProfileParam) !Profile {
-	return if param.first_name.trim_space() == '' || param.surname.trim_space() == ''
-		|| param.last_name.trim_space() == '' {
+	return if param.first_name.trim_space() == '' {
 		error('Um dos campos "primeiro nome", "segundo nome" ou "apelido" estão em brancos.')
 	} else if param.age < 0 {
 		error('A idade deve ser maior que 0, podendo ser no minímo 0.1')
