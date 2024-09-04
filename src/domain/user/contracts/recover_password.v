@@ -10,7 +10,7 @@ pub:
 	new_password      string
 	code_confirmation string
 	current_date      types.JsTime
-	ip                string       @[json: '-']
+	ip                string @[json: '-']
 }
 
 pub fn RecoveryPassword.adapter(json_str string) !RecoveryPassword {

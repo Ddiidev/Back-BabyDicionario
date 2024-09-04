@@ -9,6 +9,6 @@ pub fn (ws &WsUser) block_user(mut ctx ws_context.Context, access_token string) 
 	success_htmlpage := domain_user_appservices.block_user(access_token) or {
 		return ctx.html(err.msg())
 	}
-	
+
 	return ctx.html(success_htmlpage)
 }

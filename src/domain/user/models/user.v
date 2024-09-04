@@ -37,15 +37,15 @@ pub:
 
 pub fn User.new(puser ParamUser) User {
 	mut user := User{
-		first_name: puser.first_name
-		last_name: puser.last_name
-		birth_date: puser.birth_date
-		created_at: puser.created_at
-		updated_at: puser.updated_at
-		password: puser.password
-		email: puser.email
+		first_name:  puser.first_name
+		last_name:   puser.last_name
+		birth_date:  puser.birth_date
+		created_at:  puser.created_at
+		updated_at:  puser.updated_at
+		password:    puser.password
+		email:       puser.email
 		responsible: puser.responsible
-		uuid: if puser.uuid == constants.uuid_empty { rand.uuid_v4() } else { puser.uuid }
+		uuid:        if puser.uuid == constants.uuid_empty { rand.uuid_v4() } else { puser.uuid }
 	}
 
 	return user

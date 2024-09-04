@@ -10,18 +10,18 @@ pub fn (e EmailRepository) send(to string, subject string, body string) ! {
 	username := $env('BABYDI_SMTP_USERNAME')
 	password := $env('BABYDI_SMTP_PASSWORD')
 	client_cfg := smtp.Client{
-		server: mailserver
-		from: $env('BABYDI_SMTP_EMAIL_FROM')
-		port: mailport
+		server:   mailserver
+		from:     $env('BABYDI_SMTP_EMAIL_FROM')
+		port:     mailport
 		username: username
 		password: password
 	}
 	send_cfg := smtp.Mail{
-		to: to
-		from: $env('BABYDI_SMTP_EMAIL_FROM')
-		subject: subject
+		to:        to
+		from:      $env('BABYDI_SMTP_EMAIL_FROM')
+		subject:   subject
 		body_type: .html
-		body: body
+		body:      body
 	}
 
 	mut client := smtp.new_client(client_cfg)!

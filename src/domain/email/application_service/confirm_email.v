@@ -1,7 +1,6 @@
 module application_service
 
 import domain.profile.models as profile_models
-
 import infra.user.repository.errors as user_errors
 import domain.token.services as email_domains
 import domain.profile.services as profile_domains
@@ -33,11 +32,8 @@ pub fn confirm_email_by_code(contract contracts.ConfirmationEmailByCode) !token_
 		)!
 		profile_model = hprofile.create(profile_model)!
 
-		family_id := hfamily.create(profile_models.Family.new(
-			user.uuid,
-			profile_model.uuid,
-			types.Responsible.from(user.responsible)!
-		))!
+		family_id := hfamily.create(profile_models.Family.new(none, user.uuid, profile_model.uuid,
+			types.Responsible.from(user.responsible)!))!
 
 		hprofile.update_family_id(profile_model.uuid, family_id)!
 

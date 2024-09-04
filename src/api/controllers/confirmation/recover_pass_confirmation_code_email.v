@@ -12,7 +12,7 @@ pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx ws_contex
 		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{
 			message: 'O JSON fornecido não está de acordo com o contrato esperado.'
-			status: .error
+			status:  .error
 		})
 	}
 
@@ -28,12 +28,12 @@ pub fn (ws &WsConfirmation) recover_password_confirmation_code(mut ctx ws_contex
 
 		return ctx.json(ContractApiNoContent{
 			message: err.msg()
-			status: .error
+			status:  .error
 		})
 	}
 
 	return ctx.json(ContractApiNoContent{
 		message: 'Senha redefinida com sucesso!'
-		status: .info
+		status:  .info
 	})
 }

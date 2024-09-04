@@ -5,7 +5,7 @@ import domain.word.models
 pub struct WordsErrorInvalid {
 	Error
 pub:
-	message string
+	message    string
 	words_fail []models.Word
 }
 

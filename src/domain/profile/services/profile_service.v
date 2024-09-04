@@ -9,6 +9,7 @@ import constants
 
 pub struct ProfileService {}
 
+@[deprecated: 'use profile.application_service.create_profile']
 pub fn (p ProfileService) create(profile models.Profile) !models.Profile {
 	repo_profile := infra_profile_service.get()
 
@@ -38,21 +39,21 @@ pub fn (p ProfileService) get_family_from_profile(short_uuid_profile string, nam
 	if resp_temp := types.Responsible.from_i8(profile_required.responsible) {
 		if resp_temp in [.pai, .mae] {
 			return models.Profile.new_return(
-				uuid: profile_required.uuid
-				surname: profile_required.surname
+				uuid:             profile_required.uuid
+				surname:          profile_required.surname
 				name_shared_link: profile_required.name_shared_link
-				age: profile_required.age
-				birth_date: profile_required.birth_date or { constants.time_empty }
-				color: profile_required.color
-				first_name: profile_required.first_name
-				height: profile_required.height
-				last_name: profile_required.last_name
-				sex: types.Sex.from_i8(profile_required.sex)
-				weight: profile_required.weight
+				age:              profile_required.age
+				birth_date:       profile_required.birth_date or { constants.time_empty }
+				color:            profile_required.color
+				first_name:       profile_required.first_name
+				height:           profile_required.height
+				last_name:        profile_required.last_name
+				sex:              types.Sex.from_i8(profile_required.sex)
+				weight:           profile_required.weight
 			)
 		}
 	}
-	
+
 	family := repo_family.get_by_id(profile_required.family_id)!
 
 	mut profile_father := models.ProfileAlias.new()
@@ -76,19 +77,19 @@ pub fn (p ProfileService) get_family_from_profile(short_uuid_profile string, nam
 	}
 
 	return models.Profile.new_return(
-		uuid: profile_required.uuid
-		surname: profile_required.surname
-		age: profile_required.age
+		uuid:       profile_required.uuid
+		surname:    profile_required.surname
+		age:        profile_required.age
 		birth_date: profile_required.birth_date or { constants.time_empty }
-		brothers: profile_brothers
-		color: profile_required.color
-		father: profile_father
+		brothers:   profile_brothers
+		color:      profile_required.color
+		father:     profile_father
 		first_name: profile_required.first_name
-		height: profile_required.height
-		last_name: profile_required.last_name
-		mother: profile_mother
-		sex: types.Sex.from_i8(profile_required.sex)
-		weight: profile_required.weight
+		height:     profile_required.height
+		last_name:  profile_required.last_name
+		mother:     profile_mother
+		sex:        types.Sex.from_i8(profile_required.sex)
+		weight:     profile_required.weight
 	)
 }
 
@@ -122,19 +123,19 @@ pub fn (p ProfileService) get_family(user_uuid string) !models.Profile {
 	}
 
 	return models.Profile.new_return(
-		uuid: profile_required.uuid
-		surname: profile_required.surname
-		age: profile_required.age
+		uuid:             profile_required.uuid
+		surname:          profile_required.surname
+		age:              profile_required.age
 		name_shared_link: profile_required.name_shared_link
-		birth_date: profile_required.birth_date or { constants.time_empty }
-		brothers: profile_brothers
-		color: profile_required.color
-		father: profile_father
-		first_name: profile_required.first_name
-		height: profile_required.height
-		last_name: profile_required.last_name
-		mother: profile_mother
-		sex: types.Sex.from_i8(profile_required.sex)
-		weight: profile_required.weight
+		birth_date:       profile_required.birth_date or { constants.time_empty }
+		brothers:         profile_brothers
+		color:            profile_required.color
+		father:           profile_father
+		first_name:       profile_required.first_name
+		height:           profile_required.height
+		last_name:        profile_required.last_name
+		mother:           profile_mother
+		sex:              types.Sex.from_i8(profile_required.sex)
+		weight:           profile_required.weight
 	)
 }

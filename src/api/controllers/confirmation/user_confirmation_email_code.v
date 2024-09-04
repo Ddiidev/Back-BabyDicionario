@@ -13,7 +13,7 @@ pub fn (ws &WsConfirmation) confirmation_user_by_email_and_code(mut ctx ws_conte
 		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{
 			message: 'O JSON fornecido não está de acordo com o contrato esperado.'
-			status: .error
+			status:  .error
 		})
 	}
 
@@ -22,15 +22,15 @@ pub fn (ws &WsConfirmation) confirmation_user_by_email_and_code(mut ctx ws_conte
 
 		return ctx.json(ContractApiNoContent{
 			message: err.msg()
-			status: .error
+			status:  .error
 		})
 	}
 
 	return ctx.json(ContractApi{
 		message: 'Usuário verificado com sucesso!'
-		status: .info
+		status:  .info
 		content: domain_user_contracts.TokenContract.new(
-			access_token: token_model.access_token
+			access_token:  token_model.access_token
 			refresh_token: token_model.refresh_token
 		)
 	})

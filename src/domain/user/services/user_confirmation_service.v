@@ -44,11 +44,11 @@ pub fn (u UserConfirmationService) create(contract contracts.ContractEmail) ! {
 		}
 
 		user_temp := user_adapters.user_temp_model_to_entitie(models.UserTemp{
-			first_name: contract.first_name
+			first_name:  contract.first_name
 			responsible: contract.responsible
-			birth_date: contract_data_nascimento
-			email: contract.email
-			password: contract.password
+			birth_date:  contract_data_nascimento
+			email:       contract.email
+			password:    contract.password
 		})
 
 		repo_users_confirmation.new_user_confirmation(user_temp, code_confirmation) or {

@@ -58,7 +58,7 @@ pub fn (j JwtRepository) new_object_jwt(user_uuid string, email string, expirati
 	tok_ := jwt.Token.new(payload, $env('BABYDI_SECRETKEY'))
 	return entities.Token{
 		token_str: tok_.str()
-		payload: interfaces.IPayload(entities.Payload{
+		payload:   interfaces.IPayload(entities.Payload{
 			iss: tok_.payload.iss
 			sub: tok_.payload.sub
 			aud: tok_.payload.aud

@@ -23,11 +23,11 @@ pub:
 
 pub fn Word.new(w WordParam) Word {
 	return Word{
-		profile_uuid: w.profile_uuid
-		word: w.word
-		translation: w.translation
+		profile_uuid:  w.profile_uuid
+		word:          w.word
+		translation:   w.translation
 		pronunciation: w.pronunciation
-		audio: w.audio
+		audio:         w.audio
 	}
 }
 

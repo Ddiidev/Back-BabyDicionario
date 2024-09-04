@@ -12,17 +12,39 @@ pub:
 	profile_uuid_mother ?string
 }
 
-pub fn Family.new(user_uuid ?string, profile_uuid ?string, responsible types.Responsible) Family {
+pub fn Family.new_profile_with_id(id int, profile_uuid ?string, responsible types.Responsible) !Family {
+	if id < 1 {
+		return error('Id inválido!')
+	}
 	match responsible {
 		.pai {
 			return Family{
-				user_uuid_father: user_uuid
+				id:                  id
 				profile_uuid_father: profile_uuid
 			}
 		}
 		.mae {
 			return Family{
-				user_uuid_mother: user_uuid
+				id:                  id
+				profile_uuid_mother: profile_uuid
+			}
+		}
+	}
+}
+
+pub fn Family.new(id ?int, user_uuid ?string, profile_uuid ?string, responsible types.Responsible) Family {
+	match responsible {
+		.pai {
+			return Family{
+				id:                  id
+				user_uuid_father:    user_uuid
+				profile_uuid_father: profile_uuid
+			}
+		}
+		.mae {
+			return Family{
+				id:                  id
+				user_uuid_mother:    user_uuid
 				profile_uuid_mother: profile_uuid
 			}
 		}

@@ -1,5 +1,6 @@
 module types
 
+@[json_as_number]
 pub enum Responsible as i8 {
 	pai = 0
 	mae = 1

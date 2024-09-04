@@ -24,14 +24,14 @@ pub fn (u UserTemp) is_expired() bool {
 
 pub fn (u UserTemp) adapter() User {
 	mut user := User.new(
-		first_name: u.first_name
-		last_name: u.last_name
+		first_name:  u.first_name
+		last_name:   u.last_name
 		responsible: i8(u.responsible)
-		birth_date: u.birth_date
-		email: u.email
-		password: u.password
-		created_at: u.created_at
-		updated_at: u.updated_at
+		birth_date:  u.birth_date
+		email:       u.email
+		password:    u.password
+		created_at:  u.created_at
+		updated_at:  u.updated_at
 	)
 
 	return user

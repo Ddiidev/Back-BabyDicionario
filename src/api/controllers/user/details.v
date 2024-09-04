@@ -18,7 +18,7 @@ pub fn (ws &WsUser) dails_user(mut ctx ws_context.Context) veb.Result {
 		ctx.res.set_status(.not_found)
 		return ctx.json(ContractApiNoContent{
 			message: constants.msg_err_token_invalid
-			status: .error
+			status:  .error
 		})
 	}
 
@@ -26,18 +26,18 @@ pub fn (ws &WsUser) dails_user(mut ctx ws_context.Context) veb.Result {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: err.msg()
-			status: .error
+			status:  .error
 		})
 	}
 
 	return ctx.json(ContractApi{
 		message: constants.msg_user_found
-		status: .info
+		status:  .info
 		content: cuser.ContractUser{
 			first_name: user.first_name
-			last_name: user.last_name or { '' }
+			last_name:  user.last_name or { '' }
 			birth_date: user.birth_date.str()
-			email: user.email
+			email:      user.email
 		}
 	})
 }

@@ -9,5 +9,5 @@ pub interface ITokenService {
 	create_token_for_recovery(email string, code string) !types.AccessToken
 	update_by_uuid(token_str string, user_uuid string) !models.Token
 	valid(access_token string) bool
-	payload(access_token string) (!models.TokenPayload)
+	payload(access_token string) !models.TokenPayload
 }

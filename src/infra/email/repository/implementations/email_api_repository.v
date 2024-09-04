@@ -10,9 +10,9 @@ const url = 'https://api.brevo.com/v3/smtp/email'
 pub fn (e EmailApiRepository) send(to string, subject string, body string) ! {
 	dump($env('BABYDI_SMTP_PASSWORD'))
 	data := json.encode(EmailJsonContract{
-		subject: subject
+		subject:      subject
 		html_content: body
-		to: [
+		to:           [
 			To{
 				email: to
 			},
@@ -25,7 +25,7 @@ pub fn (e EmailApiRepository) send(to string, subject string, body string) ! {
 		}
 	})
 	http.fetch(http.FetchConfig{
-		url: implementations.url
+		url:    implementations.url
 		method: .post
 		header: http.new_custom_header_from_map({
 			'api-key': $env('BABYDI_SMTP_PASSWORD')

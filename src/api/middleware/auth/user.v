@@ -24,7 +24,7 @@ pub fn authenticate(mut ctx ws_context.Context) bool {
 		ctx.res.set_status(.unauthorized)
 		ctx.json(ContractApiNoContent{
 			message: 'Token expirou'
-			status: .error
+			status:  .error
 		})
 		return false
 	}
@@ -41,7 +41,7 @@ pub fn authenticate_recover_password(mut ctx ws_context.Context) bool {
 		ctx.res.set_status(.unauthorized)
 		ctx.json(ContractApiNoContent{
 			message: 'Token expirou'
-			status: .error
+			status:  .error
 		})
 		return false
 	}
@@ -53,11 +53,11 @@ pub fn authenticate_recover_password(mut ctx ws_context.Context) bool {
 pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) veb.Result {
 	contract := domain_user_contracts.TokenContract.new(
 		refresh_token: ctx.req.header.custom_values('refresh-token')[0] or { '' }.after(' ')
-		access_token: ctx.req.header.values(.authorization)[0] or { '' }.after(' ')
+		access_token:  ctx.req.header.values(.authorization)[0] or { '' }.after(' ')
 	) or {
 		return ctx.json(ContractApiNoContent{
 			message: constants.msg_err_json_contract
-			status: .error
+			status:  .error
 		})
 	}
 
@@ -67,13 +67,13 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) veb.Result {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'token inválido'
-			status: .error
+			status:  .error
 		})
 	}
 
 	origin_tok := token_entities.Token{
-		user_uuid: payload.sub or { '' }
-		access_token: contract.access_token
+		user_uuid:     payload.sub or { '' }
+		access_token:  contract.access_token
 		refresh_token: contract.refresh_token
 	}
 
@@ -82,14 +82,14 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) veb.Result {
 		ctx.res.set_status(.unauthorized)
 		return ctx.json(ContractApiNoContent{
 			message: 'Token expirou'
-			status: .error
+			status:  .error
 		})
 	}
 
 	target_tok := token_entities.Token{
-		user_uuid: payload.sub or { '' }
-		access_token: new_tok_jwt.str()
-		refresh_token: rand.uuid_v4()
+		user_uuid:                payload.sub or { '' }
+		access_token:             new_tok_jwt.str()
+		refresh_token:            rand.uuid_v4()
 		refresh_token_expiration: new_tok_jwt.payload.exp.time() or { time.utc() }.add_days(constants.day_expiration_refresh_token)
 	}
 
@@ -98,15 +98,15 @@ pub fn (a &WsAuth) user_refresh_token(mut ctx ws_context.Context) veb.Result {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'falhou a gerar um novo token'
-			status: .error
+			status:  .error
 		})
 	}
 
 	return ctx.json(ContractApi{
 		message: 'Token gerado com sucesso'
-		status: .info
+		status:  .info
 		content: domain_user_contracts.TokenContract.new(
-			access_token: target_tok.access_token
+			access_token:  target_tok.access_token
 			refresh_token: target_tok.refresh_token
 		)
 	})

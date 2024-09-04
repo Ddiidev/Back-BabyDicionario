@@ -13,7 +13,7 @@ pub struct UserService {}
 
 pub fn (u UserService) login(email string, password string) !contracts.TokenContract {
 	user_model := models.User.new(
-		email: email
+		email:    email
 		password: auth.gen_password(password)
 	)
 
@@ -21,7 +21,6 @@ pub fn (u UserService) login(email string, password string) !contracts.TokenCont
 	user_required := repo_users.get_by_email_and_pass(user_model.email, user_model.password) or {
 		return errors.UserErrorEmailOrPasswodInvaild{}
 	}
-
 
 	if user_required.blocked {
 		return errors.UserErrorUserBlockedInvaild{}
@@ -34,7 +33,7 @@ pub fn (u UserService) login(email string, password string) !contracts.TokenCont
 	tok_jwt.change_refresh_token_expiration_time()!
 
 	return contracts.TokenContract.new(
-		access_token: tok_jwt.access_token
+		access_token:  tok_jwt.access_token
 		refresh_token: tok_jwt.refresh_token
 	) or { error('Not possible generate token') }
 }
@@ -55,8 +54,7 @@ pub fn (u UserService) delete_temporary_user_if_confirmed_user_exists(user_uuid 
 	}
 }
 
-
-pub fn (u UserService) details(user_uuid string) (!models.User) {
+pub fn (u UserService) details(user_uuid string) !models.User {
 	repo_user := user_service.get()
 
 	if user_model := repo_user.get_by_uuid(user_uuid) {

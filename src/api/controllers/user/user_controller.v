@@ -22,8 +22,8 @@ pub:
 
 pub fn WsUser.new(param WsUserParam) &WsUser {
 	return &WsUser{
-		huser_service: param.huser_service
+		huser_service:              param.huser_service
 		huser_confirmation_service: param.huser_confirmation_service
-		huser_recovery_service: param.huser_recovery_service
+		huser_recovery_service:     param.huser_recovery_service
 	}
 }

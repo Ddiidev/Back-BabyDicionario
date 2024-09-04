@@ -17,9 +17,7 @@ pub fn (u UserRepository) get_by_uuid(uuid string) !entities.User {
 		select from entities.User where uuid == uuid
 	}!
 
-	return users_[0] or {
-		return errors.NoExistUser{}
-	}
+	return users_[0] or { return errors.NoExistUser{} }
 }
 
 pub fn (u UserRepository) get_by_email_and_pass(email string, password string) !entities.User {

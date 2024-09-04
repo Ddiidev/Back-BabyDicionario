@@ -56,9 +56,7 @@ pub fn (p ProfileRepository) get_profile(uuid string) entities.Profile {
 		select from entities.Profile where uuid == uuid
 	} or { []entities.Profile{} }
 
-	return profiles[0] or { 
-		entities.Profile{}
-	}
+	return profiles[0] or { entities.Profile{} }
 }
 
 pub fn (p ProfileRepository) get_profile_by_suuid(suuid string, name_shared_link string) !entities.Profile {

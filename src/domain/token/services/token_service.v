@@ -33,8 +33,8 @@ pub fn (t TokenService) create(user_uuid string, email string, expiration_time t
 	jwt_tok := repo_jwt.new_jwt(user_uuid, email, expiration_time.str())
 
 	token_model := models.Token.new(
-		uuid: user_uuid
-		access_token: jwt_tok
+		uuid:          user_uuid
+		access_token:  jwt_tok
 		refresh_token: rand.uuid_v4()
 	)!
 
@@ -55,11 +55,11 @@ pub fn (t TokenService) create_token_for_recovery(email string, code string) !ty
 	token_str := repo_jwt.new_jwt(constants.uuid_empty, email, expiration_time.str())
 
 	entitie_adapted := recovery_adapters.model_to_entities(models.TokenUserRecovery{
-		email: email
-		expiration_time: expiration_time
+		email:                 email
+		expiration_time:       expiration_time
 		expiration_time_block: expiration_time_block
-		access_token: token_str
-		code_confirmation: code
+		access_token:          token_str
+		code_confirmation:     code
 	})
 
 	repo_recovery := recovery_services.get()
@@ -77,8 +77,8 @@ pub fn (t TokenService) create_token_for_recovery(email string, code string) !ty
 pub fn (t TokenService) update_by_uuid(token_str string, user_uuid string) !models.Token {
 	token_model := models.Token.new(
 		refresh_token: rand.uuid_v4()
-		access_token: token_str
-		uuid: user_uuid
+		access_token:  token_str
+		uuid:          user_uuid
 	)!
 	token_entitie := token_adapters.model_to_entities(token_model)
 

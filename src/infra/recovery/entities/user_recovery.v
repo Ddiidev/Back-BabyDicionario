@@ -7,7 +7,7 @@ import utils
 @[table: 'users_recovery']
 pub struct UserRecovery {
 pub:
-	email                 string    @[uniq]
+	email                 string @[uniq]
 	expiration_time       time.Time = time.utc()
 	expiration_time_block time.Time = time.utc()
 	access_token          string

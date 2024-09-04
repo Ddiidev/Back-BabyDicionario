@@ -25,7 +25,7 @@ pub fn (ws &WsWord) add(mut ctx ws_context.Context) veb.Result {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: 'O JSON fornecido não está de acordo com o contrato esperado.'
-			status: .error
+			status:  .error
 		})
 	}
 
@@ -34,21 +34,21 @@ pub fn (ws &WsWord) add(mut ctx ws_context.Context) veb.Result {
 			domain_word_errors.WordsErrorInvalid {
 				return ctx.json(ContractApi{
 					message: err.msg()
-					status: .error
+					status:  .error
 					content: err.words_fail
 				})
 			}
 			infra_word_errors.WordsFailInsert {
 				return ctx.json(ContractApi{
 					message: err.msg()
-					status: .error
+					status:  .error
 					content: err.words
 				})
 			}
 			else {
 				return ctx.json(ContractApiNoContent{
 					message: err.msg()
-					status: .error
+					status:  .error
 				})
 			}
 		}
@@ -56,6 +56,6 @@ pub fn (ws &WsWord) add(mut ctx ws_context.Context) veb.Result {
 
 	return ctx.json(ContractApiNoContent{
 		message: 'Palavras adicionadas com sucesso!'
-		status: .info
+		status:  .info
 	})
 }

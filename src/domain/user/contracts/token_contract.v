@@ -19,7 +19,7 @@ pub fn TokenContract.new(param TokenContractParam) ?TokenContract {
 		none
 	} else {
 		TokenContract{
-			access_token: param.access_token
+			access_token:  param.access_token
 			refresh_token: param.refresh_token
 		}
 	}

@@ -15,7 +15,7 @@ pub fn (ws &WsUser) recover_password_send_email(mut ctx ws_context.Context) veb.
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: constants.msg_err_json_contract
-			status: .error
+			status:  .error
 		})
 	}
 
@@ -23,13 +23,13 @@ pub fn (ws &WsUser) recover_password_send_email(mut ctx ws_context.Context) veb.
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
 			message: err.msg()
-			status: .error
+			status:  .error
 		})
 	}
 
 	return ctx.json(ContractApi{
 		message: constants.msg_send_email
-		status: .info
+		status:  .info
 		content: TokenContractRecoverResponse{
 			access_token: access_tok
 		}

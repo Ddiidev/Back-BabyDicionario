@@ -12,13 +12,13 @@ pub struct User {
 pub:
 	first_name  string
 	last_name   ?string
-	responsible int       @[sql_type: 'smallint']
+	responsible int @[sql_type: 'smallint']
 	birth_date  time.Time
 	email       string
 	password    string
 	created_at  time.Time = time.utc()
 	updated_at  time.Time = time.utc()
-	blocked     bool      @[default: 'false']
+	blocked     bool @[default: 'false']
 pub mut:
 	id   ?int   @[primary; sql: serial]
 	uuid string @[uniq]
@@ -42,9 +42,9 @@ pub fn (u User) validated(pass_already_encrypted bool) !User {
 		created_at: created_at
 		updated_at: updated_at
 		first_name: u.first_name.trim_space()
-		last_name: u.last_name or { '' }.trim_space()
-		email: u.email.trim_space()
-		password: if pass_already_encrypted { u.password } else { auth.gen_password(u.password) }
+		last_name:  u.last_name or { '' }.trim_space()
+		email:      u.email.trim_space()
+		password:   if pass_already_encrypted { u.password } else { auth.gen_password(u.password) }
 	}
 
 	user_validated.uuid = rand.uuid_v4()

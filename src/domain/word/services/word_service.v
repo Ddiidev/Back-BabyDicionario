@@ -21,7 +21,7 @@ pub fn (w WordService) new_words(profile_uuid string, words []models.Word) ! {
 	if !words.all(it.is_valid()) {
 		return errors.WordsErrorInvalid{
 			// TODO: melhorar o texto
-			message: 'Não foi possível inserir as seguintes palavras'
+			message:    'Não foi possível inserir as seguintes palavras'
 			words_fail: words
 		}
 	}

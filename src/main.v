@@ -21,8 +21,8 @@ fn main() {
 	mut ws_user_auth := &auth.WsAuth{}
 
 	mut ws_user := user.WsUser.new(
-		huser_service: user_service.get_user()
-		huser_recovery_service: user_service.get_user_recovery()
+		huser_service:              user_service.get_user()
+		huser_recovery_service:     user_service.get_user_recovery()
 		huser_confirmation_service: user_service.get_user_confirmation()
 	)
 	mut ws_profile := profile.WsProfile.new(
@@ -37,7 +37,7 @@ fn main() {
 
 	// temporário
 	conf_cors := veb.cors[ws_context.Context](veb.CorsOptions{
-		origins: ['*']
+		origins:         ['*']
 		allowed_methods: [.get, .head, .options, .patch, .put, .post, .delete]
 	})
 	ws_user_auth.use(conf_cors)

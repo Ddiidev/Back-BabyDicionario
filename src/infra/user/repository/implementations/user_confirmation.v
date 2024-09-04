@@ -17,9 +17,9 @@ pub fn (u UserConfirmationRepository) new_user_confirmation(user entities.UserTe
 
 	mut user_temp := entities.UserTemp{
 		...user
-		expiration_time: time.utc().add(time.hour * 5)
+		expiration_time:   time.utc().add(time.hour * 5)
 		code_confirmation: code_confirmation
-		password: auth_pass.gen_password(user.password)
+		password:          auth_pass.gen_password(user.password)
 	}
 
 	sql conn {

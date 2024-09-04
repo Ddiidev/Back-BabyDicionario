@@ -42,11 +42,11 @@ pub fn get() (orm.Connection, fn () !bool) {
 		local_env := dotenv.parse('.env.local')
 
 		conf := pg.Config{
-			host: local_env['BABYDI_HOST_DB']
-			port: local_env['BABYDI_PORT_DB'].int()
-			user: local_env['BABYDI_USER_DB']
+			host:     local_env['BABYDI_HOST_DB']
+			port:     local_env['BABYDI_PORT_DB'].int()
+			user:     local_env['BABYDI_USER_DB']
 			password: local_env['BABYDI_PASS_DB']
-			dbname: local_env['BABYDI_DBNAME_DB']
+			dbname:   local_env['BABYDI_DBNAME_DB']
 		}
 
 		conn := pg.connect(conf) or { panic(err) }
@@ -69,11 +69,11 @@ pub fn get_db() AbstractDB {
 		local_env := dotenv.parse('.env.local')
 
 		conf := pg.Config{
-			host: local_env['BABYDI_HOST_DB']
-			port: local_env['BABYDI_PORT_DB'].int()
-			user: local_env['BABYDI_USER_DB']
+			host:     local_env['BABYDI_HOST_DB']
+			port:     local_env['BABYDI_PORT_DB'].int()
+			user:     local_env['BABYDI_USER_DB']
 			password: local_env['BABYDI_PASS_DB']
-			dbname: local_env['BABYDI_DBNAME_DB']
+			dbname:   local_env['BABYDI_DBNAME_DB']
 		}
 
 		conn := pg.connect(conf) or { panic(err) }

@@ -13,7 +13,7 @@ pub fn (ws &WsUser) login(mut ctx ws_context.Context) veb.Result {
 		ctx.res.set_status(.unprocessable_entity)
 		return ctx.json(ContractApiNoContent{
 			message: constants.msg_err_json_contract
-			status: .error
+			status:  .error
 		})
 	}
 
@@ -32,13 +32,13 @@ pub fn (ws &WsUser) login(mut ctx ws_context.Context) veb.Result {
 
 		return ctx.json(ContractApiNoContent{
 			message: err.msg()
-			status: .error
+			status:  .error
 		})
 	}
 
 	return ctx.json(ContractApi{
 		message: 'Login concluído'
-		status: .info
+		status:  .info
 		content: token_resp_contrat
 	})
 }
