@@ -1,5 +1,6 @@
 module services
 
+import infra.storage_babydi.repository.service as storage_service
 import domain.token.services as domain_token_services
 import infra.user.repository.service as user_service
 import infra.user.adapters as user_adapters
@@ -40,8 +41,13 @@ pub fn (u UserService) login(email string, password string) !contracts.TokenCont
 
 pub fn (u UserService) create(m models.User) !models.User {
 	repo_user := user_service.get()
+	storage_api := storage_service.get()
 
 	user_model := repo_user.create(user_adapters.model_to_entitie(m))!
+
+	// TODO: Implementar
+	storage_api.create_user(user_model.uuid) or {}
+
 	return user_adapters.entitie_to_model(user_model)
 }
 
@@ -62,4 +68,10 @@ pub fn (u UserService) details(user_uuid string) !models.User {
 	} else {
 		return errors.UserErrorNotFoundDetailsUser{}
 	}
+}
+
+pub fn (u UserService) contain(uuid string) bool {
+	repo_user := user_service.get()
+
+	return repo_user.contain_user_with_uuid(uuid)
 }

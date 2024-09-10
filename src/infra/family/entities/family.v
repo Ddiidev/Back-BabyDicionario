@@ -18,7 +18,7 @@ pub fn Family.new(id ?int, user_uuid ?string, profile_uuid ?string, responsible 
 			return Family{
 				id:                  id
 				user_uuid_father:    user_uuid
-				profile_uuid_mother: profile_uuid
+				profile_uuid_father: profile_uuid
 			}
 		}
 		.mae {

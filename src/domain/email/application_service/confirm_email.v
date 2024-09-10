@@ -17,6 +17,7 @@ pub fn confirm_email_by_code(contract contracts.ConfirmationEmailByCode) !token_
 	user_temp := huser_confirmation.get_by_email_code(contract.email, contract.code)!
 
 	if !user_temp.is_expired() {
+
 		huser := user_domain.get_user()
 		user := huser.create(user_temp.adapter())!
 
@@ -25,16 +26,18 @@ pub fn confirm_email_by_code(contract contracts.ConfirmationEmailByCode) !token_
 
 		hprofile := profile_domains.get()
 		hfamily := profile_domains.get_family()
-
+		
 		mut profile_model := profile_models.Profile.new_for_new_users(
 			first_name: user.first_name
 			birth_date: user.birth_date
 		)!
+
 		profile_model = hprofile.create(profile_model)!
 
-		family_id := hfamily.create(profile_models.Family.new(none, user.uuid, profile_model.uuid,
-			types.Responsible.from(user.responsible)!))!
-
+		f := profile_models.Family.new(none, user.uuid, profile_model.uuid,
+			types.Responsible.from(user.responsible)!)
+		
+		family_id := hfamily.create(f)!
 		hprofile.update_family_id(profile_model.uuid, family_id)!
 
 		hemail := email_domain.get()

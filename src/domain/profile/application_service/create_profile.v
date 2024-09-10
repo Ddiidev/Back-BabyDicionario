@@ -2,6 +2,7 @@ module application_service
 
 import domain.profile.services as domain_profile
 import infra.family.repository.service as repo_family
+import infra.family.adapters as adapter_family
 import domain.profile.models
 
 pub fn create_profile(profile models.Profile, user_uuid string) !models.Profile {
@@ -13,7 +14,9 @@ pub fn create_profile(profile models.Profile, user_uuid string) !models.Profile 
 	} else {
 		profile_with_responsible := new_profile_responsible(profile_, user_uuid)!
 
-		update_family_profile(profile_with_responsible)!
+		update_family_on_profile(profile_with_responsible)!
+
+		update_family(profile_with_responsible)!
 
 		return profile_with_responsible
 	}
@@ -45,8 +48,19 @@ fn new_profile(profile models.Profile) !models.Profile {
 	return hprofile.create(profile)!
 }
 
-fn update_family_profile(profile models.Profile) ! {
+fn update_family_on_profile(profile models.Profile) ! {
 	hprofile := domain_profile.get()
 
 	hprofile.update_family_id(profile.uuid, profile.family_id)!
+}
+
+fn update_family(profile models.Profile) ! {
+	hfamily := repo_family.get()
+
+	current_responsible := profile.responsible or { return error('Responsável não especificado') }
+
+	family_entities := adapter_family.model_to_entitie(models.Family.new_profile_with_id(profile.family_id,
+		profile.uuid, current_responsible)!)
+
+	hfamily.update_by_id(family_entities)!
 }

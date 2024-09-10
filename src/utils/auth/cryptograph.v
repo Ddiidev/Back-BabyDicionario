@@ -12,7 +12,7 @@ pub fn gen_password(pass string) string {
 	return base64.encode(singnature)
 }
 
-// random_number Gera um uma string contendo 6 número pseudo-aleatório
+// random_number Gera uma string contendo 6 número pseudo-aleatório
 pub fn random_number() string {
 	return rand.i64_in_range(111111, 999999) or { rand.int63() }.str().limit(6)
 }

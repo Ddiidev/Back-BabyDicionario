@@ -148,15 +148,13 @@ pub fn (f FamilyRepository) update_by_id(family entities.Family) ! {
 
 	if is_father && !is_mother {
 		sql conn {
-			update entities.Family set profile_uuid_father = family.profile_uuid_father where
-			id == family.id && profile_uuid_father == ''
+			update entities.Family set profile_uuid_father = family.profile_uuid_father where id == family.id
 		}!
 	} else if is_mother && !is_father {
 		sql conn {
-			update entities.Family set profile_uuid_mother = family.profile_uuid_mother where
-			id == family.id && profile_uuid_mother == ''
+			update entities.Family set profile_uuid_mother = family.profile_uuid_mother where id == family.id
 		}!
 	} else {
-		return error('No especified profile')
+		return error('Perfil não especificado')
 	}
 }

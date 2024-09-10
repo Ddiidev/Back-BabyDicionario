@@ -11,6 +11,7 @@ import constants
 
 pub struct UserConfirmationService {}
 
+// GET_BY_EMAIL_CODE: Retorna o usuário temporário baseado no email e código de confirmação.
 pub fn (u UserConfirmationService) get_by_email_code(email string, code string) !models.UserTemp {
 	repo_user := user_service.get_user_confirmation()
 
@@ -19,6 +20,8 @@ pub fn (u UserConfirmationService) get_by_email_code(email string, code string) 
 	return user_adapters.user_temp_entitie_to_model(user_model)
 }
 
+// CREATE: Cria um novo usuário temporário para confirmação e envia um email com código de confirmação. </br>
+// Verifica se o email fornecido não existe no banco de dados e se a data de nascimento está correta. </br>
 pub fn (u UserConfirmationService) create(contract contracts.ContractEmail) ! {
 	repo_users := user_service.get()
 	if repo_users.contain_user_with_email(contract.email) {
@@ -56,3 +59,4 @@ pub fn (u UserConfirmationService) create(contract contracts.ContractEmail) ! {
 		}
 	}
 }
+

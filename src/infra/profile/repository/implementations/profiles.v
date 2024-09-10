@@ -15,7 +15,9 @@ pub fn (p ProfileRepository) update_family_id(uuid string, family_id int) ! {
 
 	sql db {
 		update entities.Profile set family_id = family_id where uuid == uuid
-	}!
+	} or {
+		return error('Falha ao atualizar perfil')
+	}
 }
 
 pub fn (p ProfileRepository) update(profile entities.Profile) ! {
@@ -45,7 +47,7 @@ pub fn (p ProfileRepository) create(profile entities.Profile) ! {
 	}!
 }
 
-pub fn (p ProfileRepository) get_profile(uuid string) entities.Profile {
+pub fn (p ProfileRepository) get_profile(uuid string) ?entities.Profile {
 	db, close := connection.get()
 
 	defer {
@@ -54,9 +56,9 @@ pub fn (p ProfileRepository) get_profile(uuid string) entities.Profile {
 
 	profiles := sql db {
 		select from entities.Profile where uuid == uuid
-	} or { []entities.Profile{} }
+	} or { return none }
 
-	return profiles[0] or { entities.Profile{} }
+	return profiles[0] or { none }
 }
 
 pub fn (p ProfileRepository) get_profile_by_suuid(suuid string, name_shared_link string) !entities.Profile {

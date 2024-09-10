@@ -10,4 +10,6 @@ pub interface IUserService {
 	details(user_uuid string) !models.User
 	// Remove o usuário temporário caso o usuário tenha confirmado sua conta.
 	delete_temporary_user_if_confirmed_user_exists(user_uuid string) !
+	// Verifica se o usuário existe
+	contain(uuid string) bool
 }

@@ -16,6 +16,12 @@ pub struct WsAuth {
 }
 
 pub fn authenticate(mut ctx ws_context.Context) bool {
+
+	// TODO: Corrigir
+	if ctx.req.url.contains('/profile/contain/') {
+		return true
+	}
+
 	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
 
 	handle_jwt := jwt_service.get()

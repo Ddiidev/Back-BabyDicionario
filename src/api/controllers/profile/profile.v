@@ -8,6 +8,22 @@ import api.ws_context
 import constants
 import veb
 
+@['/contain/:uuid']
+fn (ws &WsProfile) contain(mut ctx ws_context.Context, uuid string) veb.Result {
+	if !ws.hprofile_service.contain(uuid) {
+		ctx.res.set_status(.not_found)
+		ctx.json({
+			'message': 'Perfil não encontrado.'
+			'status':  'error'
+		})
+	}
+
+	return ctx.json({
+		'message': 'OK'
+		'status':  'info'
+	}) // 200 OK
+}
+
 @['/:short_uuid_profile/:name']
 pub fn (ws &WsProfile) get_profile(mut ctx ws_context.Context, short_uuid_profile string, name string) veb.Result {
 	profile := ws.hprofile_service.get_family_from_profile(short_uuid_profile, name) or {
@@ -24,8 +40,8 @@ pub fn (ws &WsProfile) get_profile(mut ctx ws_context.Context, short_uuid_profil
 	})
 }
 
-@['/details']
-pub fn (ws &WsProfile) datails(mut ctx ws_context.Context) veb.Result {
+@['/details-home']
+pub fn (ws &WsProfile) datails_home(mut ctx ws_context.Context) veb.Result {
 	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
 
 	user_uuid := auth.get_uuid_from_user(authorization) or {
