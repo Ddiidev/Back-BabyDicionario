@@ -100,6 +100,26 @@ pub fn (p ProfileService) get_family_from_profile(short_uuid_profile string, nam
 	)
 }
 
+pub fn (p ProfileService) get(short_uuid_profile string, name string) !models.Profile {
+	repo_profile := infra_profile_service.get()
+
+	profile_required := repo_profile.get_profile_by_suuid(short_uuid_profile, name)!
+
+	return models.Profile.new_return(
+		uuid:             profile_required.uuid
+		surname:          profile_required.surname
+		age:              profile_required.age
+		name_shared_link: profile_required.name_shared_link
+		birth_date:       profile_required.birth_date or { constants.time_empty }
+		color:            profile_required.color
+		first_name:       profile_required.first_name
+		height:           profile_required.height
+		last_name:        profile_required.last_name
+		sex:              types.Sex.from_i8(profile_required.sex)
+		weight:           profile_required.weight
+	)
+}
+
 pub fn (p ProfileService) get_family(user_uuid string) !models.Profile {
 	repo_profile := infra_profile_service.get()
 	repo_family := infra_family_service.get()
