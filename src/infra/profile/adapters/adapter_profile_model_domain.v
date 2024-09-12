@@ -18,7 +18,7 @@ pub fn entitie_to_model(p entities.Profile) !models.Profile {
 		responsible:      types.Responsible.from_i8(p.responsible)
 		age:              p.age
 		weight:           p.weight
-		sex:              unsafe { types.Sex(p.sex) }
+		sex:              types.Sex.from_i8(p.sex)
 		color:            p.color
 	)!
 }
@@ -43,7 +43,7 @@ pub fn model_to_entitie(p models.Profile) !entities.Profile {
 		age:              p.age
 		weight:           p.weight
 		height:           p.height
-		sex:              i8(p.sex)
+		sex:              p.sex.to_i8()
 		color:            p.color
 	}
 }

@@ -30,6 +30,11 @@ pub fn confirm_email_by_code(contract contracts.ConfirmationEmailByCode) !token_
 		mut profile_model := profile_models.Profile.new_for_new_users(
 			first_name: user.first_name
 			birth_date: user.birth_date
+			sex: if user.responsible == types.Responsible.mae.to_i8() or { 0 } {
+				types.Sex.feminino
+			} else {
+				types.Sex.masculino
+			}
 		)!
 
 		profile_model = hprofile.create(profile_model)!
