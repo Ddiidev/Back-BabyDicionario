@@ -59,4 +59,3 @@ pub fn (u UserConfirmationService) create(contract contracts.ContractEmail) ! {
 		}
 	}
 }
-

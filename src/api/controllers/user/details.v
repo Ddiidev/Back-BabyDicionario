@@ -5,6 +5,7 @@ import domain.user.services as domain_user_services
 import domain.user.contracts as cuser
 import api.middleware.auth
 import api.ws_context
+import domain.types
 import constants
 import veb
 
@@ -34,10 +35,13 @@ pub fn (ws &WsUser) dails_user(mut ctx ws_context.Context) veb.Result {
 		message: constants.msg_user_found
 		status:  .info
 		content: cuser.ContractUser{
-			first_name: user.first_name
-			last_name:  user.last_name or { '' }
-			birth_date: user.birth_date.str()
-			email:      user.email
+			first_name:  user.first_name
+			last_name:   user.last_name or { '' }
+			birth_date:  user.birth_date.str()
+			email:       user.email
+			responsible: types.Responsible.from_i8(i8(user.responsible)) or {
+				types.Responsible.pai
+			}
 		}
 	})
 }

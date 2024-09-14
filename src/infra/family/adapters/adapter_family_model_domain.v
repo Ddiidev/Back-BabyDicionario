@@ -10,5 +10,6 @@ pub fn entitie_to_model(entitie entities.Family) models.Family {
 
 pub fn model_to_entitie(model models.Family) entities.Family {
 	profile, user := model.get_uuid_user_and_profile()
+
 	return entities.Family.new(model.id, profile, user, model.get_reponsible())
 }

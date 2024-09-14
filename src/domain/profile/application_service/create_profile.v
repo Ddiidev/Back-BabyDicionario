@@ -9,17 +9,13 @@ pub fn create_profile(profile models.Profile, user_uuid string) !models.Profile 
 	mut profile_param := models.Profile.to_param(profile)
 	profile_ := models.Profile.new(profile_param)!
 
-	if profile.responsible == none {
-		return new_profile(profile_)!
-	} else {
-		profile_with_responsible := new_profile_responsible(profile_, user_uuid)!
+	profile_with_responsible := new_profile_responsible(profile_, user_uuid)!
 
-		update_family_on_profile(profile_with_responsible)!
+	update_family_on_profile(profile_with_responsible)!
 
-		update_family(profile_with_responsible)!
+	update_family(profile_with_responsible)!
 
-		return profile_with_responsible
-	}
+	return profile_with_responsible
 }
 
 fn new_profile_responsible(profile models.Profile, user_uuid string) !models.Profile {

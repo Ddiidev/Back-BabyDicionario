@@ -3,6 +3,7 @@ module services
 import infra.profile.repository.service as infra_profile_service
 import infra.family.repository.service as infra_family_service
 import infra.profile.adapters as infra_profile_adapters
+import infra.family.adapters as infra_family_adapters
 import infra.profile.entities
 import domain.profile.models
 import domain.types
@@ -10,10 +11,8 @@ import constants
 
 pub struct ProfileService {}
 
-@[deprecated: 'use profile.application_service.create_profile']
-pub fn (p ProfileService) create(profile models.Profile) !models.Profile {
+fn (p ProfileService) create(profile models.Profile) !models.Profile {
 	repo_profile := infra_profile_service.get()
-
 	repo_profile.create(infra_profile_adapters.model_to_entitie(profile)!)!
 
 	return infra_profile_adapters.entitie_to_model(repo_profile.get_profile(profile.uuid) or {
@@ -176,9 +175,18 @@ pub fn (p ProfileService) get_family(user_uuid string) !models.Profile {
 fn (p ProfileService) contain(uuid string) bool {
 	repo_profile := infra_profile_service.get()
 
-	repo_profile.get_profile(uuid) or {
-		return false
-	}
+	repo_profile.get_profile(uuid) or { return false }
 
 	return true
+}
+
+pub fn (p ProfileService) get_default_uuid_from_user(user_uuid string) ?string {
+	repo_family := infra_family_service.get()
+
+	family := repo_family.get_by_user(user_uuid) or { return none }
+
+	family_model := infra_family_adapters.entitie_to_model(family)
+
+	_, profile_uuid := family_model.get_uuid_profile_and_user_from_profile_default()
+	return profile_uuid
 }

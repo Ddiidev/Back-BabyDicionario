@@ -15,10 +15,14 @@ pub struct WsAuth {
 	veb.Middleware[ws_context.Context]
 }
 
-pub fn authenticate(mut ctx ws_context.Context) bool {
+const permition_endpointer = [
+	'/profile/default-from-user',
+	'/profile/contain/',
+]
 
-	// TODO: Corrigir
-	if ctx.req.url.contains('/profile/contain/') {
+pub fn authenticate(mut ctx ws_context.Context) bool {
+	// TODO: Remover esse código daqui
+	if auth.permition_endpointer.any(ctx.req.url.contains(it)) {
 		return true
 	}
 

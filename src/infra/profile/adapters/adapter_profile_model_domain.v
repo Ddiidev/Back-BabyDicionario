@@ -27,7 +27,7 @@ pub fn model_to_entitie(p models.Profile) !entities.Profile {
 	responsible := if resp_temp := p.responsible {
 		resp_temp.to_i8()
 	} else {
-		none
+		types.Responsible.from_i8(p.sex.to_i8()) or { types.Responsible.pai }.to_i8()
 	}
 
 	return entities.Profile{

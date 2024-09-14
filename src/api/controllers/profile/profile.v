@@ -24,6 +24,23 @@ fn (ws &WsProfile) contain(mut ctx ws_context.Context, uuid string) veb.Result {
 	}) // 200 OK
 }
 
+@['/default-from-user/:user_uuid'; get]
+pub fn (ws &WsProfile) default_from_user(mut ctx ws_context.Context, user_uuid string) veb.Result {
+	profile := ws.hprofile_service.get_default_uuid_from_user(user_uuid) or {
+		ctx.res.set_status(.not_found)
+		return ctx.json(ContractApiNoContent{
+			message: constants.msg_err_profile_not_found
+			status:  .error
+		})
+	}
+
+	return ctx.json(ContractApi{
+		message: ''
+		status:  .info
+		content: profile
+	})
+}
+
 @['/all-family/:short_uuid_profile/:name']
 pub fn (ws &WsProfile) get_profile_all_family(mut ctx ws_context.Context, short_uuid_profile string, name string) veb.Result {
 	profile := ws.hprofile_service.get_family_from_profile(short_uuid_profile, name) or {

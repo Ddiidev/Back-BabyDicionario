@@ -53,7 +53,7 @@ pub fn Family.new(id ?int, user_uuid ?string, profile_uuid ?string, responsible 
 
 pub fn (f Family) get_reponsible() types.Responsible {
 	return match true {
-		f.profile_uuid_father or { '' } != '' && f.user_uuid_father or { '' } != '' {
+		f.profile_uuid_father or { '' } != '' || f.user_uuid_father or { '' } != '' {
 			.pai
 		}
 		else {
@@ -63,12 +63,36 @@ pub fn (f Family) get_reponsible() types.Responsible {
 }
 
 pub fn (f Family) get_uuid_user_and_profile() (?string, ?string) {
-	match true {
-		f.profile_uuid_father or { '' } != '' && f.user_uuid_father or { '' } != '' {
-			return f.user_uuid_father, f.profile_uuid_father
+	if f.profile_uuid_father or { '' } != '' {
+		return f.user_uuid_father, f.profile_uuid_father
+	} else if f.user_uuid_father or { '' } != '' {
+		return f.user_uuid_father, f.profile_uuid_father
+	} else if f.profile_uuid_mother or { '' } != '' {
+		return f.user_uuid_mother, f.profile_uuid_mother
+	} else if f.user_uuid_mother or { '' } != '' {
+		return f.user_uuid_mother, f.profile_uuid_mother
+	} else {
+		return none, none
+	}
+}
+
+pub fn (f Family) get_uuid_profile_and_user_from_profile_default() (?string, ?string) {
+	get_profile_uuid_no_none := fn [f] () ?string {
+		if f.profile_uuid_father or { '' } != '' {
+			return f.profile_uuid_father
+		} else if f.profile_uuid_mother or { '' } != '' {
+			return f.profile_uuid_mother
+		} else {
+			return none
 		}
-		else {
-			return f.user_uuid_mother, f.profile_uuid_mother
-		}
+	}
+
+	if f.user_uuid_father or { '' } != '' {
+		return f.user_uuid_father, get_profile_uuid_no_none()
+	}
+	if f.user_uuid_mother or { '' } != '' {
+		return f.user_uuid_mother, get_profile_uuid_no_none()
+	} else {
+		return none, none
 	}
 }

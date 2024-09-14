@@ -15,9 +15,7 @@ pub fn (p ProfileRepository) update_family_id(uuid string, family_id int) ! {
 
 	sql db {
 		update entities.Profile set family_id = family_id where uuid == uuid
-	} or {
-		return error('Falha ao atualizar perfil')
-	}
+	} or { return error('Falha ao atualizar perfil') }
 }
 
 pub fn (p ProfileRepository) update(profile entities.Profile) ! {
