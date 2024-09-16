@@ -7,7 +7,7 @@ import utils
 import domain.types
 
 pub struct Profile {
-pub:
+pub mut:
 	uuid             string
 	short_uuid       string
 	name_shared_link string
@@ -22,10 +22,6 @@ pub:
 	sex              types.Sex
 	height           f64
 	color            string
-mut:
-	father   ProfileAlias
-	mother   ProfileAlias
-	brothers []ProfileAlias
 }
 
 @[params]
@@ -45,9 +41,6 @@ pub:
 	sex              types.Sex
 	height           f64
 	color            string
-	father           ProfileAlias
-	mother           ProfileAlias
-	brothers         []ProfileAlias
 }
 
 pub fn Profile.to_param(p Profile) ProfileParam {
@@ -66,9 +59,6 @@ pub fn Profile.to_param(p Profile) ProfileParam {
 		sex:              p.sex
 		height:           p.height
 		color:            p.color
-		father:           p.father
-		mother:           p.mother
-		brothers:         p.brothers
 	}
 }
 
@@ -107,38 +97,13 @@ pub fn Profile.new(param ProfileParam) !Profile {
 			age:              param.age
 			birth_date:       param.birth_date
 			responsible:      param.responsible
-			brothers:         param.brothers
 			color:            param.color
-			father:           param.father
 			first_name:       param.first_name
 			height:           param.height
 			last_name:        param.last_name
-			mother:           param.mother
 			sex:              param.sex
 			weight:           param.weight
 		}
-	}
-}
-
-pub fn Profile.new_return(param ProfileParam) !Profile {
-	return Profile{
-		uuid:             param.uuid
-		short_uuid:       param.short_uuid
-		name_shared_link: param.name_shared_link
-		family_id:        param.family_id
-		surname:          param.surname
-		age:              param.age
-		birth_date:       param.birth_date
-		responsible:      param.responsible
-		brothers:         param.brothers
-		color:            param.color
-		father:           param.father
-		first_name:       param.first_name
-		height:           param.height
-		last_name:        param.last_name
-		mother:           param.mother
-		sex:              param.sex
-		weight:           param.weight
 	}
 }
 
@@ -171,25 +136,14 @@ pub fn Profile.new_for_new_users(param ProfileParam) !Profile {
 			age:              age
 			birth_date:       param.birth_date
 			responsible:      param.responsible
-			brothers:         param.brothers
 			color:            param.color
-			father:           param.father
 			first_name:       param.first_name
 			height:           param.height
 			last_name:        param.last_name
-			mother:           param.mother
 			sex:              param.sex
 			weight:           param.weight
 		}
 	}
-}
-
-pub fn (mut p Profile) update_father(profile ProfileAlias) {
-	p.father = profile
-}
-
-pub fn (mut p Profile) update_mother(profile ProfileAlias) {
-	p.mother = profile
 }
 
 fn calcule_age(birth_date time.Time) f64 {

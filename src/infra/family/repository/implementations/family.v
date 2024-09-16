@@ -108,6 +108,9 @@ fn (f FamilyRepository) get(family entities.Family) !entities.Family {
 				return err
 			}
 		}
+		.is_not_responsible {
+			return errors.FamilyImpossibleFoundWithoutResponsible{}
+		}
 	}
 
 	if families.len == 1 {

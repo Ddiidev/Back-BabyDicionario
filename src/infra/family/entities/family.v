@@ -28,6 +28,11 @@ pub fn Family.new(id ?int, user_uuid ?string, profile_uuid ?string, responsible 
 				profile_uuid_mother: profile_uuid
 			}
 		}
+		.is_not_responsible {
+			return Family{
+				id:                  id
+			}
+		}
 	}
 }
 

@@ -32,15 +32,16 @@ pub fn (p ProfileService) update_family_id(uuid string, family_id int) ! {
 	repo_profile.update_family_id(uuid, family_id)!
 }
 
-pub fn (p ProfileService) get_family_from_profile(short_uuid_profile string, name string) !models.Profile {
+pub fn (p ProfileService) get_family_profiles(short_uuid_profile string, name string) !models.Profile {
 	repo_profile := infra_profile_service.get()
 	repo_family := infra_family_service.get()
+	mut family_profiles := models.FamilyProfiles{}
 
 	profile_required := repo_profile.get_profile_by_suuid(short_uuid_profile, name)!
 
-	if resp_temp := types.Responsible.from_i8(profile_required.responsible) {
+	if resp_temp := types.Responsible.to_responsible(profile_required.responsible) {
 		if resp_temp in [.pai, .mae] {
-			return models.Profile.new_return(
+			return models.Profile{
 				uuid:             profile_required.uuid
 				surname:          profile_required.surname
 				name_shared_link: profile_required.name_shared_link
@@ -50,9 +51,9 @@ pub fn (p ProfileService) get_family_from_profile(short_uuid_profile string, nam
 				first_name:       profile_required.first_name
 				height:           profile_required.height
 				last_name:        profile_required.last_name
-				sex:              types.Sex.from_i8(profile_required.sex)
+				sex:              types.Sex.to_sex(profile_required.sex)
 				weight:           profile_required.weight
-			)
+			}
 		}
 	}
 
@@ -82,21 +83,18 @@ pub fn (p ProfileService) get_family_from_profile(short_uuid_profile string, nam
 		}
 	}
 
-	return models.Profile.new_return(
+	return models.Profile{
 		uuid:       profile_required.uuid
 		surname:    profile_required.surname
 		age:        profile_required.age
 		birth_date: profile_required.birth_date or { constants.time_empty }
-		brothers:   profile_brothers
 		color:      profile_required.color
-		father:     profile_father
 		first_name: profile_required.first_name
 		height:     profile_required.height
 		last_name:  profile_required.last_name
-		mother:     profile_mother
-		sex:        types.Sex.from_i8(profile_required.sex)
+		sex:        types.Sex.to_sex(profile_required.sex)
 		weight:     profile_required.weight
-	)
+	}
 }
 
 pub fn (p ProfileService) get(short_uuid_profile string, name string) !models.Profile {
@@ -104,7 +102,7 @@ pub fn (p ProfileService) get(short_uuid_profile string, name string) !models.Pr
 
 	profile_required := repo_profile.get_profile_by_suuid(short_uuid_profile, name)!
 
-	return models.Profile.new_return(
+	return models.Profile{
 		uuid:             profile_required.uuid
 		surname:          profile_required.surname
 		age:              profile_required.age
@@ -114,9 +112,9 @@ pub fn (p ProfileService) get(short_uuid_profile string, name string) !models.Pr
 		first_name:       profile_required.first_name
 		height:           profile_required.height
 		last_name:        profile_required.last_name
-		sex:              types.Sex.from_i8(profile_required.sex)
+		sex:              types.Sex.to_sex(profile_required.sex)
 		weight:           profile_required.weight
-	)
+	}
 }
 
 pub fn (p ProfileService) get_family(user_uuid string) !models.Profile {
@@ -154,22 +152,19 @@ pub fn (p ProfileService) get_family(user_uuid string) !models.Profile {
 		}
 	}
 
-	return models.Profile.new_return(
+	return models.Profile{
 		uuid:             profile_required.uuid
 		surname:          profile_required.surname
 		age:              profile_required.age
 		name_shared_link: profile_required.name_shared_link
 		birth_date:       profile_required.birth_date or { constants.time_empty }
-		brothers:         profile_brothers
 		color:            profile_required.color
-		father:           profile_father
 		first_name:       profile_required.first_name
 		height:           profile_required.height
 		last_name:        profile_required.last_name
-		mother:           profile_mother
-		sex:              types.Sex.from_i8(profile_required.sex)
+		sex:              types.Sex.to_sex(profile_required.sex)
 		weight:           profile_required.weight
-	)
+	}
 }
 
 fn (p ProfileService) contain(uuid string) bool {

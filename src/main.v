@@ -45,6 +45,17 @@ fn main() {
 	ws_confirmation.use(conf_cors)
 	ws_user.use(conf_cors)
 	ws_word.use(conf_cors)
+	
+	/**
+	 * Middleware para compressão de dados
+	*/
+	ws_user_auth.use(veb.encode_gzip[ws_context.Context]())
+	ws_user.use(veb.encode_gzip[ws_context.Context]())
+	ws_word.use(veb.encode_gzip[ws_context.Context]())
+	ws_confirmation.use(veb.encode_gzip[ws_context.Context]())
+	ws_profile.use(veb.encode_gzip[ws_context.Context]())
+
+	
 	// ws_word.route_use('/', handler: auth.authenticate)
 	ws_profile.route_use('/:...', handler: auth.authenticate)
 	ws_confirmation.route_use('/recover-password', handler: auth.authenticate_recover_password)

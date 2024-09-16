@@ -10,6 +10,6 @@ pub fn (s Sex) to_i8() i8 {
 	return i8(s)
 }
 
-pub fn Sex.from_i8(s i8) Sex {
+pub fn Sex.to_sex(s i8) Sex {
 	return unsafe { Sex(s) }
 }

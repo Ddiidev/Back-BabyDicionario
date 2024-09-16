@@ -39,7 +39,7 @@ pub fn (ws &WsUser) dails_user(mut ctx ws_context.Context) veb.Result {
 			last_name:   user.last_name or { '' }
 			birth_date:  user.birth_date.str()
 			email:       user.email
-			responsible: types.Responsible.from_i8(i8(user.responsible)) or {
+			responsible: types.Responsible.to_responsible(i8(user.responsible)) or {
 				types.Responsible.pai
 			}
 		}

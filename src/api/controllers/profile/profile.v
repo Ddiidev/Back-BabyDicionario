@@ -43,7 +43,7 @@ pub fn (ws &WsProfile) default_from_user(mut ctx ws_context.Context, user_uuid s
 
 @['/all-family/:short_uuid_profile/:name']
 pub fn (ws &WsProfile) get_profile_all_family(mut ctx ws_context.Context, short_uuid_profile string, name string) veb.Result {
-	profile := ws.hprofile_service.get_family_from_profile(short_uuid_profile, name) or {
+	profile := ws.hprofile_service.get_family_profiles(short_uuid_profile, name) or {
 		return ctx.json(ContractApiNoContent{
 			message: 'Perfil não encontrado'
 			status:  .error
