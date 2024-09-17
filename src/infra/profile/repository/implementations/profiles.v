@@ -1,5 +1,6 @@
 module implementations
 
+import domain.types
 import infra.profile.entities
 import infra.connection
 import time
@@ -91,15 +92,17 @@ pub fn (p ProfileRepository) get_profiles_by_id(id int) []entities.Profile {
 	return profiles
 }
 
-pub fn (p ProfileRepository) get_profiles_brothers(profile_required_id int, family_id int) []entities.Profile {
+pub fn (p ProfileRepository) get_profiles_brothers(family_id int) []entities.Profile {
 	db, close := connection.get()
 
 	defer {
 		close() or {}
 	}
 
+	baby_responsible := i8(types.Responsible.is_not_responsible)
+
 	profiles := sql db {
-		select from entities.Profile where id != profile_required_id && family_id == family_id
+		select from entities.Profile where family_id == family_id && responsible == baby_responsible
 	} or { []entities.Profile{} }
 
 	return profiles

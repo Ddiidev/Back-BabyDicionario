@@ -21,7 +21,7 @@ fn (ws &WsProfile) contain(mut ctx ws_context.Context, uuid string) veb.Result {
 	return ctx.json({
 		'message': 'OK'
 		'status':  'info'
-	}) // 200 OK
+	})
 }
 
 @['/default-from-user/:user_uuid'; get]
@@ -41,9 +41,19 @@ pub fn (ws &WsProfile) default_from_user(mut ctx ws_context.Context, user_uuid s
 	})
 }
 
-@['/all-family/:short_uuid_profile/:name']
-pub fn (ws &WsProfile) get_profile_all_family(mut ctx ws_context.Context, short_uuid_profile string, name string) veb.Result {
-	profile := ws.hprofile_service.get_family_profiles(short_uuid_profile, name) or {
+@['/all-family']
+pub fn (ws &WsProfile) get_profile_all_family(mut ctx ws_context.Context) veb.Result {
+	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
+
+	user_uuid := auth.get_uuid_from_user(authorization) or {
+		ctx.res.set_status(.not_found)
+		return ctx.json(ContractApiNoContent{
+			message: constants.msg_err_token_invalid
+			status:  .error
+		})
+	}
+
+	profile := ws.hprofile_service.get_family_profiles(user_uuid) or {
 		return ctx.json(ContractApiNoContent{
 			message: 'Perfil não encontrado'
 			status:  .error

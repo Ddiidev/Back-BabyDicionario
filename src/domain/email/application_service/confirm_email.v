@@ -26,7 +26,7 @@ pub fn confirm_email_by_code(contract contracts.ConfirmationEmailByCode) !token_
 		hprofile := profile_domains.get()
 		hfamily := profile_domains.get_family()
 
-		mut profile_model := profile_models.Profile.new_for_new_users(
+		mut profile_model := profile_models.Profile.create_user_on_registration(
 			first_name: user.first_name
 			birth_date: user.birth_date
 			sex:        if user.responsible == types.Responsible.mae.to_i8() or { 0 } {

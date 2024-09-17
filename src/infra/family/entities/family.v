@@ -30,7 +30,7 @@ pub fn Family.new(id ?int, user_uuid ?string, profile_uuid ?string, responsible 
 		}
 		.is_not_responsible {
 			return Family{
-				id:                  id
+				id: id
 			}
 		}
 	}

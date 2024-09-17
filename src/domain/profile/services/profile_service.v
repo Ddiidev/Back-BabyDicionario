@@ -32,69 +32,40 @@ pub fn (p ProfileService) update_family_id(uuid string, family_id int) ! {
 	repo_profile.update_family_id(uuid, family_id)!
 }
 
-pub fn (p ProfileService) get_family_profiles(short_uuid_profile string, name string) !models.Profile {
+pub fn (p ProfileService) get_family_profiles(uuid_user string) !models.FamilyProfiles {
 	repo_profile := infra_profile_service.get()
 	repo_family := infra_family_service.get()
-	mut family_profiles := models.FamilyProfiles{}
-
-	profile_required := repo_profile.get_profile_by_suuid(short_uuid_profile, name)!
-
-	if resp_temp := types.Responsible.to_responsible(profile_required.responsible) {
-		if resp_temp in [.pai, .mae] {
-			return models.Profile{
-				uuid:             profile_required.uuid
-				surname:          profile_required.surname
-				name_shared_link: profile_required.name_shared_link
-				age:              profile_required.age
-				birth_date:       profile_required.birth_date or { constants.time_empty }
-				color:            profile_required.color
-				first_name:       profile_required.first_name
-				height:           profile_required.height
-				last_name:        profile_required.last_name
-				sex:              types.Sex.to_sex(profile_required.sex)
-				weight:           profile_required.weight
-			}
-		}
+	mut family_profiles := models.FamilyProfiles{
+		babys: []models.Profile{cap: 1}
 	}
 
-	family := repo_family.get_by_id(profile_required.family_id)!
+	family := repo_family.get_by_user(uuid_user)!
+	// _, profile_uuid := family.get_uuid_user_and_profile()
+	// profile_required := repo_profile.get_profile(profile_uuid or { '' }) or {
+	// 	return error('Perfil não existe')
+	// }
 
-	mut profile_father := models.ProfileAlias.new()
 	if father_uuid := family.profile_uuid_father {
-		profile_father = infra_profile_adapters.entitie_to_model(repo_profile.get_profile(father_uuid) or {
-			entities.Profile{}
-		})!
+		entitie_profile := repo_profile.get_profile(father_uuid) or { entities.Profile{} }
+		family_profiles.father = infra_profile_adapters.entitie_to_model(entitie_profile)!
 	}
 
-	mut profile_mother := models.ProfileAlias.new()
 	if mother_uuid := family.profile_uuid_mother {
-		profile_mother = infra_profile_adapters.entitie_to_model(repo_profile.get_profile(mother_uuid) or {
-			entities.Profile{}
-		})!
+		entitie_profile := repo_profile.get_profile(mother_uuid) or { entities.Profile{} }
+		family_profiles.mother = infra_profile_adapters.entitie_to_model(entitie_profile)!
 	}
 
-	mut profile_brothers := []models.ProfileAlias{}
 	if family.profile_uuid_father != none && family.profile_uuid_mother != none {
 		father_uuid := family.profile_uuid_father
 		mother_uuid := family.profile_uuid_mother
 		if father_uuid != none && mother_uuid != none {
-			profile_brothers = repo_profile.get_profiles_brothers(profile_required.id,
-				family.id or { -1 }).map(models.ProfileAlias(infra_profile_adapters.entitie_to_model(it)!))
+			family_profiles.babys = repo_profile.get_profiles_brothers(family.id or { -1 }).map(models.Profile{
+				...infra_profile_adapters.entitie_to_model(it)!
+			})
 		}
 	}
 
-	return models.Profile{
-		uuid:       profile_required.uuid
-		surname:    profile_required.surname
-		age:        profile_required.age
-		birth_date: profile_required.birth_date or { constants.time_empty }
-		color:      profile_required.color
-		first_name: profile_required.first_name
-		height:     profile_required.height
-		last_name:  profile_required.last_name
-		sex:        types.Sex.to_sex(profile_required.sex)
-		weight:     profile_required.weight
-	}
+	return family_profiles
 }
 
 pub fn (p ProfileService) get(short_uuid_profile string, name string) !models.Profile {
@@ -129,6 +100,7 @@ pub fn (p ProfileService) get_family(user_uuid string) !models.Profile {
 	}
 
 	mut profile_father := models.ProfileAlias.new()
+	dump(profile_father)
 	if father_uuid := family.profile_uuid_father {
 		profile_father = infra_profile_adapters.entitie_to_model(repo_profile.get_profile(father_uuid) or {
 			entities.Profile{}
@@ -136,6 +108,8 @@ pub fn (p ProfileService) get_family(user_uuid string) !models.Profile {
 	}
 
 	mut profile_mother := models.ProfileAlias.new()
+	// TODO: CHEGA AQUI PAI << ---------------------
+	dump(profile_mother)
 	if mother_uuid := family.profile_uuid_mother {
 		profile_mother = infra_profile_adapters.entitie_to_model(repo_profile.get_profile(mother_uuid) or {
 			entities.Profile{}
@@ -143,12 +117,12 @@ pub fn (p ProfileService) get_family(user_uuid string) !models.Profile {
 	}
 
 	mut profile_brothers := []models.ProfileAlias{}
+	dump(profile_brothers)
 	if family.profile_uuid_father != none && family.profile_uuid_mother != none {
 		father_uuid := family.profile_uuid_father
 		mother_uuid := family.profile_uuid_mother
 		if father_uuid != none && mother_uuid != none {
-			profile_brothers = repo_profile.get_profiles_brothers(profile_required.id,
-				family.id or { -1 }).map(models.ProfileAlias(infra_profile_adapters.entitie_to_model(it)!))
+			profile_brothers = repo_profile.get_profiles_brothers(family.id or { -1 }).map(models.ProfileAlias(infra_profile_adapters.entitie_to_model(it)!))
 		}
 	}
 

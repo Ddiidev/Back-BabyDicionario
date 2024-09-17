@@ -4,6 +4,7 @@ import time
 import math
 import rand
 import utils
+import regex
 import domain.types
 
 pub struct Profile {
@@ -88,13 +89,18 @@ pub fn Profile.new(param ProfileParam) !Profile {
 			suuid = rand.hex(12)
 		}
 
+		mut age := f64(param.age)
+		if age <= 0 {
+			age = calcule_age(param.birth_date)
+		}
+
 		Profile{
 			uuid:             uuid
 			short_uuid:       suuid
 			name_shared_link: param.name_shared_link
 			family_id:        param.family_id
 			surname:          param.surname
-			age:              param.age
+			age:              age
 			birth_date:       param.birth_date
 			responsible:      param.responsible
 			color:            param.color
@@ -107,7 +113,7 @@ pub fn Profile.new(param ProfileParam) !Profile {
 	}
 }
 
-pub fn Profile.new_for_new_users(param ProfileParam) !Profile {
+pub fn Profile.create_user_on_registration(param ProfileParam) !Profile {
 	return if param.first_name.trim_space() == '' {
 		error('Um dos campos "primeiro nome", "segundo nome" ou "apelido" estão em brancos.')
 	} else if param.birth_date > time.utc() {
@@ -130,7 +136,7 @@ pub fn Profile.new_for_new_users(param ProfileParam) !Profile {
 		Profile{
 			uuid:             uuid
 			short_uuid:       short_uuid
-			name_shared_link: 'Temp_${param.first_name}'
+			name_shared_link: sanitize_name(param.first_name)
 			family_id:        param.family_id
 			surname:          param.surname
 			age:              age
@@ -144,6 +150,23 @@ pub fn Profile.new_for_new_users(param ProfileParam) !Profile {
 			weight:           param.weight
 		}
 	}
+}
+
+// Function to remove accents and special characters
+fn sanitize_name(name string) string {
+	mut sanitized_name := name
+	sanitized_name = sanitized_name.replace('á', 'a').replace('é', 'e').replace('í',
+		'i')
+	sanitized_name = sanitized_name.replace('ó', 'o').replace('ú', 'u').replace('ç',
+		'c')
+	sanitized_name = sanitized_name.replace('Á', 'A').replace('É', 'E').replace('Í',
+		'I')
+	sanitized_name = sanitized_name.replace('Ó', 'O').replace('Ú', 'U').replace('Ç',
+		'C')
+	mut re := regex.regex_opt(r'[^a-zA-Z0-9]') or { return sanitized_name }
+	sanitized_name = re.replace(sanitized_name, '')
+
+	return 'Temp_${sanitized_name}'
 }
 
 fn calcule_age(birth_date time.Time) f64 {
