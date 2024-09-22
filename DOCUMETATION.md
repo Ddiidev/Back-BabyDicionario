@@ -1,269 +1,650 @@
 ## Documentação da API
 
-#### Auth
+### Autenticação (`/auth`)
+
+#### Refresh Token
 
 ```http
-  GET /refresh-token
+GET /auth/refresh-token
 ```
 
-`Authorization: Bearer asdqwdgqwemklkjkqlwjeqwkelj`
+**Cabeçalhos:**
 
-| Header   | Tipo       | Descrição                           |
-| :---------- | :--------- | :---------------------------------- |
-| `refresh-token` | `UUID-string` | **Obrigatório**. O refresh token atual |
+| Cabeçalho        | Tipo        | Descrição                                       |
+| ---------------- | ----------- | ----------------------------------------------- |
+| `Authorization`  | `Bearer`    | **Obrigatório**. Token de acesso atual.         |
+| `refresh-token`  | `UUID-string` | **Obrigatório**. O refresh token atual.         |
 
+**Resposta 200:**
 
-#### User
-
-```http
-  POST /user/create/send-code
-```
-
-```
-body:
-
+```json
 {
-  "primeiro_nome": "Dictionary BB",
-  "responsavel": 0,
-  "idade": 20,
-  "email": "dictBB@gmail.com",
-  "senha": "123456"
+  "message": "",
+  "status": "info",
+  "content": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh_token": "8fca882d-dedd-11ee-adc8-bd24e3c67090"
+  }
 }
 ```
 
-##  
+---
+
+### Usuário (`/user`)
+
+#### Criar Usuário e Enviar Código de Confirmação
 
 ```http
-  POST /user/recover-password
+POST /user/create/send-code-confirmation
 ```
 
-```
-body:
+**Corpo da Requisição:**
 
+```json
+{
+  "first_name": "Dictionary BB",
+  "responsible": 0,
+  "age": 20,
+  "email": "dictBB@gmail.com",
+  "password": "123456"
+}
+```
+
+**Resposta 200:**
+
+```json
+{
+  "message": "Email enviado com sucesso",
+  "status": "info"
+}
+```
+
+#### Recuperar Senha - Enviar Email
+
+```http
+POST /user/recover-password
+```
+
+**Corpo da Requisição:**
+
+```json
 {
   "email": "dictBB@gmail.com"
 }
 ```
 
-##  
+**Resposta 200:**
+
+```json
+{
+  "message": "Email enviado com sucesso",
+  "status": "info",
+  "content": {
+    "access_token": "8fca882d-dedd-11ee-adc8-bd24e3c67090"
+  }
+}
+```
+
+#### Login do Usuário
 
 ```http
-  POST /user/login
+POST /user/login
 ```
 
-```
-body:
+**Corpo da Requisição:**
 
+```json
 {
   "email": "dictBB@gmail.com",
   "password": "123456"
 }
 ```
 
-```
-response 200:
+**Resposta 200:**
 
+```json
 {
-    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.LwimMJA3puF3ioGeS-tfczR3370GXBZMIL-bdpu4hOU"
-	"refresh_token": "8fca882d-dedd-11ee-adc8-bd24e3c67090"
+  "message": "Login concluído",
+  "status": "info",
+  "content": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh_token": "8fca882d-dedd-11ee-adc8-bd24e3c67090"
+  }
 }
 ```
 
-##  
+**Resposta 404:**
+
+```json
+{
+  "message": "Email ou senha inválidos.",
+  "status": "error"
+}
+```
+
+**Resposta 401:**
+
+```json
+{
+  "message": "Usuário bloqueado.",
+  "status": "error"
+}
+```
+
+#### Detalhes do Usuário
 
 ```http
-  GET /user/details
+GET /user/details
 ```
 
-`Authorization: Bearer asdqwdgqwemklkjkqlwjeqwkelj`
+**Cabeçalhos:**
 
-```
-response 200:
+| Cabeçalho        | Tipo       | Descrição                                      |
+| ---------------- | ---------- | ---------------------------------------------- |
+| `Authorization`  | `Bearer`   | **Obrigatório**. Token de acesso do usuário.   |
 
+**Resposta 200:**
+
+```json
 {
-  "message": "Usuário encontrado",
+  "message": "",
   "status": "info",
   "content": {
     "first_name": "Dict BB",
     "last_name": "",
-    "responsible": "pai",
-    "date_birth": "1994-06-25 00:00:00",
+    "responsible": "father",
+    "birth_date": "1994-06-25T00:00:00Z",
     "email": "dictBB@gmail.com"
   }
 }
 ```
 
-##  
+**Resposta 404:**
 
-```http
-  GET /user/block/:access_token
-```
-
-| Parameter   | Type       | Description                           |
-| :---------- | :--------- | :---------------------------------- |
-| `access_token` | `JWT-string` | **Obrigatório**. (Enviado para o email) O access_token de bloqueio de usuário. Não é possível utilizar o access_token de login. |
-
-
-#### Profile
-
-```http
-  POST /profile/:short_uuid_profile/:name
-```
-
-| Parameter   | Type       | Description                           |
-| :---------- | :--------- | :---------------------------------- |
-| `short_uuid_profile` | `UULID-string` | **Obrigatório**. Id curto do perfil. |
-| `name` | `string` | **Obrigatório**. Nome de compartilhamento do perfil. |
-
-```
-response 200:
-
+```json
 {
-    "message": "",
-    "status": "info",
-    "content": {
-        "uuid": "4f5038b5...",
-        "apelido": "Pitxhico",
-        "primeiro_nome": "Dante Lima",
-        "segundo_nome": "dos Santos",
-        "data_nascimento": 2021,
-        "idade": 2,
-        "peso": 11.7,
-        "sexo": "masculino",
-        "altura": 0.8,
-        "cor": "Branco",
-        "pai": {
-            "uuid": "b396a07...",
-            "apelido": "",
-            "primeiro_nome": "André Luiz",
-            "segundo_nome": "Silva Santos",
-            "data_nascimento": 1997,
-            "idade": 26,
-            "peso": 91,
-            "sexo": "masculino",
-            "altura": 1.67,
-            "cor": "Branco",
-            "pai": {},
-            "mae": {},
-            "irmaos": [],
-            "_type": "Profile"
-        },
-        "mae": {
-            "uuid": "b396a06...",
-            "apelido": "",
-            "primeiro_nome": "Milca Regina",
-            "segundo_nome": "Floriano de Lima",
-            "idade": 28,
-            "peso": 62,
-            "sexo": "feminino",
-            "altura": 1.55,
-            "cor": "Preta",
-            "pai": {},
-            "mae": {},
-            "irmaos": [],
-            "_type": "Profile"
-        },
-        "irmaos": []
-    }
+  "message": "Token inválido.",
+  "status": "error"
 }
 ```
 
-#### Words
+**Resposta 400:**
+
+```json
+{
+  "message": "Erro ao obter detalhes do usuário.",
+  "status": "error"
+}
+```
+
+#### Bloquear Usuário
 
 ```http
-  POST /words
+GET /user/block/:access_token
 ```
 
-```
-body:
+**Parâmetros de URL:**
 
+| Parâmetro      | Tipo          | Descrição                                                                                            |
+| -------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
+| `access_token` | `JWT-string`  | **Obrigatório**. Token de acesso para bloqueio do usuário (enviado por e-mail). Não é o mesmo que o token de login. |
+
+**Resposta 200:**
+
+```html
+<!-- HTML de sucesso ou erro conforme implementação -->
+```
+
+---
+
+### Perfil (`/profile`)
+
+#### Verificar Contenção do Perfil
+
+```http
+GET /profile/contain/:uuid
+```
+
+**Parâmetros de URL:**
+
+| Parâmetro | Tipo         | Descrição                        |
+| --------- | ------------ | -------------------------------- |
+| `uuid`    | `string`     | **Obrigatório**. UUID do perfil. |
+
+**Resposta 200:**
+
+```json
+{
+  "message": "OK",
+  "status": "info"
+}
+```
+
+**Resposta 404:**
+
+```json
+{
+  "message": "Perfil não encontrado.",
+  "status": "error"
+}
+```
+
+#### Obter Perfil Padrão do Usuário
+
+```http
+GET /profile/default-from-user/:user_uuid
+```
+
+**Parâmetros de URL:**
+
+| Parâmetro   | Tipo         | Descrição                            |
+| ----------- | ------------ | ------------------------------------ |
+| `user_uuid` | `string`     | **Obrigatório**. UUID do usuário.    |
+
+**Resposta 200:**
+
+```json
+{
+  "message": "",
+  "status": "info",
+  "content": {
+    "father": {},
+    "mother": {},
+    "babys": {
+      "uuid": "4f5038b5...",
+      "nickname": "Pitxhico",
+      "first_name": "Dante Lima",
+      "last_name": "dos Santos",
+      "birth_date": "2021-01-01T00:00:00Z",
+      "age": 2,
+      "weight": 11.7,
+      "sex": "male",
+      "height": 0.8,
+      "color": "White"
+    }
+  }
+}
+```
+
+**Resposta 404:**
+
+```json
+{
+  "message": "Perfil não encontrado.",
+  "status": "error"
+}
+```
+
+#### Obter Todos os Perfis da Família
+
+```http
+GET /profile/all-family
+```
+
+**Cabeçalhos:**
+
+| Cabeçalho        | Tipo       | Descrição                                     |
+| ---------------- | ---------- | --------------------------------------------- |
+| `Authorization`  | `Bearer`   | **Obrigatório**. Token de acesso do usuário.  |
+
+**Resposta 200:**
+
+```json
+{
+  "message": "",
+  "status": "info",
+  "content": [
+    {
+      "uuid": "4f5038b5...",
+      "nickname": "Pitxhico",
+      "first_name": "Dante Lima",
+      "last_name": "dos Santos",
+      "birth_date": "2021-01-01T00:00:00Z",
+      "age": 2,
+      "weight": 11.7,
+      "sex": "male",
+      "height": 0.8,
+      "color": "White",
+      "father": {},
+      "mother": {},
+      "babys": []
+    }
+    // Outros perfis da família
+  ]
+}
+```
+
+**Resposta 404:**
+
+```json
+{
+  "message": "Perfil não encontrado.",
+  "status": "error"
+}
+```
+
+#### Obter Detalhes para a Home
+
+```http
+GET /profile/details-home
+```
+
+**Cabeçalhos:**
+
+| Cabeçalho        | Tipo       | Descrição                                     |
+| ---------------- | ---------- | --------------------------------------------- |
+| `Authorization`  | `Bearer`   | **Obrigatório**. Token de acesso do usuário.  |
+
+**Resposta 200:**
+
+```json
+{
+  "message": "",
+  "status": "info",
+  "content": {
+    "father": {},
+    "mother": {},
+    "babys": {}
+  }
+}
+```
+
+**Resposta 404:**
+
+```json
+{
+  "message": "Usuário não encontrado.",
+  "status": "error"
+}
+```
+
+#### Atualizar Perfil
+
+```http
+PUT /profile
+```
+
+**Cabeçalhos:**
+
+| Cabeçalho        | Tipo       | Descrição                                     |
+| ---------------- | ---------- | --------------------------------------------- |
+| `Authorization`  | `Bearer`   | **Obrigatório**. Token de acesso do usuário.  |
+
+**Corpo da Requisição:**
+
+```json
+{
+  "uuid": "4f5038b5...",
+  "nickname": "Pitxhico",
+  "first_name": "Dante Lima",
+  "last_name": "dos Santos",
+  "birth_date": "2021-01-01T00:00:00Z",
+  "age": 2,
+  "weight": 11.7,
+  "sex": "male",
+  "height": 0.8,
+  "color": "White"
+}
+```
+
+**Resposta 200:**
+
+```json
+{
+  "message": "Perfil atualizado com sucesso",
+  "status": "info"
+}
+```
+
+**Resposta 422:**
+
+```json
+{
+  "message": "O JSON fornecido não está de acordo com o contrato esperado.",
+  "status": "error"
+}
+```
+
+**Resposta 404:**
+
+```json
+{
+  "message": "Usuário não encontrado.",
+  "status": "error"
+}
+```
+
+#### Criar Perfil
+
+```http
+POST /profile
+```
+
+**Cabeçalhos:**
+
+| Cabeçalho        | Tipo       | Descrição                                     |
+| ---------------- | ---------- | --------------------------------------------- |
+| `Authorization`  | `Bearer`   | **Obrigatório**. Token de acesso do usuário.  |
+
+**Corpo da Requisição:**
+
+```json
+{
+  "father": {},
+  "mother": {},
+  "babys": {
+    "uuid": "4f5038b5...",
+    "nickname": "Pitxhico",
+    "first_name": "Dante Lima",
+    "last_name": "dos Santos",
+    "birth_date": "2021-01-01T00:00:00Z",
+    "age": 2,
+    "weight": 11.7,
+    "sex": "male",
+    "height": 0.8,
+    "color": "White"
+  }
+}
+```
+
+**Resposta 200:**
+
+```json
+{
+  "message": "Perfil inserido com sucesso",
+  "status": "info",
+  "content": {
+    "father": {},
+    "mother": {},
+    "babys": {
+      "uuid": "4f5038b5...",
+      "nickname": "Pitxhico",
+      "first_name": "Dante Lima",
+      "last_name": "dos Santos",
+      "birth_date": "2021-01-01T00:00:00Z",
+      "age": 2,
+      "weight": 11.7,
+      "sex": "male",
+      "height": 0.8,
+      "color": "White"
+    }
+  }
+}
+```
+
+**Resposta 422:**
+
+```json
+{
+  "message": "O JSON fornecido não está de acordo com o contrato esperado.",
+  "status": "error"
+}
+```
+
+**Resposta 404:**
+
+```json
+{
+  "message": "Usuário não encontrado.",
+  "status": "error"
+}
+```
+
+---
+
+### Palavras (`/words`)
+
+#### Adicionar Palavras
+
+```http
+POST /words
+```
+
+**Cabeçalhos:**
+
+| Cabeçalho       | Tipo       | Descrição                                       |
+| --------------- | ---------- | ----------------------------------------------- |
+| `profile_uuid`  | `string`   | **Obrigatório**. UUID do perfil associado.      |
+
+**Corpo da Requisição:**
+
+```json
 {
   "profile_uuid": "80ce1751-...",
   "words": [
     {
-      "palavra": "cávitá",
-      "traducao": "chave",
-      "pronuncia": "cávitá",
+      "word": "cávitá",
+      "translation": "chave",
+      "pronunciation": "cávitá",
       "audio": "https://example.com/131252312.mp3"
     },
     {
-      "palavra": "cata",
-      "traducao": "gato",
-      "pronuncia": "cata",
+      "word": "cata",
+      "translation": "gato",
+      "pronunciation": "cata",
       "audio": "https://example.com/1231234213.mp3"
     }
   ]
 }
 ```
 
-```
-response 200:
+**Resposta 200:**
 
+```json
 {
   "message": "Palavras adicionadas com sucesso!",
   "status": "info"
 }
 ```
 
+**Resposta 400:**
+
+```json
+{
+  "message": "O JSON fornecido não está de acordo com o contrato esperado.",
+  "status": "error"
+}
+```
+
+**Resposta 422:**
+
+```json
+{
+  "message": "Erro ao adicionar palavras.",
+  "status": "error",
+  "content": { /* Detalhes dos erros */ }
+}
+```
+
+#### Obter Todas as Palavras
+
 ```http
-  GET /words
+GET /words
 ```
 
-```
-response 200:
+**Cabeçalhos:**
 
+| Cabeçalho       | Tipo       | Descrição                                       |
+| --------------- | ---------- | ----------------------------------------------- |
+| `profile_uuid`  | `string`   | **Opcional**. UUID do perfil para filtrar palavras. |
+
+**Resposta 200:**
+
+```json
 [
   {
     "id": 1,
-    "palavra": "cávitá",
-    "traducao": "chave",
-    "pronuncia": "cávitá",
+    "word": "cávitá",
+    "translation": "chave",
+    "pronunciation": "cávitá",
     "audio": "https://example.com/131252312.mp3"
   },
   {
     "id": 2,
-    "palavra": "cata",
-    "traducao": "gato",
-    "pronuncia": "cata",
+    "word": "cata",
+    "translation": "gato",
+    "pronunciation": "cata",
     "audio": "https://example.com/1231234213.mp3"
   }
 ]
 ```
 
-#### Confirmation
+---
+
+### Confirmação (`/confirmation`)
+
+#### Confirmar Usuário por Email e Código
 
 ```http
-  POST /confirmation
+POST /confirmation
 ```
 
-```
-body
+**Corpo da Requisição:**
 
+```json
 {
   "email": "dictBB@gmail.com",
   "code": "836593"
 }
 ```
 
+**Resposta 200:**
 
-```
-response 200:
-
+```json
 {
-    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.LwimMJA3puF3ioGeS-tfczR3370GXBZMIL-bdpu4hOU"
-	"refresh_token": "8fca882d-dedd-11ee-adc8-bd24e3c67090"
+  "message": "",
+  "status": "info",
+  "content": {
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refresh_token": "8fca882d-dedd-11ee-adc8-bd24e3c67090"
+  }
 }
 ```
 
+**Resposta 400:**
+
+```json
+{
+  "message": "Código de confirmação inválido.",
+  "status": "error"
+}
+```
+
+#### Confirmar Recuperação de Senha
+
 ```http
-  POST /confirmation/recover-password
+POST /confirmation/recover-password
 ```
 
-`Authorization: Bearer asdqwdgqwemklkjkqlwjeqwkelj`
+**Cabeçalhos:**
 
-```
-body
+| Cabeçalho        | Tipo       | Descrição                                     |
+| ---------------- | ---------- | --------------------------------------------- |
+| `Authorization`  | `Bearer`   | **Obrigatório**. Token de acesso do usuário.  |
 
+**Corpo da Requisição:**
+
+```json
 {
   "email": "dictBB@gmail.com",
   "new_password": "senha_muito_secreta_me_isquece",
@@ -272,11 +653,20 @@ body
 }
 ```
 
-```
-response 200:
+**Resposta 200:**
 
+```json
 {
-    "message": "Senha redefinida com sucesso!",
-	"status": "info"
+  "message": "Senha redefinida com sucesso!",
+  "status": "info"
+}
+```
+
+**Resposta 422:**
+
+```json
+{
+  "message": "Código de confirmação inválido.",
+  "status": "error"
 }
 ```
