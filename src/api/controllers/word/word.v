@@ -5,31 +5,65 @@ import infra.word.repository.errors as infra_word_errors
 import domain.word.errors as domain_word_errors
 import domain.word.models
 import api.ws_context
+import constants
 import veb
 import json
 
-@['/']
-pub fn (ws &WsWord) get(mut ctx ws_context.Context) veb.Result {
-	profile_uuid := ctx.req.header.get_custom('profile_uuid') or { '' }
-
-	words := ws.hword_service.get_all_by_uuid(profile_uuid)
-
-	return ctx.json(words)
-}
-
-@['/'; post]
-pub fn (ws &WsWord) add(mut ctx ws_context.Context) veb.Result {
-	profile_uuid := ctx.req.header.get_custom('profile_uuid') or { '' }
-
-	words_contract := json.decode([]models.Word, ctx.req.data) or {
+@['/:profile_uuid/count'; get]
+pub fn (ws &WsWord) count_words(mut ctx ws_context.Context, profile_uuid string) veb.Result {
+	if profile_uuid == '' {
 		ctx.res.set_status(.bad_request)
 		return ctx.json(ContractApiNoContent{
-			message: 'O JSON fornecido não está de acordo com o contrato esperado.'
+			message: constants.msg_err_profile_not_found
 			status:  .error
 		})
 	}
 
-	ws.hword_service.new_words(profile_uuid, words_contract) or {
+	count := ws.hword_service.count_words(profile_uuid) or {
+		ctx.res.set_status(.bad_request)
+		return ctx.json(ContractApiNoContent{
+			message: err.msg()
+			status:  .error
+		})
+	}
+
+	return ctx.json(ContractApi{
+		message: 'Contagem de palavras realizada com s ucesso!'
+		status:  .info
+		content: count
+	})
+}
+
+@['/:short_uuid/:name_profile']
+pub fn (ws &WsWord) get(mut ctx ws_context.Context, short_uuid string, name_profile string) veb.Result {
+	words := ws.hword_service.get_all_by_uuid(short_uuid, name_profile)
+
+	return ctx.json(ContractApi{
+		message: 'Palavras recuperadas com sucesso!'
+		status:  .info
+		content: words
+	})
+}
+
+@['/:short_uuid/:name_profile'; post]
+pub fn (ws &WsWord) save_words(mut ctx ws_context.Context, short_uuid string, name_profile string) veb.Result {
+	if short_uuid == '' || name_profile == '' {
+		ctx.res.set_status(.bad_request)
+		return ctx.json(ContractApiNoContent{
+			message: constants.msg_err_profile_not_found
+			status:  .error
+		})
+	}
+
+	words_contract := json.decode([]models.Word, ctx.req.data) or {
+		ctx.res.set_status(.bad_request)
+		return ctx.json(ContractApiNoContent{
+			message: constants.msg_err_json_contract
+			status:  .error
+		})
+	}
+
+	ws.hword_service.new_words(short_uuid, name_profile, words_contract) or {
 		match err {
 			domain_word_errors.WordsErrorInvalid {
 				return ctx.json(ContractApi{

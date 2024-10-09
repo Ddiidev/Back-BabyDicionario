@@ -33,9 +33,7 @@ fn init() {
 
 pub fn get() (orm.Connection, fn () !bool) {
 	$if dev ? {
-		conn := sqlite.connect(connection.path_db) or {
-			panic('fail connection db | path: "${connection.path_db}"')
-		}
+		conn := sqlite.connect(path_db) or { panic('fail connection db | path: "${path_db}"') }
 
 		return conn, conn.close
 	} $else {
@@ -60,9 +58,7 @@ pub fn get() (orm.Connection, fn () !bool) {
 
 pub fn get_db() AbstractDB {
 	$if dev ? {
-		conn := sqlite.connect(connection.path_db) or {
-			panic('fail connection db | path: "${connection.path_db}"')
-		}
+		conn := sqlite.connect(path_db) or { panic('fail connection db | path: "${path_db}"') }
 
 		return conn
 	} $else {

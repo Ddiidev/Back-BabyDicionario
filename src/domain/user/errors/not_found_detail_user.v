@@ -7,5 +7,5 @@ pub struct UserErrorNotFoundDetailsUser {
 const user_detail_not_found = 'Usuário não foram encontrados'
 
 pub fn (u UserErrorNotFoundDetailsUser) msg() string {
-	return errors.user_detail_not_found
+	return user_detail_not_found
 }

@@ -2,6 +2,8 @@ module constants
 
 pub const msg_err_json_contract = 'O JSON fornecido não está de acordo com o contrato esperado.'
 
+pub const msg_err_json_email_invalid = 'O email fornecido não é válido.'
+
 pub const msg_err_token_invalid = 'Token inválido'
 
 pub const msg_err_user_not_found = 'Usuário não encontrado'

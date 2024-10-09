@@ -1,34 +1,19 @@
 module models
 
-@[noinit]
+import time
+
 pub struct Word {
-	id ?int
 pub:
+	uuid          string
+	id            int    @[json: '-']
 	profile_uuid  string @[json: '-']
 	word          string
 	translation   string
 	pronunciation string
-	audio         string
-}
-
-@[params]
-pub struct WordParam {
-pub:
-	profile_uuid  string
-	word          string @[required]
-	translation   string @[required]
-	pronunciation string @[required]
-	audio         string
-}
-
-pub fn Word.new(w WordParam) Word {
-	return Word{
-		profile_uuid:  w.profile_uuid
-		word:          w.word
-		translation:   w.translation
-		pronunciation: w.pronunciation
-		audio:         w.audio
-	}
+	audio_path    ?string   @[json: 'audioPath']
+	date_speaker  time.Time @[json: 'dateSpeaker']
+	created_at    time.Time @[json: '-']
+	updated_at    time.Time @[json: '-']
 }
 
 pub fn (w Word) is_valid() bool {

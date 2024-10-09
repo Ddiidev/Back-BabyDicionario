@@ -10,7 +10,7 @@ pub fn is_valid_uuid(uuid ?string) bool {
 		if uuid_ == '' {
 			false
 		} else {
-			regex.regex_opt(utils.regex_query_uuid) or { return false }.matches_string(uuid_)
+			regex.regex_opt(regex_query_uuid) or { return false }.matches_string(uuid_)
 		}
 	} else {
 		false

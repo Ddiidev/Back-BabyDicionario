@@ -24,6 +24,9 @@ pub fn (e EmailRepository) send(to string, subject string, body string) ! {
 		body:      body
 	}
 
-	mut client := smtp.new_client(client_cfg)!
+	mut client := smtp.new_client(client_cfg) or {
+		dump(err)
+		return err
+	}
 	client.send(send_cfg)!
 }

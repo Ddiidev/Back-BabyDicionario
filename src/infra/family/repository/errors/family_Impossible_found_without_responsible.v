@@ -8,5 +8,5 @@ const msg_family_impossible_found_without_responsible = 'Family not found by no 
 
 @[inline]
 pub fn (f FamilyImpossibleFoundWithoutResponsible) msg() string {
-	return errors.msg_family_impossible_found_without_responsible
+	return msg_family_impossible_found_without_responsible
 }

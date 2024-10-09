@@ -7,5 +7,5 @@ pub struct UserErrorUserBlockedInvaild {
 }
 
 pub fn (u UserErrorUserBlockedInvaild) msg() string {
-	return errors.msg_err_user_blocked
+	return msg_err_user_blocked
 }

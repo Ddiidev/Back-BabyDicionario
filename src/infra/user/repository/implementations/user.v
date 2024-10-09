@@ -79,7 +79,10 @@ pub fn (u UserRepository) contain_user_with_email(email string) bool {
 		['email', email],
 	])
 
-	c := conn.exec_param_many(prepared.query, prepared.params) or { return false }
+	c := conn.exec_param_many(prepared.query, prepared.params) or {
+		$dbg;
+		return false
+	}
 
 	return c.first().vals().first() or { '' }.int() > 0
 }

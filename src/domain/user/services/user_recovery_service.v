@@ -15,11 +15,13 @@ pub struct UserRecoveryService {}
 
 pub fn (u UserRecoveryService) begin_recover_password(contract contracts.ContractUser) !types.AccessToken {
 	if !contract.valid_email() {
-		return error(constants.msg_err_json_contract)
+		return error(constants.msg_err_json_email_invalid)
 	}
 
 	repo_users := user_service.get()
 	repo_users_confirmation := user_service.get_user_confirmation()
+
+	$dbg;
 	if !(repo_users.contain_user_with_email(contract.email)
 		|| repo_users_confirmation.contain_user_with_email(contract.email)) {
 		return error(constants.msg_err_not_found_email)

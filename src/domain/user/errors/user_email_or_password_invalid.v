@@ -7,5 +7,5 @@ pub struct UserErrorEmailOrPasswodInvaild {
 }
 
 pub fn (u UserErrorEmailOrPasswodInvaild) msg() string {
-	return errors.msg_err_email_or_pass_invalid
+	return msg_err_email_or_pass_invalid
 }

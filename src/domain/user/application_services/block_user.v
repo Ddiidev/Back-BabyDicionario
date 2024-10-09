@@ -24,26 +24,26 @@ pub fn block_user(access_token string) !HtmlPageBlock {
 	}
 
 	payload_jwt := htoken_service.payload(access_token) or {
-		message = application_services.user_not_found
+		message = user_not_found
 		result_html = $tmpl('./page_block/index.html')
 		return error(result_html)
 	}
 
 	repo_recovery := recovery_service.get()
 	recovery := repo_recovery.get_by_token(access_token) or {
-		message = application_services.user_not_found
+		message = user_not_found
 		recovery_entities.UserRecovery{}
 	}
 
 	if !recovery.valid_expiration_token() {
-		message = application_services.user_not_found
+		message = user_not_found
 	} else if !recovery.valid_expiration_token_block() {
 		message = 'O período de bloquear o usuário expirou, caso ainda precise do bloqueio da senha por alteração de senha recentemente, favor entrar em contato por email.'
 	}
 
 	repo_users := user_service.get()
 	repo_users.blocked_user_from_recovery_password(payload_jwt.email, true) or {
-		message = application_services.user_not_found
+		message = user_not_found
 	}
 
 	result_html = $tmpl('./page_block/index.html')

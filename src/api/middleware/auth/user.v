@@ -22,7 +22,7 @@ const permition_endpointer = [
 
 pub fn authenticate(mut ctx ws_context.Context) bool {
 	// TODO: Remover esse código daqui
-	if auth.permition_endpointer.any(ctx.req.url.contains(it)) {
+	if permition_endpointer.any(ctx.req.url.contains(it)) {
 		return true
 	}
 

@@ -9,7 +9,7 @@ pub fn validating_email(email string) bool {
 		return false
 	}
 
-	mut re := regex.regex_opt(utils.regex_query_email) or { return false }
+	mut re := regex.regex_opt(regex_query_email) or { return false }
 
 	return re.matches_string(email)
 }

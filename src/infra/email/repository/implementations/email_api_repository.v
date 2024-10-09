@@ -17,19 +17,19 @@ pub fn (e EmailApiRepository) send(to string, subject string, body string) ! {
 				email: to
 			},
 		]
-		sender: Sender{
+		sender:       Sender{
 			email: $env('BABYDI_SMTP_EMAIL_FROM')
 		}
-		reply_to: ReplyTo{
+		reply_to:     ReplyTo{
 			email: $env('BABYDI_SMTP_EMAIL_FROM')
 		}
 	})
 	http.fetch(http.FetchConfig{
-		url:    implementations.url
+		url:    url
 		method: .post
 		header: http.new_custom_header_from_map({
 			'api-key': $env('BABYDI_SMTP_PASSWORD')
 		})!
-		data: data
+		data:   data
 	})!
 }
