@@ -9,10 +9,10 @@ import time
 pub struct UserConfirmationRepository {}
 
 pub fn (u UserConfirmationRepository) new_user_confirmation(user entities.UserTemp, code_confirmation string) ! {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	mut user_temp := entities.UserTemp{
@@ -28,10 +28,10 @@ pub fn (u UserConfirmationRepository) new_user_confirmation(user entities.UserTe
 }
 
 pub fn (u UserConfirmationRepository) get_user(email string, code string) !entities.UserTemp {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	users_temp := sql conn {
@@ -52,10 +52,10 @@ pub fn (u UserConfirmationRepository) get_user(email string, code string) !entit
 }
 
 pub fn (u UserConfirmationRepository) get_user_existing(email string) ?entities.UserTemp {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	users_temp := sql conn {
@@ -70,28 +70,24 @@ pub fn (u UserConfirmationRepository) get_user_existing(email string) ?entities.
 }
 
 pub fn (u UserConfirmationRepository) contain_user_with_email(email string) bool {
-	mut conn := connection.get_db()
+	conn := connection.get()
 
 	defer {
-		conn.close() or {}
+		conn.close()
 	}
 
-	name_tb := connection.get_name_table[entities.UserTemp]() or { return false }
+	result := sql conn {
+		select from entities.UserTemp where email == email limit 1
+	} or { return false }
 
-	prepared := conn.prepare('select count(*) from ${name_tb} where ', [
-		['email', email],
-	])
-
-	c := conn.exec_param_many(prepared.query, prepared.params) or { return false }
-
-	return c.first().vals().first() or { '' }.int() > 0
+	return result.len > 0
 }
 
 pub fn (u UserConfirmationRepository) delete(email string) ! {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	sql conn {

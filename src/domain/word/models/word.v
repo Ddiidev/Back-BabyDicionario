@@ -1,6 +1,7 @@
 module models
 
 import time
+import constants
 
 pub struct Word {
 pub:
@@ -12,8 +13,8 @@ pub:
 	pronunciation string
 	audio_path    ?string   @[json: 'audioPath']
 	date_speaker  time.Time @[json: 'dateSpeaker']
-	created_at    time.Time @[json: '-']
-	updated_at    time.Time @[json: '-']
+	created_at    time.Time = constants.time_empty @[json: '-']
+	updated_at    time.Time = constants.time_empty @[json: '-']
 }
 
 pub fn (w Word) is_valid() bool {

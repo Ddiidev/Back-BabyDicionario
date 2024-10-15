@@ -9,10 +9,10 @@ pub struct FamilyRepository {}
 
 // get_by_user obtém family com base no uuid do usuário que pode ser do pai ou da mãe.
 pub fn (f FamilyRepository) get_by_user(uuid string) !entities.Family {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	families := sql conn {
@@ -27,10 +27,10 @@ pub fn (f FamilyRepository) get_by_user(uuid string) !entities.Family {
 }
 
 pub fn (f FamilyRepository) get_by_father(uuid string) !entities.Family {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	families := sql conn {
@@ -45,10 +45,10 @@ pub fn (f FamilyRepository) get_by_father(uuid string) !entities.Family {
 }
 
 pub fn (f FamilyRepository) get_by_mother(uuid string) !entities.Family {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	families := sql conn {
@@ -63,10 +63,10 @@ pub fn (f FamilyRepository) get_by_mother(uuid string) !entities.Family {
 }
 
 pub fn (f FamilyRepository) create(family entities.Family) !int {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	sql conn {
@@ -79,10 +79,10 @@ pub fn (f FamilyRepository) create(family entities.Family) !int {
 }
 
 fn (f FamilyRepository) get(family entities.Family) !entities.Family {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	mut families := []entities.Family{}
@@ -121,10 +121,10 @@ fn (f FamilyRepository) get(family entities.Family) !entities.Family {
 }
 
 pub fn (f FamilyRepository) get_by_id(id int) !entities.Family {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	families := sql conn {
@@ -140,10 +140,10 @@ pub fn (f FamilyRepository) get_by_id(id int) !entities.Family {
 
 // update_by_id Atualiza o perfil correspondente que estiver com o profile do objeto preenchido com base do id do objeto
 pub fn (f FamilyRepository) update_by_id(family entities.Family) ! {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	is_father := utils.is_valid_uuid(family.profile_uuid_father)

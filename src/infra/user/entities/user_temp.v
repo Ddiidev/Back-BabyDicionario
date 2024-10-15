@@ -8,7 +8,7 @@ pub struct UserTemp {
 pub:
 	first_name        string
 	last_name         ?string
-	responsible       Responsible @[sql: int; sql_type: 'smallint']
+	responsible       Responsible @[sql: int; sql_type: 'int']
 	birth_date        time.Time
 	email             string
 	password          string

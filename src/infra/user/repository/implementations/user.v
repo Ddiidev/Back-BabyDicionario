@@ -7,10 +7,10 @@ import infra.user.repository.errors
 pub struct UserRepository {}
 
 pub fn (u UserRepository) get_by_uuid(uuid string) !entities.User {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	users_ := sql conn {
@@ -21,10 +21,10 @@ pub fn (u UserRepository) get_by_uuid(uuid string) !entities.User {
 }
 
 pub fn (u UserRepository) get_by_email_and_pass(email string, password string) !entities.User {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	users_ := sql conn {
@@ -35,28 +35,24 @@ pub fn (u UserRepository) get_by_email_and_pass(email string, password string) !
 }
 
 pub fn (u UserRepository) contain_user_with_uuid(uuid string) bool {
-	mut conn := connection.get_db()
+	conn := connection.get()
 
 	defer {
-		conn.close() or {}
+		conn.close()
 	}
 
-	name_tb := connection.get_name_table[entities.User]() or { return false }
+	result := sql conn {
+		select from entities.User where uuid == uuid limit 1
+	} or { return false }
 
-	prepared := conn.prepare('select count(*) from ${name_tb} where ', [
-		['uuid', uuid],
-	])
-
-	c := conn.exec_param_many(prepared.query, prepared.params) or { return false }
-
-	return c.first().vals().first() or { '' }.int() > 0
+	return result.len > 0
 }
 
 pub fn (u UserRepository) get_by_email(email string) !entities.User {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	users := sql conn {
@@ -67,31 +63,24 @@ pub fn (u UserRepository) get_by_email(email string) !entities.User {
 }
 
 pub fn (u UserRepository) contain_user_with_email(email string) bool {
-	mut conn := connection.get_db()
+	conn := connection.get()
 
 	defer {
-		conn.close() or {}
+		conn.close()
 	}
 
-	name_tb := connection.get_name_table[entities.User]() or { return false }
+	result := sql conn {
+		select from entities.User where email == email limit 1
+	} or { return false }
 
-	prepared := conn.prepare('select count(*) from ${name_tb} where ', [
-		['email', email],
-	])
-
-	c := conn.exec_param_many(prepared.query, prepared.params) or {
-		$dbg;
-		return false
-	}
-
-	return c.first().vals().first() or { '' }.int() > 0
+	return result.len > 0
 }
 
 pub fn (u UserRepository) change_password(email string, password string) ! {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	sql conn {
@@ -100,10 +89,10 @@ pub fn (u UserRepository) change_password(email string, password string) ! {
 }
 
 pub fn (u UserRepository) blocked_user_from_recovery_password(email string, block bool) ! {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	sql conn {
@@ -112,15 +101,15 @@ pub fn (u UserRepository) blocked_user_from_recovery_password(email string, bloc
 }
 
 pub fn (u UserRepository) create(user entities.User) !entities.User {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	user_existing := sql conn {
 		select from entities.User where email == user.email && responsible == user.responsible
-	}!
+	} or { return error('Error inesperado ao criar usuário') }
 
 	if user_existing.len > 0 {
 		return user_existing.first()

@@ -7,10 +7,10 @@ import infra.connection
 pub struct RecoveryRepository {}
 
 pub fn (r RecoveryRepository) create(recover entities.UserRecovery) ! {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	recover_existing := sql conn {
@@ -31,10 +31,10 @@ pub fn (r RecoveryRepository) create(recover entities.UserRecovery) ! {
 }
 
 pub fn (r RecoveryRepository) delete(email string) ! {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	sql conn {
@@ -43,10 +43,10 @@ pub fn (r RecoveryRepository) delete(email string) ! {
 }
 
 pub fn (r RecoveryRepository) get_by_email(email string) !entities.UserRecovery {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	recover_existing := sql conn {
@@ -69,10 +69,10 @@ pub fn (r RecoveryRepository) email_contains_pendenting_recovery_password(email 
 }
 
 pub fn (r RecoveryRepository) get_by_token(access_token string) !entities.UserRecovery {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	recover_existing := sql conn {

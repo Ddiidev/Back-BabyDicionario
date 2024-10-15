@@ -59,7 +59,7 @@ pub fn (p ProfileService) get_family_profiles(uuid_user string) !models.FamilyPr
 		father_uuid := family.profile_uuid_father
 		mother_uuid := family.profile_uuid_mother
 		if father_uuid != none && mother_uuid != none {
-			family_profiles.babys = repo_profile.get_profiles_brothers(family.id or { -1 }).map(models.Profile{
+			family_profiles.babys = repo_profile.get_profiles_babys(family.id or { -1 }).map(models.Profile{
 				...infra_profile_adapters.entitie_to_model(it)!
 			})
 		}
@@ -78,6 +78,7 @@ pub fn (p ProfileService) get(short_uuid_profile string, name string) !models.Pr
 		surname:          profile_required.surname
 		age:              profile_required.age
 		name_shared_link: profile_required.name_shared_link
+		responsible:      types.Responsible.to_responsible(profile_required.responsible)
 		birth_date:       profile_required.birth_date or { constants.time_empty }
 		color:            profile_required.color
 		first_name:       profile_required.first_name
@@ -122,7 +123,7 @@ pub fn (p ProfileService) get_family(user_uuid string) !models.Profile {
 		father_uuid := family.profile_uuid_father
 		mother_uuid := family.profile_uuid_mother
 		if father_uuid != none && mother_uuid != none {
-			profile_brothers = repo_profile.get_profiles_brothers(family.id or { -1 }).map(models.ProfileAlias(infra_profile_adapters.entitie_to_model(it)!))
+			profile_brothers = repo_profile.get_profiles_babys(family.id or { -1 }).map(models.ProfileAlias(infra_profile_adapters.entitie_to_model(it)!))
 		}
 	}
 
@@ -158,4 +159,26 @@ pub fn (p ProfileService) get_default_uuid_from_user(user_uuid string) ?string {
 
 	_, profile_uuid := family_model.get_uuid_profile_and_user_from_profile_default()
 	return profile_uuid
+}
+
+// Desativa o perfil
+pub fn (p ProfileService) disabled(uuid_profile string) ! {
+	repo_profile := infra_profile_service.get()
+
+	profile := infra_profile_adapters.entitie_to_model(repo_profile.get_profile(uuid_profile) or {
+		return error('Perfil não encontrado')
+	})!
+
+	match profile.responsible {
+		none {
+			return error('Perfil não encontrado')
+		}
+		else {
+			if profile.responsible? == .is_not_responsible {
+				repo_profile.disabled(uuid_profile)!
+			} else {
+				return error('Perfil de responsáveis não podem ser desativados')
+			}
+		}
+	}
 }

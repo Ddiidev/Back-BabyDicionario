@@ -63,7 +63,7 @@ pub fn (ws &WsWord) save_words(mut ctx ws_context.Context, short_uuid string, na
 		})
 	}
 
-	ws.hword_service.new_words(short_uuid, name_profile, words_contract) or {
+	words_created := ws.hword_service.save_words(short_uuid, name_profile, words_contract) or {
 		match err {
 			domain_word_errors.WordsErrorInvalid {
 				return ctx.json(ContractApi{
@@ -76,7 +76,7 @@ pub fn (ws &WsWord) save_words(mut ctx ws_context.Context, short_uuid string, na
 				return ctx.json(ContractApi{
 					message: err.msg()
 					status:  .error
-					content: err.words
+					content: err.word
 				})
 			}
 			else {
@@ -88,8 +88,32 @@ pub fn (ws &WsWord) save_words(mut ctx ws_context.Context, short_uuid string, na
 		}
 	}
 
-	return ctx.json(ContractApiNoContent{
+	return ctx.json(ContractApi{
 		message: 'Palavras adicionadas com sucesso!'
+		status:  .info
+		content: words_created
+	})
+}
+
+@['/:word_uuid'; delete]
+pub fn (ws &WsWord) delete_words(mut ctx ws_context.Context, word_uuid string) veb.Result {
+	if word_uuid == '' {
+		ctx.res.set_status(.bad_request)
+		return ctx.json(ContractApiNoContent{
+			message: constants.msg_err_profile_not_found
+			status:  .error
+		})
+	}
+
+	ws.hword_service.delete_words(word_uuid) or {
+		return ctx.json(ContractApiNoContent{
+			message: err.msg()
+			status:  .error
+		})
+	}
+
+	return ctx.json(ContractApiNoContent{
+		message: 'Palavra deletada com sucesso!'
 		status:  .info
 	})
 }

@@ -8,25 +8,25 @@ import time
 pub struct ProfileRepository {}
 
 pub fn (p ProfileRepository) update_family_id(uuid string, family_id int) ! {
-	db, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
-	sql db {
+	sql conn {
 		update entities.Profile set family_id = family_id where uuid == uuid
 	} or { return error('Falha ao atualizar perfil') }
 }
 
 pub fn (p ProfileRepository) update(profile entities.Profile) ! {
-	db, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
-	sql db {
+	sql conn {
 		update entities.Profile set name_shared_link = profile.name_shared_link, surname = profile.surname,
 		first_name = profile.first_name, last_name = profile.last_name, birth_date = profile.birth_date,
 		weight = profile.weight, sex = profile.sex, color = profile.color, updated_at = time.utc(),
@@ -35,39 +35,39 @@ pub fn (p ProfileRepository) update(profile entities.Profile) ! {
 }
 
 pub fn (p ProfileRepository) create(profile entities.Profile) ! {
-	db, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
-	sql db {
+	sql conn {
 		insert profile into entities.Profile
 	}!
 }
 
 pub fn (p ProfileRepository) get_profile(uuid string) ?entities.Profile {
-	db, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
-	profiles := sql db {
-		select from entities.Profile where uuid == uuid
+	profiles := sql conn {
+		select from entities.Profile where uuid == uuid && active == true
 	} or { return none }
 
 	return profiles[0] or { none }
 }
 
 pub fn (p ProfileRepository) get_profile_by_suuid(suuid string, name_shared_link string) !entities.Profile {
-	db, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
-	profiles := sql db {
+	profiles := sql conn {
 		select from entities.Profile where short_uuid == suuid && name_shared_link == name_shared_link
 	} or { []entities.Profile{} }
 
@@ -79,31 +79,46 @@ pub fn (p ProfileRepository) get_profile_by_suuid(suuid string, name_shared_link
 }
 
 pub fn (p ProfileRepository) get_profiles_by_id(id int) []entities.Profile {
-	db, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
-	profiles := sql db {
+	profiles := sql conn {
 		select from entities.Profile where id == id
 	} or { []entities.Profile{} }
 
 	return profiles
 }
 
-pub fn (p ProfileRepository) get_profiles_brothers(family_id int) []entities.Profile {
-	db, close := connection.get()
+pub fn (p ProfileRepository) get_profiles_babys(family_id int) []entities.Profile {
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
-	baby_responsible := i8(types.Responsible.is_not_responsible)
+	baby_responsible := int(types.Responsible.is_not_responsible)
 
-	profiles := sql db {
-		select from entities.Profile where family_id == family_id && responsible == baby_responsible
+	profiles := sql conn {
+		select from entities.Profile where family_id == family_id && responsible == baby_responsible && active == true
 	} or { []entities.Profile{} }
 
 	return profiles
+}
+
+// Desativa o perfil
+pub fn (p ProfileRepository) disabled(uuid_profile string) ! {
+	conn := connection.get()
+
+	defer {
+		conn.close()
+	}
+
+	sql conn {
+		update entities.Profile set active = false where uuid == uuid_profile
+	} or {
+		return error('Falha ao desativar perfil')
+	}
 }

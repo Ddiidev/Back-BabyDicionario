@@ -17,12 +17,13 @@ pub:
 	surname          string
 	first_name       string
 	last_name        string
-	responsible      ?i8
+	responsible      ?int
 	birth_date       ?time.Time @[default: 'null']
 	age              f64        @[sql_type: 'NUMERIC']
 	weight           f64        @[sql_type: 'NUMERIC']
-	sex              i8
-	height           f64 @[sql_type: 'NUMERIC']
+	active           bool       @[default: true]
+	height           f64        @[sql_type: 'NUMERIC']
+	sex              int
 	color            string
 	created_at       time.Time = time.utc()
 	updated_at       time.Time = time.utc()

@@ -10,6 +10,8 @@ pub interface IProfileService {
 	create(profile models.Profile) !models.Profile
 	update_family_id(uuid string, family_id int) !
 	update(profile models.Profile) !
-
 	contain(uuid string) bool
+
+	// Desativa o perfil
+	disabled(uuid_profile string) !
 }

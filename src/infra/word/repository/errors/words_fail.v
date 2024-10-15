@@ -5,5 +5,11 @@ import infra.word.entities
 pub struct WordsFailInsert {
 	Error
 pub:
-	words []entities.Word
+	word entities.Word
+}
+
+pub struct WordsFailDelete {
+	Error
+pub:
+	word_uuid string
 }

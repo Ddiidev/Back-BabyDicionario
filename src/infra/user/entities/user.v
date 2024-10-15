@@ -12,7 +12,7 @@ pub struct User {
 pub:
 	first_name  string
 	last_name   ?string
-	responsible int @[sql_type: 'smallint']
+	responsible int @[sql: int; sql_type: 'int']
 	birth_date  time.Time
 	email       string
 	password    string

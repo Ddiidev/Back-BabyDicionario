@@ -2,6 +2,7 @@ module profile
 
 import contracts.contract_api { ContractApi, ContractApiNoContent }
 import domain.profile.application_service as app_service_profile
+import infra.storage_babydi.repository.service as storage_service
 import domain.profile.contracts
 import api.middleware.auth
 import api.ws_context
@@ -157,7 +158,7 @@ pub fn (ws &WsProfile) create(mut ctx ws_context.Context) veb.Result {
 	profile_created := app_service_profile.create_profile(profile, user_uuid) or {
 		ctx.res.set_status(.not_found)
 		return ctx.json(ContractApiNoContent{
-			message: constants.msg_err_user_not_found
+			message: err.msg()
 			status:  .error
 		})
 	}
@@ -166,5 +167,34 @@ pub fn (ws &WsProfile) create(mut ctx ws_context.Context) veb.Result {
 		message: 'Perfil inserido com sucesso'
 		status:  .info
 		content: profile_created
+	})
+}
+
+@['/:uuid_profile'; delete]
+pub fn (ws &WsProfile) disabled(mut ctx ws_context.Context, uuid_profile string) veb.Result {
+	authorization := ctx.req.header.values(.authorization)[0] or { '' }.all_after_last(' ')
+
+	user_uuid := auth.get_uuid_from_user(authorization) or {
+		ctx.res.set_status(.not_found)
+		return ctx.json(ContractApiNoContent{
+			message: constants.msg_err_user_not_found
+			status:  .error
+		})
+	}
+	ws.hprofile_service.disabled(uuid_profile) or {
+		ctx.res.set_status(.not_found)
+		return ctx.json(ContractApiNoContent{
+			message: constants.msg_err_user_not_found
+			status:  .error
+		})
+	}
+
+	hstorage_service := storage_service.get()
+
+	hstorage_service.delete_profile(user_uuid, uuid_profile) or {}
+
+	return ctx.json(ContractApiNoContent{
+		message: 'Perfil excluído com sucesso'
+		status:  .info
 	})
 }

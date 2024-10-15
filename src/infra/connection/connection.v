@@ -7,17 +7,15 @@ import infra.token.entities as token_entities
 import infra.user.entities as user_entities
 import infra.family.entities as family_entities
 import ken0x0a.dotenv
-import db.sqlite
 import db.pg
-import orm
 
 const path_db = $env('BABYDI_PATH_DB')
 
 fn init() {
-	conn, close := get()
+	conn := get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	sql conn {
@@ -31,51 +29,20 @@ fn init() {
 	} or { panic('fail create table | ${err}') }
 }
 
-pub fn get() (orm.Connection, fn () !bool) {
-	$if dev ? {
-		conn := sqlite.connect(path_db) or { panic('fail connection db | path: "${path_db}"') }
+pub fn get() pg.DB {
+	local_env := dotenv.parse('.env.local')
 
-		return conn, conn.close
-	} $else {
-		local_env := dotenv.parse('.env.local')
-
-		conf := pg.Config{
-			host:     local_env['BABYDI_HOST_DB']
-			port:     local_env['BABYDI_PORT_DB'].int()
-			user:     local_env['BABYDI_USER_DB']
-			password: local_env['BABYDI_PASS_DB']
-			dbname:   local_env['BABYDI_DBNAME_DB']
-		}
-
-		conn := pg.connect(conf) or { panic(err) }
-
-		return conn, fn [conn] () !bool {
-			conn.close()
-			return true
-		}
+	conf := pg.Config{
+		host:     local_env['BABYDI_HOST_DB']
+		port:     local_env['BABYDI_PORT_DB'].int()
+		user:     local_env['BABYDI_USER_DB']
+		password: local_env['BABYDI_PASS_DB']
+		dbname:   local_env['BABYDI_DBNAME_DB']
 	}
-}
 
-pub fn get_db() AbstractDB {
-	$if dev ? {
-		conn := sqlite.connect(path_db) or { panic('fail connection db | path: "${path_db}"') }
+	conn := pg.connect(conf) or { panic(err) }
 
-		return conn
-	} $else {
-		local_env := dotenv.parse('.env.local')
-
-		conf := pg.Config{
-			host:     local_env['BABYDI_HOST_DB']
-			port:     local_env['BABYDI_PORT_DB'].int()
-			user:     local_env['BABYDI_USER_DB']
-			password: local_env['BABYDI_PASS_DB']
-			dbname:   local_env['BABYDI_DBNAME_DB']
-		}
-
-		conn := pg.connect(conf) or { panic(err) }
-
-		return conn
-	}
+	return conn
 }
 
 pub fn get_name_table[T]() !string {

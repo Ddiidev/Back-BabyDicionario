@@ -25,9 +25,9 @@ pub fn entitie_to_model(p entities.Profile) !models.Profile {
 
 pub fn model_to_entitie(p models.Profile) !entities.Profile {
 	responsible := if resp_temp := p.responsible {
-		resp_temp.to_i8()
+		resp_temp.to_int()
 	} else {
-		types.Responsible.to_responsible(p.sex.to_i8()) or { types.Responsible.pai }.to_i8()
+		types.Responsible.to_responsible(p.sex.to_int()) or { types.Responsible.pai }.to_int()
 	}
 
 	return entities.Profile{
@@ -43,7 +43,7 @@ pub fn model_to_entitie(p models.Profile) !entities.Profile {
 		age:              p.age
 		weight:           p.weight
 		height:           p.height
-		sex:              p.sex.to_i8()
+		sex:              p.sex.to_int()
 		color:            p.color
 	}
 }

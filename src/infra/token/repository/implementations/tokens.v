@@ -7,10 +7,10 @@ import infra.connection
 pub struct TokenRepository {}
 
 pub fn (t TokenRepository) create(tok entities.Token) ! {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	tokens_ := sql conn {
@@ -33,10 +33,10 @@ pub fn (t TokenRepository) create(tok entities.Token) ! {
 }
 
 pub fn (t TokenRepository) get_by_uuid(tok entities.Token) !entities.Token {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	tokens_ := sql conn {
@@ -51,10 +51,10 @@ pub fn (t TokenRepository) get_by_uuid(tok entities.Token) !entities.Token {
 }
 
 pub fn (t TokenRepository) get_by_refresh_token(tok entities.Token) !entities.Token {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	tokens_ := sql conn {
@@ -70,10 +70,10 @@ pub fn (t TokenRepository) get_by_refresh_token(tok entities.Token) !entities.To
 }
 
 pub fn (t TokenRepository) new_refresh_token(tok entities.Token, target_token entities.Token) ! {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	origin_toks := sql conn {
@@ -91,10 +91,10 @@ pub fn (t TokenRepository) new_refresh_token(tok entities.Token, target_token en
 }
 
 pub fn (t TokenRepository) update_by_uuid(tok entities.Token) ! {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	sql conn {

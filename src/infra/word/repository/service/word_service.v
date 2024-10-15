@@ -1,7 +1,7 @@
 module service
 
-import word.repository.interfaces
-import word.repository.implementations
+import infra.word.repository.interfaces
+import infra.word.repository.implementations
 
 pub fn get() interfaces.IWord {
 	return implementations.WordRepository{}

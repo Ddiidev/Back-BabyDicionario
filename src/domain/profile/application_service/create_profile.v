@@ -38,11 +38,13 @@ fn new_profile_responsible(profile models.Profile, user_uuid string, is_new_baby
 		if !is_new_baby {
 			return error('Responsible not found')
 		}
-
 		models.Family.new_profile_with_id(family_id, profile_created.uuid, .is_not_responsible)!
 	}
 
-	service_family.update_by_id(family)!
+	if !is_new_baby {
+		service_family.update_by_id(family)!
+	}
+
 	return models.Profile{
 		...profile_created
 		family_id: family_id

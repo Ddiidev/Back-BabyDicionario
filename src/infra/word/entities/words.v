@@ -1,6 +1,7 @@
 module entities
 
 import time
+import constants
 
 @[table: 'words']
 pub struct Word {
@@ -12,9 +13,9 @@ pub:
 	audio_path    ?string
 	date_speaker  time.Time = time.utc()
 	created_at    time.Time = time.utc()
-	updated_at    time.Time
+	updated_at    time.Time = constants.time_empty
 pub mut:
-	id   ?int @[default: 'null'; primary; serial]
+	id   ?int @[primary; sql: serial]
 	uuid string
 }
 

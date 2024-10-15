@@ -1,16 +1,17 @@
 module implementations
 
-import word.repository.errors
+import infra.word.repository.errors
+import infra.word.entities
 import infra.connection
-import word.entities
+import time
 
 pub struct WordRepository {}
 
 pub fn (wr WordRepository) get_all_by_id(user_uuid string) ![]entities.Word {
-	conn, close := connection.get()
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
 	words := sql conn {
@@ -20,59 +21,87 @@ pub fn (wr WordRepository) get_all_by_id(user_uuid string) ![]entities.Word {
 	return words
 }
 
-pub fn (wr WordRepository) new_words(words []entities.Word) ![]entities.Word {
-	conn, close := connection.get()
-	mut fail_words := []entities.Word{}
-	mut words_created := []entities.Word{cap: words.len}
+pub fn (wr WordRepository) exists_word(word entities.Word) bool {
+	conn := connection.get()
 
 	defer {
-		close() or {}
+		conn.close()
 	}
 
-	for word in words {
-		id := sql conn {
-			insert word into entities.Word
-		} or { 0 }
+	word_found := sql conn {
+		select from entities.Word where uuid == word.uuid limit 1
+	} or { return false }
 
-		// word_created := sql conn {
-		// 	select from entities.Word where uuid == word.uuid limit 1
-		// }!
+	return word_found.len > 0
+}
 
-		// words_created << word_created[0]
+pub fn (wr WordRepository) new_word(word entities.Word) !entities.Word {
+	conn := connection.get()
+
+	defer {
+		conn.close()
 	}
 
-	if fail_words.len > 0 {
-		return errors.WordsFailInsert{
-			words: fail_words
-		}
+	id := sql conn {
+		insert word into entities.Word
+	} or { return word }
+
+	// TODO: Melhorar esse fluxo
+	word_created := sql conn {
+		select from entities.Word where id == id limit 1
+	} or { return errors.WordsFailInsert{
+		word: word
+	} }
+
+	return word_created[0] or { return errors.WordsFailInsert{
+		word: word
+	} }
+}
+
+pub fn (wr WordRepository) update_word(word entities.Word) ! {
+	conn := connection.get()
+
+	defer {
+		conn.close()
 	}
-	return []
+
+	sql conn {
+		update entities.Word set word = word.word, translation = word.translation, pronunciation = word.pronunciation,
+		audio_path = word.audio_path, date_speaker = word.date_speaker, updated_at = time.utc()
+		where uuid == word.uuid
+	} or {
+		// TODO: Isso quebra o compilador
+		// return errors.WordsFailInsert{
+		// 	word: word
+		// }
+		return error('Falha ao atualizar palavra')
+	}
+}
+
+pub fn (wr WordRepository) delete_word(word_uuid string) ! {
+	conn := connection.get()
+
+	defer {
+		conn.close()
+	}
+
+	sql conn {
+		delete from entities.Word where uuid == word_uuid
+	} or {
+		return error('Falha ao deletar palavra')
+	}
 }
 
 pub fn (wr WordRepository) count_words(profile_uuid string) !int {
-	table_name := connection.get_name_table[entities.Word]() or {
-		return error('fail get table name')
-	}
-
-	mut conn := connection.get_db()
+	conn := connection.get()
 
 	defer {
-		conn.close() or {}
+		conn.close()
 	}
 
-	prepared := conn.prepare('select count(*) from ${table_name} where ', [
-		['profile_uuid', profile_uuid],
-	])
+	value_result := sql conn {
+		select from entities.Word where profile_uuid == profile_uuid limit 1
+	} or { return 0 }
 
-	result := conn.exec_param_many(prepared.query, prepared.params) or {
-		return error('fail count words')
-	}
-
-	if result.len == 0 || result[0]!.vals().len == 0 {
-		return error('fail count words')
-	}
-
-	value_result := result.first().vals().first() or { '' }
-
-	return value_result.int()
+	return value_result.len
 }
