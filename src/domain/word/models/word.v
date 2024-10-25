@@ -6,8 +6,8 @@ import constants
 pub struct Word {
 pub:
 	uuid          string
-	id            int    @[json: '-']
-	profile_uuid  string @[json: '-']
+	id            int @[json: '-']
+	profile_uuid  string
 	word          string
 	translation   string
 	pronunciation string

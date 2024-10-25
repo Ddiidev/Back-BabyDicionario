@@ -102,7 +102,8 @@ pub fn (p ProfileRepository) get_profiles_babys(family_id int) []entities.Profil
 	baby_responsible := int(types.Responsible.is_not_responsible)
 
 	profiles := sql conn {
-		select from entities.Profile where family_id == family_id && responsible == baby_responsible && active == true
+		select from entities.Profile where family_id == family_id && responsible == baby_responsible
+		&& active == true
 	} or { []entities.Profile{} }
 
 	return profiles
@@ -118,7 +119,5 @@ pub fn (p ProfileRepository) disabled(uuid_profile string) ! {
 
 	sql conn {
 		update entities.Profile set active = false where uuid == uuid_profile
-	} or {
-		return error('Falha ao desativar perfil')
-	}
+	} or { return error('Falha ao desativar perfil') }
 }

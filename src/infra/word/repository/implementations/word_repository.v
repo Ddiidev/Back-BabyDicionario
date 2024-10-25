@@ -87,9 +87,7 @@ pub fn (wr WordRepository) delete_word(word_uuid string) ! {
 
 	sql conn {
 		delete from entities.Word where uuid == word_uuid
-	} or {
-		return error('Falha ao deletar palavra')
-	}
+	} or { return error('Falha ao deletar palavra') }
 }
 
 pub fn (wr WordRepository) count_words(profile_uuid string) !int {
